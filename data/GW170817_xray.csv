@@ -1,0 +1,13 @@
+Time,Flux,Flux Error,Units,Hz,Flux Density Jy,Flux Density Error,Note,Observatory,Ref
+8.9,4,1.1,1e-15 erg cm^-2 s^-1,2.00E+18,2.00E-10,5.50E-11,,Chandra,https://doi.org/10.1093/mnrasl/sly061
+15.2,5,1,1e-15 erg cm^-2 s^-1,2.00E+18,2.50E-10,5.00E-11,,Chandra,https://doi.org/10.1093/mnrasl/sly061
+15,3.5,1,1e-15 erg cm^-2 s^-1,2.00E+18,1.75E-10,5.00E-11,,Chandra,https://iopscience.iop.org/article/10.3847/2041-8213/aa8ede
+16,3.8,1,1e-15 erg cm^-2 s^-1,2.00E+18,1.90E-10,5.00E-11,,Chandra,https://iopscience.iop.org/article/10.3847/2041-8213/aa8ede
+103,25,25,1e-15 erg cm^-2 s^-1,2.00E+18,1.25E-09,1.25E-09,upper limit,NuStar,https://doi.org/10.1093/mnrasl/sly061
+107.5,26,3,1e-15 erg cm^-2 s^-1,2.00E+18,1.30E-09,1.50E-10,,Chandra,https://doi.org/10.1093/mnrasl/sly061
+110.9,23,4,1e-15 erg cm^-2 s^-1,2.00E+18,1.15E-09,2.00E-10,,Chandra,https://doi.org/10.1093/mnrasl/sly061
+158.5,26,2,1e-15 erg cm^-2 s^-1,2.00E+18,1.30E-09,1.00E-10,,Chandra,https://doi.org/10.1093/mnrasl/sly061
+359,,,,,2.80E-10,4.00E-11,,Chandra,https://doi.org/10.1093/mnras/stz2248
+582,,,,,9.00E-11,2.00E-11,,Chandra,https://doi.org/10.1093/mnras/staa2626
+742,,,,,5.80E-11,1.70E-11,,Chandra,https://doi.org/10.1093/mnras/staa2626
+939,,,,,4.70E-11,1.80E-11,,Chandra,https://doi.org/10.1093/mnras/staa2626
