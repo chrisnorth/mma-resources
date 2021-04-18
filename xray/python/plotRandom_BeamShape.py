@@ -1,4 +1,8 @@
-import os
+import sys,os,importlib
+sys.path.insert(0,os.path.join('../'))
+import xray
+importlib.reload(xray)
+
 import numpy as np
 import matplotlib.pyplot as plt
 import afterglowpy as grb
@@ -91,20 +95,21 @@ for m in models:
     x=int(p/3)
     y=p%3
     ax=axes[x,y]
-    ax.plot(tday[:,0], models[m]['Fnu'][:,0], ls='-', label=m)
-    ax.set_xscale('log')
-    ax.set_yscale('log')
-    # ax.set_ylim(1e-10,1e-3)
-    ax.set_xlabel('time')
-    ax.set_ylabel('Flux (mJy)')
-    # ax.set_ylabel(r'$F_\nu$ (mJy)')
-    ax.set_xticks([1,7,30,365])
-    ax.set_xticklabels(['day','wk','mth','yr'])
-    ax.annotate(r'{:.1f}$^o$'.format(np.rad2deg(models[m]['pars']['thetaObs'])),(0.01,0.95),xycoords='axes fraction',va='top')
-    ax.annotate('{:.1f} Mpc'.format(models[m]['pars']['d_L']*u.cm.to(u.Mpc)),(0.99,0.95),xycoords='axes fraction',ha='right',va='top')
-    # ax[x,y].set_title(titles[p])
-    # if p==0:
-    #     ax[x,y].legend()
+    xray.plotModels(ax,tday,models[m],ylim=[1e-10,1e-3])
+    # ax.plot(tday[:,0], models[m]['Fnu'][:,0], ls='-', label=m)
+    # ax.set_xscale('log')
+    # ax.set_yscale('log')
+    # # ax.set_ylim(1e-10,1e-3)
+    # ax.set_xlabel('time')
+    # ax.set_ylabel('Flux (mJy)')
+    # # ax.set_ylabel(r'$F_\nu$ (mJy)')
+    # ax.set_xticks([1,7,30,365])
+    # ax.set_xticklabels(['day','wk','mth','yr'])
+    # ax.annotate(r'{:.1f}$^o$'.format(np.rad2deg(models[m]['pars']['thetaObs'])),(0.01,0.95),xycoords='axes fraction',va='top')
+    # ax.annotate('{:.1f} Mpc'.format(models[m]['pars']['d_L']*u.cm.to(u.Mpc)),(0.99,0.95),xycoords='axes fraction',ha='right',va='top')
+    # # ax[x,y].set_title(titles[p])
+    # # if p==0:
+    # #     ax[x,y].legend()
     p=p+1
 
 fig.tight_layout()
