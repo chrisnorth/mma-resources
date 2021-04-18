@@ -1,9 +1,12 @@
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import afterglowpy as grb
 import astropy.constants as C
 import astropy.units as u
 plt.ion()
+
+plotDir='plots'
 
 # Jet Parameters
 Z = {'jetType':     grb.jet.Gaussian,     # Gaussian jet
@@ -92,6 +95,6 @@ for p in range(len(nu[0,:])):
 fig.tight_layout()
 
 print("Saving multi-band_light_curves.png")
-fig.savefig("multi-band_light_curves.png")
+fig.savefig(os.path.join(plotDir,"multi-band_light_curves.png"))
 # plt.close(fig)
 plt.show()

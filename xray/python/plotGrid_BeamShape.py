@@ -1,9 +1,12 @@
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import afterglowpy as grb
 import astropy.constants as C
 import astropy.units as u
 plt.ion()
+
+plotDir='plots'
 
 # Jet Parameters
 Z = {'jetType':     grb.jet.Gaussian,     # Gaussian jet
@@ -193,5 +196,5 @@ fig.tight_layout()
 plt.show()
 
 print("Saving grid_light_curves_beamshape.png")
-fig.savefig("grid_light_curves_beamshape.png")
+fig.savefig(os.path.join(plotDir,"grid_light_curves_beamshape.png"))
 # plt.close(fig)
