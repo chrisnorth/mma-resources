@@ -35,15 +35,22 @@ def plotModels(ax,tday,models,**kwargs):
     
     return
     
-def plotInset(ax,model,thetaObs,thetaCore=0.1):
+def plotInset(ax,model,thetaObs,thetaCore=0.1,thetaWing=0.4):
     print('inset')
     ax.set_xlim(0,2)
     ax.set_ylim(-1,1)
     ax.axis('off')
     
-    ax.fill([0,np.cos(thetaCore),np.cos(thetaCore)],[0,np.sin(thetaCore),-np.sin(thetaCore)],color='k')
+    if model['pars']['jetType']==0:
+        for tt in np.arange(10):
+            th=thetaWing-tt*0.1*(thetaWing-thetaCore)
+            col=1-tt*0.05
+            ax.fill([0,np.cos(th),np.cos(th)],[0,np.sin(th),-np.sin(th)],color=(col,col,col))
+    ax.fill([0,np.cos(thetaCore),np.cos(thetaCore)],[0,np.sin(thetaCore),-np.sin(thetaCore)],color='#555555')
     dx=np.cos(thetaObs)
     dy=-np.sin(thetaObs)
-    ax.arrow(1.8*dx,1.8*dy,-0.7*dx,-0.7*dy,width=0.1,length_includes_head=True)
+    ax.arrow(1.8*dx,1.8*dy,-0.7*dx,-0.7*dy,width=0.1,length_includes_head=True,color='r')
+    ax.plot([0,dx],[0,dy],ls=':',c='r')
+    ax.annotate(r'$\theta={:.0f}^\circ$'.format(np.rad2deg(thetaObs)),[2*dx,2*dy],va='center')
     
     return
