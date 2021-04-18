@@ -175,7 +175,13 @@ for m in models:
     # if p==0:
     #     ax[x,y].legend()
     p=p+1
-
+    if not insPlotted[plot]:
+        axins=ax.inset_axes([0.75,0.75,0.2,0.1])
+        print('plotting inset in',plot)
+        xray.plotInset(axins,models[m],models[m]['pars']['thetaObs'])
+        insPlotted[plot]=True
+        
+    
 axes[0,0].legend(loc='lower left')
 
 fig.tight_layout()

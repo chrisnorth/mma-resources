@@ -35,3 +35,15 @@ def plotModels(ax,tday,models,**kwargs):
     
     return
     
+def plotInset(ax,model,thetaObs,thetaCore=0.1):
+    print('inset')
+    ax.set_xlim(0,2)
+    ax.set_ylim(-1,1)
+    ax.axis('off')
+    
+    ax.fill([0,np.cos(thetaCore),np.cos(thetaCore)],[0,np.sin(thetaCore),-np.sin(thetaCore)],color='k')
+    dx=np.cos(thetaObs)
+    dy=-np.sin(thetaObs)
+    ax.arrow(1.8*dx,1.8*dy,-0.7*dx,-0.7*dy,width=0.1,length_includes_head=True)
+    
+    return
