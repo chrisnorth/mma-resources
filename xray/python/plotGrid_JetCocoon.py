@@ -11,6 +11,9 @@ import astropy.units as u
 plt.ion()
 
 plotDir='plots'
+dataMin=0
+dataMax=0
+gridName='Jet_Gaussian-TopHat_0-40deg_Cocoon'
 
 # Jet Parameters
 Z = {'jetType':     grb.jet.Gaussian,     # Tapered beam jet
@@ -231,26 +234,41 @@ for m in models:
         xray.plotInset(axinsind,models[m],thetaObs=models[m]['pars']['thetaObs'])
         insPlotted[plot]=True
     
-    if not dataPlotted[plot]:
-        xray.plotData(ax)
-        xray.plotData(axind)
+    if dataMax>0 and not dataPlotted[plot]:
+        xray.plotData(ax,dataMin=dataMin,dataMax=dataMax)
+        xray.plotData(axind,dataMin=dataMin,dataMax=dataMax)
         dataPlotted[plot]=True
         
-axes[0,0].legend(loc='lower left')
+# axes[0,0].legend(loc='upper left')
 figgrid.tight_layout()
-
+fnameGrid='plot_grid'
 for p in range(len(figlist)):
     if isinstance(figlist[p],dict):
-        figgrid.tight_layout()
+        figlist[p]['fig'].tight_layout()
         fname='plot_grid-{}'.format(p)
         for m in range(len(figlist[p]['models'])):
-            fname=fname+figlist[p]['models'][m]
+            fname=fname+'_'+figlist[p]['models'][m]
+            fnameGrid=fnameGrid+'_'+figlist[p]['models'][m]
+        if dataMax>0:
+            fname=fname+'_data{:d}-{:d}d'.format(dataMin,dataMax)
+        else:
+            fname=fname+'_nodata'
         fname=fname+'.png'
+        figlist[p]['fname']=fname
         print('saving',fname)
-        figgrid.tight_layout()
-        figlist[p]['fig'].savefig(os.path.join(plotDir,fname))
+        figlist[p]['fig'].savefig(os.path.join(plotDir,figlist[p]['fname']))
+
+# fnameGrid=gridName
+if dataMax>0:
+    fnameGrid=gridName+'_data{:d}-{:d}d'.format(dataMin,dataMax)
+else:
+    fnameGrid=gridName+'_nodata'
+fnameGrid=fnameGrid+'.png'
+print("Saving all to {}".format(fnameGrid))
+figgrid.savefig(os.path.join(plotDir,fnameGrid))
+
+
 plt.show()
 
-print("Saving grid_light_curves_beamshape.png")
-figgrid.savefig(os.path.join(plotDir,"grid_light_curves_beamshape.png"))
+# fnameGrid="grid_light_curves_beamshape.png"
 # plt.close(fig)

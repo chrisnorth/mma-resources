@@ -33,7 +33,7 @@ def plotModels(ax,tday,models,ylim=[1e-6,1e8],xlim=[1,3000],fact=1,label=None,
             ax.annotate(mods[m]['label2'],(0.95,0.95),xycoords='axes fraction',va='top',ha='right',fontsize='large')
         ax.grid(grid)
         if showlegend:
-            legendloc=kwargs.get('legendloc','lower left')
+            legendloc=kwargs.get('legendloc','upper left')
             ax.legend(loc=legendloc)
     
     return
@@ -86,10 +86,21 @@ def plotInset(ax,model,thetaObs=0,thetaCore=0.1,thetaWing=0.4):
         
     return
     
-def plotData(ax):
+def plotData(ax,dataMin=0,dataMax=1e5,fact=1e6):
     import pandas as pd
     dataIn=pd.read_csv('data/GW170817_xray.csv')
     # print(dataIn['Time'],dataIn['Flux Density Jy'])
-    ax.plot(dataIn['Time'],dataIn['Flux Density Jy']*1e6,'x',label='Data')
+    dataPlotErr=dataIn[(dataIn['Time']>=dataMin)&(dataIn['Time']<=dataMax)&(dataIn['Note']!='upper limit')]
+    dataPlotUpper=dataIn[(dataIn['Time']>=dataMin)&(dataIn['Time']<=dataMax)&(dataIn['Note']=='upper limit')]
+    # ax.plot(dataPlot['Time'],
+    #     dataPlot['Flux Density Jy']*fact,
+    #     'x',label='Data')
+    ax.plot(dataPlotUpper['Time'],
+        dataPlotUpper['Flux Density Jy']*fact,
+        'v',color='orange')
+    ax.errorbar(dataPlotErr['Time'],
+        dataPlotErr['Flux Density Jy']*fact,
+        yerr=dataPlotErr['Flux Density Error']*fact,
+        marker='x',label='Data',capsize=3,ms=5,linestyle='',color='orange')
     return
     
