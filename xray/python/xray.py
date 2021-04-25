@@ -1,6 +1,6 @@
 import numpy as np
 
-def plotModels(ax,tday,models,ylim=[1e-6,1e8],xlim=[1,3000],fact=1,label=None,
+def plotModels(ax,tday,models,ylim=None,xlim=[1,3000],fact=1,label=None,
     showlegend=True,grid=True,ylabel=r'Flux (nJy)',**kwargs):
 
     if isinstance(models,dict):
@@ -14,10 +14,11 @@ def plotModels(ax,tday,models,ylim=[1e-6,1e8],xlim=[1,3000],fact=1,label=None,
         # label=mods[m].get('legend',None)
         # ax.plot(tday[:,0], models[m]['Fnu'][:,0]*1e6, ls='-', label=label)
         # print ('label:',label)
-        ax.plot(tday[:,0], mods[m]['Fnu'][:,0]*fact, ls='-', label=label)
+        ax.plot(tday[:,0], mods[m]['Fnu'][:,0]*fact, ls='-', label=label,lw=10,alpha=0.5)
         ax.set_xscale('log')
         ax.set_yscale('log')
-        ax.set_ylim(ylim[0],ylim[1])
+        if ylim!=None:
+            ax.set_ylim(ylim[0],ylim[1])
         ax.set_xlabel('Time (days)')
         ax.set_ylabel(ylabel)
         # ax.set_ylabel(r'$F_\nu$ (mJy)')
@@ -86,10 +87,11 @@ def plotInset(ax,model,thetaObs=0,thetaCore=0.1,thetaWing=0.4):
         
     return
     
-def plotData(ax,dataMin=0,dataMax=1e5,fact=1e6):
+def plotData(ax,dataMin=0,dataMax=1e5,tMin=0,tMax=1e4,fact=1e6,setlim=False):
     import pandas as pd
     dataIn=pd.read_csv('data/GW170817_xray.csv')
     # print(dataIn['Time'],dataIn['Flux Density Jy'])
+    dataPlot=dataIn[(dataIn['Time']>=dataMin)&(dataIn['Time']<=dataMax)]
     dataPlotErr=dataIn[(dataIn['Time']>=dataMin)&(dataIn['Time']<=dataMax)&(dataIn['Note']!='upper limit')]
     dataPlotUpper=dataIn[(dataIn['Time']>=dataMin)&(dataIn['Time']<=dataMax)&(dataIn['Note']=='upper limit')]
     # ax.plot(dataPlot['Time'],
@@ -97,10 +99,21 @@ def plotData(ax,dataMin=0,dataMax=1e5,fact=1e6):
     #     'x',label='Data')
     ax.plot(dataPlotUpper['Time'],
         dataPlotUpper['Flux Density Jy']*fact,
-        'v',color='orange')
+        'v',color='k')
     ax.errorbar(dataPlotErr['Time'],
         dataPlotErr['Flux Density Jy']*fact,
         yerr=dataPlotErr['Flux Density Error']*fact,
-        marker='x',label='Data',capsize=3,ms=5,linestyle='',color='orange')
+        marker='x',label='Data',capsize=3,ms=5,linestyle='',color='k')
+    if setlim:
+        miny=np.min(dataPlotErr['Flux Density Jy']-dataPlotErr['Flux Density Error'])
+        maxy=np.max(dataPlotErr['Flux Density Jy']+dataPlotErr['Flux Density Error'])
+        ax.set_ylim([fact*miny/2,fact*maxy*2])
+        # minx=np.min(dataPlot['Time'])/10
+        # maxx=np.max(dataPlot['Time'])*10
+        # ax.set_xlim(minx,maxx)
+        # dayticks=np.array([1,3,10,30,100,300,1000,3000,10000])
+        # dayticks=dayticks[np.where((dayticks>=minx)&(dayticks<=maxx))]
+        # ax.set_xticks(dayticks)
+        # ax.set_xticklabels(dayticks)
     return
     
