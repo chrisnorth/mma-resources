@@ -11,9 +11,9 @@ import astropy.units as u
 plt.ion()
 
 plotDir='plots'
-dataMin=180
+dataMin=0
 dataMax=1000
-tMin=100
+tMin=1
 tMax=3000
 dataLim=False
 gridName='Jet_Gaussian-TopHat_0-40deg_Cocoon'
@@ -35,50 +35,90 @@ Z = {'jetType':     grb.jet.Gaussian,     # Tapered beam jet
 
 
 models={
-    'Gaussian-0':{'plot':0,'legend':r'Tapered Jet','legendloc':'lower left',
+    'Gaussian-0':{'plot':0,'legend':r'Tapered Jet','legendloc':'none',
         'label2':r'$\theta=0^\circ$','color':'#0000ff',
         'pars':{'jetType':grb.jet.Gaussian,'thetaObs':np.deg2rad(0),'d_L':1.2e8*u.lyr.to(u.cm)}},
-    'TopHat-0':{'plot':0,'legend':'Sharp-edged Jet','legendloc':'lower left','color':'#ffff00',
+    'TopHat-0':{'plot':0,'legend':'Sharp-edged Jet','legendloc':'none','color':'#ffff00',
         'pars':{'jetType':grb.jet.TopHat,'thetaObs':np.deg2rad(0),'d_L':1.2e8*u.lyr.to(u.cm)}},
-    'Wide-0':{'plot':0,'legend':r'($\theta=0^\circ$)','legend':'Broad Jet','legendloc':'lower left','color':'#009600',
+    'Wide-0':{'plot':0,'legend':r'($\theta=0^\circ$)','legend':'Broad Jet','legendloc':'none','color':'#009600',
         'pars':{'jetType':grb.jet.Gaussian,'thetaCore':np.deg2rad(20),'E0':1e52,'thetaObs':np.deg2rad(0),'d_L':1.2e8*u.lyr.to(u.cm)}},
-        
-    'Gaussian-10':{'plot':1,'legend':r'Tapered Jet',
-        'label2':r'$\theta=10^\circ$','color':'#0000ff',
-        'pars':{'jetType':grb.jet.Gaussian,'thetaObs':np.deg2rad(10),'d_L':1.2e8*u.lyr.to(u.cm)}},
-    'TopHat-10':{'plot':1,'legend':'Sharp-edged Jet','color':'#ffff00',
-        'pars':{'jetType':grb.jet.TopHat,'thetaObs':np.deg2rad(10),'d_L':1.2e8*u.lyr.to(u.cm)}},
-    'Wide-10':{'plot':1,'legend':r'($\theta=10^\circ$)','legend':'Broad Jet','color':'#009600',
-        'pars':{'jetType':grb.jet.Gaussian,'thetaCore':np.deg2rad(20),'E0':1e52,'thetaObs':np.deg2rad(10),'d_L':1.2e8*u.lyr.to(u.cm)}},
-    
-    'Gaussian-20':{'plot':2,'legend':r'Tapered Jet',
-        'label2':r'$\theta=20^\circ$','color':'#0000ff',
-        'pars':{'jetType':grb.jet.Gaussian,'thetaObs':np.deg2rad(20),'d_L':1.2e8*u.lyr.to(u.cm)}},
-    'TopHat-20':{'plot':2,'legend':'Sharp-edged Jet','color':'#ffff00',
-        'pars':{'jetType':grb.jet.TopHat,'thetaObs':np.deg2rad(20),'d_L':1.2e8*u.lyr.to(u.cm)}},
-    'Wide-20':{'plot':2,'legend':r'($\theta=20^\circ$)','legend':'Broad Jet','color':'#009600',
-        'pars':{'jetType':grb.jet.Gaussian,'thetaCore':np.deg2rad(20),'E0':1e52,'thetaObs':np.deg2rad(20),'d_L':1.2e8*u.lyr.to(u.cm)}},
-    
-    'Gaussian-30':{'plot':3,'legend':r'Tapered Jet',
-        'label2':r'$\theta=30^\circ$','color':'#0000ff',
-        'pars':{'jetType':grb.jet.Gaussian,'thetaObs':np.deg2rad(30),'d_L':1.2e8*u.lyr.to(u.cm)}},
-    'TopHat-30':{'plot':3,'legend':r'($\theta=30^\circ$)','legend':'Sharp-edged Jet','color':'#ff0000',
-        'pars':{'jetType':grb.jet.TopHat,'thetaObs':np.deg2rad(30),'d_L':1.2e8*u.lyr.to(u.cm)}},
-    'Wide-30':{'plot':3,'legend':r'($\theta=30^\circ$)','legend':'Broad Jet','color':'#009600',
-        'pars':{'jetType':grb.jet.Gaussian,'thetaCore':np.deg2rad(20),'E0':1e52,'thetaObs':np.deg2rad(30),'d_L':1.2e8*u.lyr.to(u.cm)}},
-        
-    'Gaussian-40':{'plot':4,'legend':r'Tapered Jet',
-        'label2':r'$\theta=40^\circ$','color':'#0000ff',
-        'pars':{'jetType':grb.jet.Gaussian,'thetaObs':np.deg2rad(40),'d_L':1.2e8*u.lyr.to(u.cm)}},
-    'TopHat-40':{'plot':4,'legend':r'($\theta=40^\circ$)','legend':'Sharp-edged Jet','color':'#ffff00',
-        'pars':{'jetType':grb.jet.TopHat,'thetaObs':np.deg2rad(40),'d_L':1.2e8*u.lyr.to(u.cm)}},
-    'Wide-40':{'plot':4,'legend':r'($\theta=40^\circ$)','legend':'Broad Jet','color':'#009600',
-        'pars':{'jetType':grb.jet.Gaussian,'thetaCore':np.deg2rad(20),'E0':1e52,'thetaObs':np.deg2rad(40),'d_L':1.2e8*u.lyr.to(u.cm)}},
-        
-    'Spherical':{'label2':r'Spherical','plot':5,'legend':r'Spherical','color':'#ff00ff',
+    'Spherical-0':{'plot':0,'legend':r'Spherical','color':'#ff0000','legendloc':'none',
         'pars':{'jetType':grb.jet.Spherical,'thetaObs':np.deg2rad(0),
         'd_L':1.2e8*u.lyr.to(u.cm),'uMax':8.5,'uMin':1e-4,'k':5.6,
         'Er':3e53,'MFast_solar':10**-6.5,'p':2.156,'epsilon_e':10**-2.7,'epsilon_B':10**-2.5}},
+        
+    'Gaussian-10':{'plot':1,'legend':r'Tapered Jet','legendloc':'none',
+        'label2':r'$\theta=10^\circ$','color':'#0000ff',
+        'pars':{'jetType':grb.jet.Gaussian,'thetaObs':np.deg2rad(10),'d_L':1.2e8*u.lyr.to(u.cm)}},
+    'TopHat-10':{'plot':1,'legend':'Sharp-edged Jet','color':'#ffff00','legendloc':'none',
+        'pars':{'jetType':grb.jet.TopHat,'thetaObs':np.deg2rad(10),'d_L':1.2e8*u.lyr.to(u.cm)}},
+    'Wide-10':{'plot':1,'legend':r'($\theta=10^\circ$)','legend':'Broad Jet',
+        'color':'#009600','legendloc':'none',
+        'pars':{'jetType':grb.jet.Gaussian,'thetaCore':np.deg2rad(20),'E0':1e52,'thetaObs':np.deg2rad(10),'d_L':1.2e8*u.lyr.to(u.cm)}},
+    'Spherical-10':{'plot':1,'legend':r'Spherical',
+        'color':'#ff0000','legendloc':'none',
+        'pars':{'jetType':grb.jet.Spherical,'thetaObs':np.deg2rad(0),
+        'd_L':1.2e8*u.lyr.to(u.cm),'uMax':8.5,'uMin':1e-4,'k':5.6,
+        'Er':3e53,'MFast_solar':10**-6.5,'p':2.156,'epsilon_e':10**-2.7,'epsilon_B':10**-2.5}},
+    
+    'Gaussian-20':{'plot':2,'legend':r'Tapered Jet',
+        'label2':r'$\theta=20^\circ$','color':'#0000ff','legendloc':'none',
+        'pars':{'jetType':grb.jet.Gaussian,'thetaObs':np.deg2rad(20),'d_L':1.2e8*u.lyr.to(u.cm)}},
+    'TopHat-20':{'plot':2,'legend':'Sharp-edged Jet','color':'#ffff00','legendloc':'none',
+        'pars':{'jetType':grb.jet.TopHat,'thetaObs':np.deg2rad(20),'d_L':1.2e8*u.lyr.to(u.cm)}},
+    'Wide-20':{'plot':2,'legend':r'($\theta=20^\circ$)','legend':'Broad Jet',
+        'color':'#009600','legendloc':'none',
+        'pars':{'jetType':grb.jet.Gaussian,'thetaCore':np.deg2rad(20),'E0':1e52,'thetaObs':np.deg2rad(20),'d_L':1.2e8*u.lyr.to(u.cm)}},
+    'Spherical-20':{'plot':2,'legend':r'Spherical','color':'#ff0000','legendloc':'none',
+        'pars':{'jetType':grb.jet.Spherical,'thetaObs':np.deg2rad(0),
+        'd_L':1.2e8*u.lyr.to(u.cm),'uMax':8.5,'uMin':1e-4,'k':5.6,
+        'Er':3e53,'MFast_solar':10**-6.5,'p':2.156,'epsilon_e':10**-2.7,'epsilon_B':10**-2.5}},
+    
+    'Gaussian-30':{'plot':3,'legend':r'Tapered Jet',
+        'label2':r'$\theta=30^\circ$','color':'#0000ff','legendloc':'none',
+        'pars':{'jetType':grb.jet.Gaussian,'thetaObs':np.deg2rad(30),'d_L':1.2e8*u.lyr.to(u.cm)}},
+    'TopHat-30':{'plot':3,'legend':r'($\theta=30^\circ$)','legend':'Sharp-edged Jet',
+        'color':'#ff0000','legendloc':'none',
+        'pars':{'jetType':grb.jet.TopHat,'thetaObs':np.deg2rad(30),'d_L':1.2e8*u.lyr.to(u.cm)}},
+    'Wide-30':{'plot':3,'legend':r'($\theta=30^\circ$)','legend':'Broad Jet',
+        'color':'#009600','legendloc':'none',
+        'pars':{'jetType':grb.jet.Gaussian,'thetaCore':np.deg2rad(20),'E0':1e52,'thetaObs':np.deg2rad(30),'d_L':1.2e8*u.lyr.to(u.cm)}},
+    'Spherical-30':{'plot':3,'legend':r'Spherical','color':'#ff0000','legendloc':'none',
+        'pars':{'jetType':grb.jet.Spherical,'thetaObs':np.deg2rad(0),
+        'd_L':1.2e8*u.lyr.to(u.cm),'uMax':8.5,'uMin':1e-4,'k':5.6,
+        'Er':3e53,'MFast_solar':10**-6.5,'p':2.156,'epsilon_e':10**-2.7,'epsilon_B':10**-2.5}},
+        
+    'Gaussian-40':{'plot':4,'legend':r'Tapered Jet',
+        'label2':r'$\theta=40^\circ$','color':'#0000ff','legendloc':'none',
+        'pars':{'jetType':grb.jet.Gaussian,'thetaObs':np.deg2rad(40),'d_L':1.2e8*u.lyr.to(u.cm)}},
+    'TopHat-40':{'plot':4,'legend':r'($\theta=40^\circ$)','legend':'Sharp-edged Jet',
+        'color':'#ffff00','legendloc':'none',
+        'pars':{'jetType':grb.jet.TopHat,'thetaObs':np.deg2rad(40),'d_L':1.2e8*u.lyr.to(u.cm)}},
+    'Wide-40':{'plot':4,'legend':r'($\theta=40^\circ$)','legend':'Broad Jet',
+        'color':'#009600','legendloc':'none',
+        'pars':{'jetType':grb.jet.Gaussian,'thetaCore':np.deg2rad(20),'E0':1e52,'thetaObs':np.deg2rad(40),'d_L':1.2e8*u.lyr.to(u.cm)}},
+    'Spherical-40':{'plot':4,'legend':r'Spherical','color':'#ff0000','legendloc':'none',
+        'pars':{'jetType':grb.jet.Spherical,'thetaObs':np.deg2rad(0),
+        'd_L':1.2e8*u.lyr.to(u.cm),'uMax':8.5,'uMin':1e-4,'k':5.6,
+        'Er':3e53,'MFast_solar':10**-6.5,'p':2.156,'epsilon_e':10**-2.7,'epsilon_B':10**-2.5}},
+    
+    'Gaussian-legend':{'plot':5,'legend':r'Tapered Jet',
+        'label2':r'$\theta=50^\circ$','color':'#0000ff','hide':True,
+        'pars':{'jetType':grb.jet.Gaussian,'thetaObs':np.deg2rad(50),'d_L':1.2e8*u.lyr.to(u.cm)}},
+    'TopHat-legend':{'plot':5,'legend':r'($\theta=40^\circ$)','legend':'Sharp-edged Jet','color':'#ffff00','hide':True,
+        'pars':{'jetType':grb.jet.TopHat,'thetaObs':np.deg2rad(50),'d_L':1.2e8*u.lyr.to(u.cm)}},
+    'Wide-legend':{'plot':5,'legend':r'($\theta=40^\circ$)','legend':'Broad Jet',
+        'color':'#009600','hide':True,
+        'pars':{'jetType':grb.jet.Gaussian,'thetaCore':np.deg2rad(20),'E0':1e52,'thetaObs':np.deg2rad(50),'d_L':1.2e8*u.lyr.to(u.cm)}},
+    'Spherical-legend':{'plot':5,'legend':r'Spherical',
+        'color':'#ff0000','hide':True,
+        'pars':{'jetType':grb.jet.Spherical,'thetaObs':np.deg2rad(50),
+        'd_L':1.2e8*u.lyr.to(u.cm),'uMax':8.5,'uMin':1e-4,'k':5.6,
+        'Er':3e53,'MFast_solar':10**-6.5,'p':2.156,'epsilon_e':10**-2.7,'epsilon_B':10**-2.5}},
+    # 'Spherical':{'label2':r'Spherical','plot':5,'legend':r'Spherical','color':'#ff00ff',
+    #     'pars':{'jetType':grb.jet.Spherical,'thetaObs':np.deg2rad(0),
+    #     'd_L':1.2e8*u.lyr.to(u.cm),'uMax':8.5,'uMin':1e-4,'k':5.6,
+    #     'Er':3e53,'MFast_solar':10**-6.5,'p':2.156,'epsilon_e':10**-2.7,'epsilon_B':10**-2.5}},
 }
 
 # Time and Frequencies
@@ -194,14 +234,39 @@ for m in models:
 
     # axes[0,0].set_xlim([tMin,tMax])
     # axind.set_xlim([tMin,tMax])
-        
+
+if dataMax>0:
+    figdata=plt.figure(21,figsize=(5.5,5))
+    figdata.clf()
+    axdata=figdata.gca()
+    xray.plotModels(axdata,tday,models[m],label='',fact=1e3,
+        ylabel=r'Flux ($\mu$Jy)',xlim=[tMin,tMax],
+        showlegend=False,alpha=0,nolabel=True)
+    xray.plotData(axdata,dataMin=dataMin,dataMax=dataMax,setlim=dataLim)
+    axdata.set_ylim(ylim)
+    if ylim[1]/ylim[0]>1e8:
+        yticks=np.array([1e-6,1e-4,1e-2,1,1e2,1e4])
+        yticklabels=np.array(["0.000001","0.0001","0.01","1","100","10,000"])
+    else:
+        yticks=np.array([1e-6,1e-5,1e-4,1e-3,1e-2,1e-1,1,1e1,1e2,1e3,1e4])
+        yticklabels=np.array(["0.000001","0.00001","0.0001","0.001","0.01","0.1","1","10","100","1,000","10,000"])
+    axdata.set_yticks(yticks[np.where((yticks>=ylim[0])&(yticks<=ylim[1]))])
+    axdata.set_yticklabels(yticklabels[np.where((yticks>=ylim[0])&(yticks<=ylim[1]))])
+    fnamedata='plot_data_t{:d}-{:d}d'.format(tMin,tMax)
+    fnamedata=fnamedata+'_{:d}-{:d}d'.format(dataMin,dataMax)
+    if dataLim:
+        fnamedata=fnamedata+'_datalim'
+    print('saving',fnamedata)
+    figdata.tight_layout()
+    figdata.savefig(os.path.join(plotDir,fnamedata),transparent=True)
+    
 # axes[0,0].legend(loc='upper left')
 figgrid.tight_layout()
-fnameGrid='plot_grid'
+fnameGrid='plot_grid_t{:d}-{:d}d'.format(tMin,tMax)
 for p in range(len(figlist)):
     if isinstance(figlist[p],dict):
         figlist[p]['fig'].tight_layout()
-        fname='plot_grid-{}'.format(p)
+        fname='plot_grid-{}_t{:d}-{:d}d'.format(p,tMin,tMax)
         for m in range(len(figlist[p]['models'])):
             fname=fname+'_'+figlist[p]['models'][m]
             fnameGrid=fnameGrid+'_'+figlist[p]['models'][m]
@@ -218,11 +283,11 @@ for p in range(len(figlist)):
 
 # fnameGrid=gridName
 if dataMax>0:
-    fnameGrid=gridName+'_data{:d}-{:d}d'.format(dataMin,dataMax)
+    fnameGrid=gridName+'_t{:d}-{:d}d_data{:d}-{:d}d'.format(tMin,tMax,dataMin,dataMax)
     if dataLim:
         fnameGrid=fnameGrid+'_datalim'
 else:
-    fnameGrid=gridName+'_nodata'
+    fnameGrid=gridName+'_t{:d}-{:d}d_nodata'.format(tMin,tMax)
 fnameGrid=fnameGrid+'.png'
 print("Saving all to {}".format(fnameGrid))
 figgrid.savefig(os.path.join(plotDir,fnameGrid))

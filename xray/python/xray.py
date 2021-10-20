@@ -1,7 +1,7 @@
 import numpy as np
 
 def plotModels(ax,tday,models,ylim=None,xlim=[1,3000],fact=1,label=None,
-    showlegend=True,grid=True,ylabel=r'Flux (nJy)',**kwargs):
+    showlegend=True,grid=True,ylabel=r'Flux (nJy)',alpha=0.5,nolabel=False,**kwargs):
 
     if isinstance(models,dict):
         mods=[models]
@@ -14,7 +14,7 @@ def plotModels(ax,tday,models,ylim=None,xlim=[1,3000],fact=1,label=None,
         # label=mods[m].get('legend',None)
         # ax.plot(tday[:,0], models[m]['Fnu'][:,0]*1e6, ls='-', label=label)
         # print ('label:',label)
-        ax.plot(tday[:,0], mods[m]['Fnu'][:,0]*fact, ls='-', label=label,lw=10,alpha=0.5)
+        ax.plot(tday[:,0], mods[m]['Fnu'][:,0]*fact, ls='-', label=label,lw=10,alpha=alpha)
         ax.set_xscale('log')
         ax.set_yscale('log')
         if ylim!=None:
@@ -28,14 +28,15 @@ def plotModels(ax,tday,models,ylim=None,xlim=[1,3000],fact=1,label=None,
         ax.set_xticks(dayticks)
         ax.set_xticklabels(dayticks)
         # ax.set_xticklabels(['1 day','1 week','1 month','6 months','1 year'])
-        if 'label1' in mods[m]:
+        if 'label1' in mods[m] and not nolabel:
             ax.annotate(mods[m]['label1'],(0.01,0.95),xycoords='axes fraction',va='top')
-        if 'label2' in mods[m]:
+        if 'label2' in mods[m] and not nolabel:
             ax.annotate(mods[m]['label2'],(0.95,0.95),xycoords='axes fraction',va='top',ha='right',fontsize='large')
         ax.grid(grid)
         if showlegend:
             legendloc=kwargs.get('legendloc','upper left')
-            ax.legend(loc=legendloc)
+            if legendloc!='none':
+                ax.legend(loc=legendloc)
     
     return
     
