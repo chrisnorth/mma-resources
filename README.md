@@ -3,6 +3,12 @@ Resources related to multi-messenger astronomy outreach workshops
 
 IN DEVELOPMENT!
 
+## Dependencies
+* numpy
+* astropy
+* matplotlib
+* afterglowpy (currently works with v0.7.3)
+
 ## X-ray
 Uses afterglowpy to produce models
 
