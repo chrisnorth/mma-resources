@@ -10,14 +10,25 @@ import astropy.constants as C
 import astropy.units as u
 plt.ion()
 
+##########################################################
+##### PARAMETERS
+#directory to plot stuff in (assumes current directory is 'xray')
 plotDir='plots'
+
+# min and max time range for data (days)
 dataMin=0
 dataMax=1000
+
+# min and max time range for plot (days)
 tMin=1
 tMax=3000
-dataLim=False
-gridName='Jet_Gaussian-TopHat_0-40deg_Cocoon'
 
+#set to limit y-axis to data range (cuts of models)
+dataLim=False
+
+# filename base for plot
+gridName='Jet_Gaussian-TopHat_0-40deg_Cocoon'
+###########################################################
 # Jet Parameters
 Z = {'jetType':     grb.jet.Gaussian,     # Tapered beam jet
      'specType':    0,                  # Basic Synchrotron Emission Spectrum
