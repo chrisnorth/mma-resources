@@ -1,8 +1,4 @@
 import sys,os,importlib
-sys.path.insert(0,os.path.join('../'))
-import xray
-importlib.reload(xray)
-
 import numpy as np
 import matplotlib.pyplot as plt
 import afterglowpy as grb
@@ -13,7 +9,24 @@ plt.ion()
 ##########################################################
 ##### PARAMETERS
 #directory to plot stuff in (assumes current directory is 'xray')
-plotDir='plots'
+if os.getcwd().split('/')[-1]=='python':
+    plotDir='../plots/xray'
+    dataDir='../data/xray'
+    sys.path.insert(0,os.path.join('./'))
+    import xray
+    importlib.reload(xray)
+elif os.getcwd().split('/')[-1]=='GW':
+    plotDir='../../plots/xra/'
+    dataDir='../../data/xray'
+    sys.path.insert(0,os.path.join('../'))
+    import xray
+    importlib.reload(xray)
+else:
+    plotDir='./plots/xray'
+    dataDir='./data/xray'
+    sys.path.insert(0,os.path.join('./python'))
+    import xray
+    importlib.reload(xray)
 
 # min and max time range for data (days)
 dataMin=0
