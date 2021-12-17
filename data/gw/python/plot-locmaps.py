@@ -45,28 +45,6 @@ gridDec=np.arange(90-gridsize[0]/2,-90,-gridsize[1])
 
 # print(gridRA,gridDec)
 
-# grid=[[{'radec':None}]*nDec]*nRA
-# # print(grid)
-# # asdfas
-# for r in range(nRA):
-#     for d in range(nDec):
-#         # grid[int(r)][int(d)]=r+d
-#         radec=[gridRA[r],gridDec[d]]
-#         grid[r][d]={'radec':radec}
-#         vec=lb2vec(radec[0],radec[1])
-#         print(r,d,radec,'vec',vec)
-#         # vec=np.matmul(rotate(radec[0],radec[1],0),lb2vec(0,0))
-#         for d1 in detlist:
-#             for d2 in detlist:
-#                 if d1>d2:
-#                     d1vec=lb2vec(dets[d1][0],dets[d1][1])
-#                     d2vec=lb2vec(dets[d2][0],dets[d2][1])
-#                     dt=(np.dot(vec,d1vec)-np.dot(vec,d2vec))*const.R_earth/const.c
-#                     grid[r][d][d1+d2]=dt.value*1000
-#                     if d1+d2=='LH':
-#                         print('d1',d1,d1vec)
-#                         print('d2',d2,d2vec)
-#                         print('dt',dt)
 maps={}
 p=1
 for d1 in detlist:
