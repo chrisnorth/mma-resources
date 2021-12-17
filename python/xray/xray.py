@@ -1,4 +1,5 @@
 import numpy as np
+import os
 
 def plotModels(ax,tday,models,ylim=None,xlim=[1,3000],fact=1,label=None,
     showlegend=True,grid=True,ylabel=r'Flux (nJy)',alpha=0.5,nolabel=False,**kwargs):
@@ -88,9 +89,9 @@ def plotInset(ax,model,thetaObs=0,thetaCore=0.1,thetaWing=0.4):
         
     return
     
-def plotData(ax,dataMin=0,dataMax=1e5,tMin=0,tMax=1e4,fact=1e6,setlim=False):
+def plotData(ax,dataMin=0,dataMax=1e5,tMin=0,tMax=1e4,fact=1e6,setlim=False,dataDir='data/xray'):
     import pandas as pd
-    dataIn=pd.read_csv('data/GW170817_xray.csv')
+    dataIn=pd.read_csv(os.path.join(dataDir,'GW170817_xray.csv'))
     # print(dataIn['Time'],dataIn['Flux Density Jy'])
     dataPlot=dataIn[(dataIn['Time']>=dataMin)&(dataIn['Time']<=dataMax)]
     dataPlotErr=dataIn[(dataIn['Time']>=dataMin)&(dataIn['Time']<=dataMax)&(dataIn['Note']!='upper limit')]
