@@ -25,8 +25,8 @@ def rotate(lon,lat,ang):
     return matrot
 
 # define detectors
-dets={'H':{'name':'Hanford','loc':[-119,46]},
-    'L':{'name':'Livingston','loc':[-108,30]},
+dets={'H':{'name':'Hanford','loc':[241,46]},
+    'L':{'name':'Livingston','loc':[269,30]},
     'V':{'name':'Virgo','loc':[10,43]},
     'K':{'name':'KAGRA','loc':[137,36]}}
 
