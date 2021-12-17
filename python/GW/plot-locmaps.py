@@ -40,8 +40,8 @@ def rotate(lon,lat,ang):
 
 # set plot type (contour or imshow)
 allowedtypes=['contour','imshow']
-plottype='contour'
-# plottype='imshow'
+# plottype='contour'
+plottype='imshow'
 assert plottype in allowedtypes,'ERROR: INVALID PLOTTYPE [{}]'.format(plottype)
 
 # define detectors
@@ -110,7 +110,8 @@ for d1 in detlist:
 # output data
 for dd in maps: 
     df=pd.DataFrame(maps[dd]['dtcsv'])
-    df.to_csv('tt_{}-{}.csv'.format(dets[dd[0]]['name'],dets[dd[1]]['name']),header=False,index=False)
+    csvfile=os.path.join(dataDir,'tt_{}-{}.csv'.format(dets[dd[0]]['name'],dets[dd[1]]['name']))
+    df.to_csv(csvfile,header=False,index=False)
     
 # IF PLOTTING USING CONTOUR PLOTS
 if plottype=='contour':
@@ -149,7 +150,8 @@ if plottype=='contour':
         ax.yaxis.set_ticks_position('left')
         ax.grid(axis='both',which='major',alpha=1)
         plt.colorbar(location='bottom',label='milliseconds',ticks=cticks)
-        plt.savefig('plots/dt_contour_{}.png'.format(dd))
+        pngFile=os.path.join(plotDir,'dt_contour_{}.png'.format(dd))
+        plt.savefig(pngFile)
         
         # add letters for detectors
         # for det in dets:
@@ -189,8 +191,8 @@ elif plottype=='imshow':
         ax.yaxis.set_ticks_position('left')
         ax.grid(axis='both',which='major',alpha=1)
         plt.colorbar(location='bottom',label='milliseconds',ticks=cticks)
-        plt.savefig('plots/dt_imshow_{}.png'.format(dd))
-        # ax.grid(axis='both',which='minor',alpha=0.5)
+        pngFile=os.path.join(plotDir,'dt_imshow_{}.png'.format(dd))
+        plt.savefig(pngFile)
         
         
 plt.show()
