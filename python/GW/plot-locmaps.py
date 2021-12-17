@@ -1,5 +1,5 @@
 import numpy as np
-import string
+import string, os
 from astropy import units as u
 from astropy import constants as const
 from astropy.coordinates import SkyCoord
@@ -7,6 +7,16 @@ from matplotlib import pyplot as plt
 from matplotlib import cm
 import pandas as pd
 plt.ion()
+
+if os.getcwd().split('/')[-1]=='python':
+    plotDir='../plots/GW'
+    dataDir='../data/GW'
+elif os.getcwd().split('/')[-1]=='GW':
+    plotDir='../../plots/GW'
+    dataDir='../../data/GW'
+else:
+    plotDir='./plots/GW'
+    dataDir='./data/GW'
 
 def d2r(d):
     # convert degree to radians
