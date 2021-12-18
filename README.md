@@ -24,5 +24,11 @@ Uses afterglowpy to produce models
 ### Gravitational Waves
 Plots localisation plots for grav waves detector timings
 
+#### Data
+* data/GW/dt_XY.csv: CSV file of time differences for detector pair X-Y on Cartesian grid of whole sky
+
+#### Plots
+* plots/GW/dt_XY.png: png file showing time differences for detector pair X-Y on Cartesian grid of whole sky
+
 #### Scripts
-* gw/python/plot-locmaps.py: plot localisation timing maps for grav wave detectors.
+* python/GW/plot-locmaps.py: plot localisation timing maps for grav wave detectors, and output data files
