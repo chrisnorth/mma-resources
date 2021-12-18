@@ -254,8 +254,8 @@ def plotMaps(detpairs,grid=15,plotDir='',dataDir='',plottype='imshow',
     p=0
     for dd in detpairs:
         p=p+1
-        pngFile=os.path.join(plotDir,'dt_imshow_{}.png'.format(detpairs[dd].code))
-        csvFile=os.path.join(dataDir,'tt_{}.csv'.format(detpairs[dd].code))
+        pngFile=os.path.join(plotDir,'dt_{}.png'.format(detpairs[dd].code))
+        csvFile=os.path.join(dataDir,'dt_{}.csv'.format(detpairs[dd].code))
         dtData(detpairs[dd],csvFile=csvFile)
         dtMap(detpairs[dd],pngFile=pngFile,fignum=p)
     plt.show()
