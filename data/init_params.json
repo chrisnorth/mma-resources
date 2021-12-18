@@ -1,0 +1,19 @@
+{
+	"events":{
+		"GW170817":{
+			"name":"GW170817",
+			"messengers":["GW","xray","gamma","optical"],
+			"datetime":"17-08-2017T12:41:41",
+			"dist_Mpc":40,
+			"dets":["L","H","V"],
+			"latlon":[197.25,-23.1],
+			"chirpmass_Msun":1.18
+			}
+	},
+	"detectors":{
+		"H":{"code":"H","name":"Hanford","loc":[241,46]},
+		"L":{"code":"L","name":"Livingston","loc":[269,30]},
+		"V":{"code":"V","name":"Virgo","loc":[10,43]},
+		"K":{"code":"K","name":"KAGRA","loc":[137,36]}
+	}
+}
