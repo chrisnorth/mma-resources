@@ -6,10 +6,10 @@
 			"datetime":"17-08-2017T12:41:41",
 			"dist_Mpc":40,
 			"gw_dets":["L","H","V"],
-			"loc":[112.5,-22.5],
+			"loc":[110.25,-20.15],
 			"chirpmass_Msun":1.18
 		},
-		"A":{
+		"eventA":{
 			"name":"BBH-A",
 			"messengers":["GW"],
 			"datetime":"29-01-2020T06:55:35",
@@ -18,7 +18,7 @@
 			"loc":[307.5,7.5],
 			"chirpmass_Msun":27.2
 		},
-		"B":{
+		"eventB":{
 			"name":"BBH-B",
 			"messengers":["GW"],
 			"datetime":"29-01-2020T06:55:35",
