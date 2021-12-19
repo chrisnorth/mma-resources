@@ -162,12 +162,14 @@ class DetectorPair(object):
         (nDec,nRA)=np.shape(dtobj['arr'])
         print(nRA,nDec,len(raStr),len(decStr))
         cells=[]
+        matchmap=np.zeros_like(dtobj['arr'])
         for r in range(nRA):
             for d in range(nDec):
                 cellval=dtobj['arr'][d,r]
                 if cellval>=cmin and cellval<=cmax:
+                    matchmap[d,r]=1
                     cells.append(raStr[r]+decStr[d])
-        return(cells)
+        return(matchmap,cells)
         
     def plotdtMap(self,grid=15,pngFile='',fignum=None,units='ms',colormap='jet',verbose=False):
         if np.isscalar(grid):

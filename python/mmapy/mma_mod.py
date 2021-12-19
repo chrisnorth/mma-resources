@@ -67,7 +67,7 @@ class Event(object):
             dtobj['arr']=detp.dtData()
             dtobj['value']=detp.vec2dt(self.vec).to(dtobj['arr']['units']).value
             
-            dtobj['cells']=detp.getGridLocs(self.vec)
+            dtobj['matchmap'],dtobj['cells']=detp.getGridLocs(self.vec)
             self.gw['dt'][dd]=dtobj
             
             print(dd,dtobj['value'])
@@ -76,16 +76,12 @@ class Event(object):
         cellmatches=[]
         npair=len(self.gw['dt'])
         matcharr=np.zeros_like(dtobj['arr']['arr'])
+        for dd in self.gw['detpairs']:
+            matcharr=matcharr+self.gw['dt'][dd]['matchmap']
         for r in range(len(raStr)):
             for d in range(len(decStr)):
-                cell=raStr[r]+decStr[d]
-                n=0
-                for dd in self.gw['dt']:
-                    if cell in self.gw['dt'][dd]['cells']:
-                        n=n+1
-                matcharr[d,r]=n
-                if n==npair:
-                    cellmatches.append(cell)
+                if matcharr[d,r]==npair:
+                    cellmatches.append(raStr[r]+decStr[d])
         self.gw['matcharr']=matcharr
         
         self.gw['cellmatches']=cellmatches
