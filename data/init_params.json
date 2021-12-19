@@ -5,10 +5,28 @@
 			"messengers":["GW","xray","gamma","optical"],
 			"datetime":"17-08-2017T12:41:41",
 			"dist_Mpc":40,
-			"dets":["L","H","V"],
-			"latlon":[197.25,-23.1],
+			"gw_dets":["L","H","V"],
+			"loc":[112.5,-22.5],
 			"chirpmass_Msun":1.18
-			}
+		},
+		"A":{
+			"name":"BBH-A",
+			"messengers":["GW"],
+			"datetime":"29-01-2020T06:55:35",
+			"dist_Mpc":900,
+			"gw_dets":["L","H","V"],
+			"loc":[307.5,7.5],
+			"chirpmass_Msun":27.2
+		},
+		"B":{
+			"name":"BBH-B",
+			"messengers":["GW"],
+			"datetime":"29-01-2020T06:55:35",
+			"dist_Mpc":900,
+			"gw_dets":["L","H","V"],
+			"loc":[187.5,-37.5],
+			"chirpmass_Msun":27.2
+		}
 	},
 	"detectors":{
 		"H":{"code":"H","name":"Hanford","loc":[241,46]},
