@@ -16,4 +16,7 @@ import mmapy
 
 initParams=mmapy.readInitParams(os.path.join(dataDir,'init_params.json'))
 for e in initParams['events']:
-    initParams['events'][e].plotmatches(plotDir=os.path.join(plotDir,'GW'))
+    dir=os.path.join(plotDir,'GW',e)
+    if not os.path.isdir(dir):
+        os.makedirs(dir)
+    initParams['events'][e].gw.plotmatches(plotDir=os.path.join(plotDir,'GW',e))
