@@ -77,6 +77,7 @@ class DetectorPair(object):
     def getsep(self):
         dvec=self.d2.vec-self.d1.vec
         return(np.sqrt(dvec.dot(dvec))*const.R_earth.to('km'))
+    
     def getvec(self):
         return(self.d2.vec-self.d1.vec)
         
@@ -84,7 +85,6 @@ class DetectorPair(object):
         return((np.dot(vec,self.vec))*const.R_earth/const.c)
         
     def dtData(self,grid=15,csvFile='',units='ms',decimals=2,overwrite=False,verbose=False):
-        print('dtData',verbose)
         recalc=True
         if hasattr(self,'dtarr'):
             dtobj=self.dtarr
@@ -104,7 +104,6 @@ class DetectorPair(object):
                     print('WARNING: unable to compare existing grid [] with requested grid []. Recalculating'.format(dtobj['grid'],grid))
             dtarr=dtobj['arr']
             gridsize=[dtobj['grid'],dtobj['grid']]
-        print('recalc',recalc)
         if recalc:
             if verbose:print('calculating dt array for {} with grid {}'.format(self.code,grid))
             gridsize=[grid,grid]
@@ -127,7 +126,13 @@ class DetectorPair(object):
                 dt_res=2
             elif np.max(dtarr)<50:
                 dt_res=5
-            dtobj={'arr':dtarr,'grid':grid,'dt_res':dt_res}
+            
+            cmin=np.floor(np.min(dtarr)/dt_res)*dt_res
+            cmax=np.ceil(np.max(dtarr)/dt_res)*dt_res
+            clev=2*cmax/dt_res
+            cticks=np.linspace(cmin,cmax,int(clev+1))
+            
+            dtobj={'arr':dtarr,'grid':grid,'dt_res':dt_res,'cticks':cticks,'units':units}
             self.dtarr=dtobj
             
         if csvFile:
@@ -142,6 +147,27 @@ class DetectorPair(object):
             df.to_csv(csvFile,header=False,index=False)
         
         return(dtobj)
+        
+    def getGridLocs(self,vec):
+        dtobj=self.dtData()
+        dtval=self.vec2dt(vec).to(dtobj['units']).value
+        cticks=dtobj['cticks']
+        for c in range(len(cticks)-1):
+            if cticks[c]<=dtval and cticks[c+1]>=dtval:
+                cmin=cticks[c]
+                cmax=cticks[c+1]
+        raStr=string.ascii_uppercase[:24]
+        decStr=[str(x) for x in np.arange(12) + 1]
+        decStr.reverse()
+        (nDec,nRA)=np.shape(dtobj['arr'])
+        print(nRA,nDec,len(raStr),len(decStr))
+        cells=[]
+        for r in range(nRA):
+            for d in range(nDec):
+                cellval=dtobj['arr'][d,r]
+                if cellval>=cmin and cellval<=cmax:
+                    cells.append(raStr[r]+decStr[d])
+        return(cells)
         
     def plotdtMap(self,grid=15,pngFile='',fignum=None,units='ms',colormap='jet',verbose=False):
         if np.isscalar(grid):
@@ -159,13 +185,12 @@ class DetectorPair(object):
         fig=plt.figure(fignum)
         plt.clf()
         
-        dcol=dtarr['dt_res']
         # set colour levels
-        cmin=np.floor(np.min(dtarr['arr'])/dcol)*dcol
-        cmax=np.ceil(np.max(dtarr['arr'])/dcol)*dcol
-        clev=2*cmax/dcol
+        cticks=dtarr['cticks']
+        clev=len(cticks)-1
+        cmin=cticks[0]
+        cmax=cticks[-1]
         cmap=cm.get_cmap(colormap,clev)
-        cticks=np.linspace(cmin,cmax,int(clev+1))
         
         dRAgrid=nRA/24
         dDecgrid=nDec/12
@@ -174,9 +199,13 @@ class DetectorPair(object):
         ax.set_aspect('equal')
         # add ticks and labels
         ax.set_xticks(np.arange(0,nRA,dRAgrid)-0.5,['']*24)
-        ax.set_xticks(np.arange(np.max([0,(dRAgrid-1)/2]),nRA,dRAgrid),string.ascii_uppercase[:24],minor=True)
+        ax.set_xticks(np.arange(np.max([0,(dRAgrid-1)/2]),nRA,dRAgrid),
+            string.ascii_uppercase[:24],minor=True)
         ax.set_yticks(np.arange(0,nDec,dDecgrid)-0.5,['']*12)
-        ax.set_yticks(np.arange(np.max([0,(dDecgrid-1)/2]),nDec,dDecgrid),range(12),minor=True)
+        yticklabs=[str(x) for x in np.arange(12) + 1]
+        yticklabs.reverse()
+        ax.set_yticks(np.arange(np.max([0,(dDecgrid-1)/2]),nDec,dDecgrid),
+            yticklabs,minor=True)
         ax.tick_params(axis='both',which='minor',length=0)
         
         ax.set_aspect('equal')
@@ -233,9 +262,11 @@ class DetectorPair(object):
         ax=plt.gca()
         # add ticks and labels
         ax.set_xticks(labgridRA,['']*len(labgridRA))
-        ax.set_xticks(labgridRA[:-1]+labgridsize[0]/2,string.ascii_uppercase[:len(labgridRA)-1],minor=True)
+        ax.set_xticks(labgridRA[:-1]+labgridsize[0]/2,
+            string.ascii_uppercase[:len(labgridRA)-1],minor=True)
         ax.set_yticks(labgridDec,['']*len(labgridDec))
-        ax.set_yticks(labgridDec[:-1]+labgridsize[1]/2,range(len(labgridDec)-1),minor=True)
+        ax.set_yticks(labgridDec[:-1]+labgridsize[1]/2,
+            [str(x) for x in np.arange(len(labgridDec)-1) + 1],minor=True)
         ax.tick_params(axis='both',which='minor',length=0)
     
         ax.set_aspect('equal')
@@ -269,15 +300,19 @@ def readDetectors(fileIn):
     
     return(dets)
 
-def readDetPairs(fileIn):
-    
-    dets=readDetectors(fileIn)
+def dets2pairs(dets):
     pairs={}
     for d1 in dets:
         for d2 in dets:
             if d1>d2:
                 pair=DetectorPair(dets[d1],dets[d2])
                 pairs[pair.code]=pair
+    return(pairs)
+
+def readDetPairs(fileIn):
+    
+    dets=readDetectors(fileIn)
+    pairs=dets2pairs(dets)
     return(pairs)
 
 def plotMaps(detpairs,grid=15,plotDir='',dataDir='',
