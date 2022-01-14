@@ -9,12 +9,16 @@ import pandas as pd
 def d2r(d):
     # convert degree to radians
     return(d/180.*np.pi)
-    
-def lb2vec(lon,lat):
-    # convert a lon,lat pair to a unit vector
-    vec=np.array([np.cos(d2r(lon))*np.cos(d2r(lat)),
-        np.sin(d2r(lon))*np.cos(d2r(lat)),
-        np.sin(d2r(lat))])
+
+def lb2vec(loc):
+    """
+    Convert lon,lat to unit vector
+    Input: [list] 2-element list containing [longitude,latitude] (in degrees)
+    Output: [lest] unit vector
+    """
+    vec=np.array([np.cos(d2r(loc[0]))*np.cos(d2r(loc[1])),
+        np.sin(d2r(loc[0]))*np.cos(d2r(loc[1])),
+        np.sin(d2r(loc[1]))])
     return vec
         
 def rotate(lon,lat,ang):
@@ -30,9 +34,9 @@ def vec2dt(vec,d1vec,d2vec):
     return((np.dot(vec,d2vec-d1vec))*const.R_earth/const.c)
 
 def lbvec2dt(lon,lat,d1,d2):
-    d1vec=lb2vec(d1['loc'][0],d1['loc'][1])
-    d2vec=lb2vec(d2['loc'][0],d2['loc'][1])
-    vec=lb2vec(lonlat)
+    d1vec=lb2vec(d1['loc'])
+    d2vec=lb2vec(d2['loc'])
+    vec=lb2vec([lon,lat])
     return((np.dot(vec,d2vec-d1vec))*const.R_earth/const.c)
     
 class Detector(object):
@@ -117,7 +121,7 @@ class DetectorPair(object):
             for r in range(nRA):
                 for d in range(nDec):
                     # get vector for sky localisation
-                    vec=lb2vec(gridRAim[r],gridDecim[d])
+                    vec=lb2vec([gridRAim[r],gridDecim[d]])
                     # dt = vec . (d1-d1) * R_earth / c
                     dt=self.vec2dt(vec)
                     dtarr[d,r]=dt.to(units).value
@@ -237,7 +241,7 @@ class DetectorPair(object):
         for r in range(nRA):
             for d in range(nDec):
                 # get vector for sky localisation
-                vec=lb2vec(gridRA[r],gridDec[d])
+                vec=lb2vec([gridRA[r],gridDec[d]])
                 # dt = vec . (d1-d1) * R_earth / c
                 dt=self.vec2dt(vec)
                 dtarr[d,r]=dt.to(units).value    
@@ -283,6 +287,117 @@ class DetectorPair(object):
             plt.savefig(pngFile)
 
         return(fig)
+    
+class EventGW(object):
+    def __init__(self,parent,detectors={}):
+        self.parent=parent
+        self.detlist=parent.initParams.get('gw_dets',[])
+        self.loc=parent.loc
+        self.name=parent.name
+        self.chirpmass_Msun=parent.initParams.get('chirpmass_Msun',None)
+        self.setGwDets(detectors)
+        return
+        
+    def gridLoc(self):
+        """
+        Set location of event, centred on 15deg grid squares
+        Inputs: None
+        Output: [float,float]: [lon,lat]
+        """
+        grid=15.
+        gridlon=np.floor(self.loc[0]/grid)*grid + grid/2
+        gridlat=np.floor(self.loc[1]/grid)*grid + grid/2
+        return [gridlon,gridlat]
+    
+    def setGwDets(self,detsIn):
+        """
+        Add detector info to EventGW, based on detector list in Event, and using Detector info provided.
+        Attributes added:
+          * cell: [string] cell name of event
+          * matcharr: [numpy.array] RA,Dec grid of number of detector pairs that match each cell
+          * cellmatches: [list] List of cells that are matched by all detector pairs
+        Inputs:
+          * [dict]: dictionary containing Detector objects for detectors
+        Output: None
+        """
+        self.gridloc=self.gridLoc()
+        gridvec=lb2vec(self.gridloc)
+        self.detectors={}
+        for d in self.detlist:
+            if d in detsIn:
+                self.detectors[d]=detsIn[d]
+                print('adding detector {}'.format(d))
+        self.detpairs=dets2pairs(self.detectors)
+        self.dt={}
+        raStr=string.ascii_uppercase[:24]
+        decStr=[str(x) for x in np.arange(12) + 1]
+        decStr.reverse()
+        self.cell=raStr[int(self.gridloc[0]/15)]+decStr[int((90-self.gridloc[1])/15)]
+        print('\n\n\n',self.name,self.loc,self.gridloc,self.gridloc[0]/15,(self.gridloc[1]+90)/15,self.cell)
+        dplist=[]
+        for dd in self.detpairs:
+            dtobj={}
+            detp=self.detpairs[dd]
+            dtobj['arr']=detp.dtData()
+            dtobj['value']=detp.vec2dt(gridvec).to(dtobj['arr']['units']).value
+            
+            dtobj['matchmap'],dtobj['cells']=detp.getGridLocs(gridvec)
+            self.dt[dd]=dtobj
+            
+            print(dd,dtobj['value'])
+            print(dtobj['cells'])
+            
+        cellmatches=[]
+        npair=len(self.dt)
+        matcharr=np.zeros_like(dtobj['arr']['arr'])
+        for dd in self.detpairs:
+            matcharr=matcharr+self.dt[dd]['matchmap']
+        for r in range(len(raStr)):
+            for d in range(len(decStr)):
+                if matcharr[d,r]==npair:
+                    cellmatches.append(raStr[r]+decStr[d])
+        self.matcharr=matcharr
+        
+        self.cellmatches=cellmatches
+        print('cell matches:',self.cellmatches)
+        return
+
+    def plotmatches(self,plotDir=''):
+        """
+        Plot grid of matches for each cell
+        Inputs:
+          * plotDir: [string, optional] directory to output image to. Default=''
+        Output: none
+        """
+        matcharr=self.matcharr
+        
+        (nDec,nRA)=np.shape(matcharr)
+        dRAgrid=nRA/24
+        dDecgrid=nDec/12
+        
+        plt.figure()
+        plt.clf()
+        plt.imshow(matcharr)
+        ax=plt.gca()
+        ax.set_aspect('equal')
+        ax.set_xticks(np.arange(0,nRA,dRAgrid)-0.5,['']*24)
+        ax.set_xticks(np.arange(np.max([0,(dRAgrid-1)/2]),nRA,dRAgrid),
+            string.ascii_uppercase[:24],minor=True)
+        ax.set_yticks(np.arange(0,nDec,dDecgrid)-0.5,['']*12)
+        yticklabs=[str(x) for x in np.arange(12) + 1]
+        yticklabs.reverse()
+        ax.set_yticks(np.arange(np.max([0,(dDecgrid-1)/2]),nDec,dDecgrid),
+            yticklabs,minor=True)
+        ax.tick_params(axis='both',which='minor',length=0)
+        plt.title('Matching time differences: {}'.format(self.name))
+        
+        ax.xaxis.set_ticks_position('bottom')
+        ax.yaxis.set_ticks_position('left')
+        ax.grid(axis='both',which='major',alpha=1)
+        plt.colorbar(location='bottom',label='N matches')
+        
+        plt.savefig(os.path.join(plotDir,'{}_matchcells.png'.format(self.name)))
+        return
         
 def readDetectors(fileIn):
     if isinstance(fileIn,str):

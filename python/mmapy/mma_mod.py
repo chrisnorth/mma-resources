@@ -41,7 +41,7 @@ class Event(object):
         self.isGw=('GW' in self.messengers)
         self.isXray=('xray' in self.messengers)
         if self.isGw and detectors:
-            self.gw=self.EventGW(self,detectors=detectors)
+            self.gw=gw.EventGW(self,detectors=detectors)
         return
         
     def _setLoc(self):
@@ -76,117 +76,7 @@ class Event(object):
             np.sin(d2r(self.lat))])
         return vec
         
-    class EventGW(object):
-        def __init__(self,parent,detectors={}):
-            self.parent=parent
-            self.detlist=parent.initParams.get('gw_dets',[])
-            self.loc=parent.loc
-            self.name=parent.name
-            self.chirpmass_Msun=parent.initParams.get('chirpmass_Msun',None)
-            self.setGwDets(detectors)
-            return
-            
-        def gridLoc(self):
-            """
-            Set location of event, centred on 15deg grid squares
-            Inputs: None
-            Output: [float,float]: [lon,lat]
-            """
-            grid=15.
-            gridlon=np.floor(self.loc[0]/grid)*grid + grid/2
-            gridlat=np.floor(self.loc[1]/grid)*grid + grid/2
-            return [gridlon,gridlat]
-        
-        def setGwDets(self,detsIn):
-            """
-            Add detector info to EventGW, based on detector list in Event, and using Detector info provided.
-            Attributes added:
-              * cell: [string] cell name of event
-              * matcharr: [numpy.array] RA,Dec grid of number of detector pairs that match each cell
-              * cellmatches: [list] List of cells that are matched by all detector pairs
-            Inputs:
-              * [dict]: dictionary containing gw.Detector objects for detectors
-            Output: None
-            """
-            self.gridloc=self.gridLoc()
-            gridvec=lb2vec(self.gridloc)
-            self.detectors={}
-            for d in self.detlist:
-                if d in detsIn:
-                    self.detectors[d]=detsIn[d]
-                    print('adding detector {}'.format(d))
-            self.detpairs=gw.dets2pairs(self.detectors)
-            self.dt={}
-            raStr=string.ascii_uppercase[:24]
-            decStr=[str(x) for x in np.arange(12) + 1]
-            decStr.reverse()
-            self.cell=raStr[int(self.gridloc[0]/15)]+decStr[int((90-self.gridloc[1])/15)]
-            print('\n\n\n',self.name,self.loc,self.gridloc,self.gridloc[0]/15,(self.gridloc[1]+90)/15,self.cell)
-            dplist=[]
-            for dd in self.detpairs:
-                dtobj={}
-                detp=self.detpairs[dd]
-                dtobj['arr']=detp.dtData()
-                dtobj['value']=detp.vec2dt(gridvec).to(dtobj['arr']['units']).value
-                
-                dtobj['matchmap'],dtobj['cells']=detp.getGridLocs(gridvec)
-                self.dt[dd]=dtobj
-                
-                print(dd,dtobj['value'])
-                print(dtobj['cells'])
-                
-            cellmatches=[]
-            npair=len(self.dt)
-            matcharr=np.zeros_like(dtobj['arr']['arr'])
-            for dd in self.detpairs:
-                matcharr=matcharr+self.dt[dd]['matchmap']
-            for r in range(len(raStr)):
-                for d in range(len(decStr)):
-                    if matcharr[d,r]==npair:
-                        cellmatches.append(raStr[r]+decStr[d])
-            self.matcharr=matcharr
-            
-            self.cellmatches=cellmatches
-            print('cell matches:',self.cellmatches)
-            return
-
-        def plotmatches(self,plotDir=''):
-            """
-            Plot grid of matches for each cell
-            Inputs:
-              * plotDir: [string, optional] directory to output image to. Default=''
-            Output: none
-            """
-            matcharr=self.matcharr
-            
-            (nDec,nRA)=np.shape(matcharr)
-            dRAgrid=nRA/24
-            dDecgrid=nDec/12
-            
-            plt.figure()
-            plt.clf()
-            plt.imshow(matcharr)
-            ax=plt.gca()
-            ax.set_aspect('equal')
-            ax.set_xticks(np.arange(0,nRA,dRAgrid)-0.5,['']*24)
-            ax.set_xticks(np.arange(np.max([0,(dRAgrid-1)/2]),nRA,dRAgrid),
-                string.ascii_uppercase[:24],minor=True)
-            ax.set_yticks(np.arange(0,nDec,dDecgrid)-0.5,['']*12)
-            yticklabs=[str(x) for x in np.arange(12) + 1]
-            yticklabs.reverse()
-            ax.set_yticks(np.arange(np.max([0,(dDecgrid-1)/2]),nDec,dDecgrid),
-                yticklabs,minor=True)
-            ax.tick_params(axis='both',which='minor',length=0)
-            plt.title('Matching time differences: {}'.format(self.name))
-            
-            ax.xaxis.set_ticks_position('bottom')
-            ax.yaxis.set_ticks_position('left')
-            ax.grid(axis='both',which='major',alpha=1)
-            plt.colorbar(location='bottom',label='N matches')
-            
-            plt.savefig(os.path.join(plotDir,'{}_matchcells.png'.format(self.name)))
-            return
-        
+    
 def readInitParams(fileIn):
     """
     Read event and detector parameters from file, and convert to Event and Detector objects
@@ -232,3 +122,4 @@ def readEvents(fileIn):
         events[e]=Event(eventsIn[e])
     
     return(events)
+
