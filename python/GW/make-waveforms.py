@@ -19,7 +19,7 @@ else:
 import mmapy
 
 mtot_arr=np.array([10,30])
-q_arr=np.arange(0.7,1,0.1)
+q_arr=np.arange(0.1,1,0.1)
 dist=400
 
 for mtot in mtot_arr:
