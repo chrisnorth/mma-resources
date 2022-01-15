@@ -7,7 +7,8 @@
 			"dist_Mpc":40,
 			"gw_dets":["L","H","V"],
 			"loc":[110.25,-20.15],
-			"chirpmass_Msun":1.18
+			"totalmass_Msun":1.18,
+			"massratio":0.72
 		},
 		"eventA":{
 			"name":"BBH-A",
@@ -16,7 +17,8 @@
 			"dist_Mpc":900,
 			"gw_dets":["L","H","V"],
 			"loc":[307.5,7.5],
-			"chirpmass_Msun":27.2
+			"totalmass_Msun":27.2,
+			"massratio":0.84
 		},
 		"eventB":{
 			"name":"BBH-B",
@@ -25,7 +27,8 @@
 			"dist_Mpc":900,
 			"gw_dets":["L","H","V"],
 			"loc":[187.5,-37.5],
-			"chirpmass_Msun":27.2
+			"totalmass_Msun":27.2,
+			"massratio":0.92
 		}
 	},
 	"detectors":{

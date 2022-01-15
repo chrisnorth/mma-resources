@@ -5,6 +5,7 @@ from astropy import constants as const
 from matplotlib import pyplot as plt
 from matplotlib import cm
 import pandas as pd
+from pycbc.waveform import get_td_waveform
 
 def d2r(d):
     # convert degree to radians
@@ -287,14 +288,20 @@ class DetectorPair(object):
             plt.savefig(pngFile)
 
         return(fig)
-    
+
 class EventGW(object):
     def __init__(self,parent,detectors={}):
         self.parent=parent
         self.detlist=parent.initParams.get('gw_dets',[])
         self.loc=parent.loc
         self.name=parent.name
-        self.chirpmass_Msun=parent.initParams.get('chirpmass_Msun',None)
+        # self.chirpmass_Msun=parent.initParams.get('chirpmass_Msun',None)
+        self.mtot=parent.initParams.get('totalmass_Msun',None)
+        self.q=parent.initParams.get('massratio',None)
+        self.dist=parent.initParams.get('dist_Mpc',None)
+        self.m1=mtot_to_m1(self.mtot,self.q)
+        self.m2=mtot_to_m2(self.mtot,self.q)
+        self.mch=m1m2_to_mch(self.m1,self.m2)
         self.setGwDets(detectors)
         return
         
@@ -397,6 +404,86 @@ class EventGW(object):
         plt.colorbar(location='bottom',label='N matches')
         
         plt.savefig(os.path.join(plotDir,'{}_matchcells.png'.format(self.name)))
+        return
+    
+    def makewaveform(self,dataDir='',csvfile=None,hfact=1e21,precision=4,noise=1e-23,dur=1):
+        self.waveform=Waveform(mtot=self.mtot,q=self.q,dist=self.dist)
+        if not csvfile:
+            csvfile='{}_waveform.csv'.format(self.name)
+        indur=np.where(self.waveform.data['t']>-dur)[0]
+        wf_print=pd.DataFrame({'t':self.waveform.data['t'][indur],'strain*{}'.format(hfact):self.waveform.data['strain'][indur]*hfact})
+        print(wf_print[0:10])
+        wf_print.to_csv(os.path.join(dataDir,csvfile),float_format='%.{}f'.format(precision),index=False)
+        return
+
+def mtot_to_m1(mtot,q=1):
+    return mtot/(1+q)
+def mtot_to_m2(mtot,q=1):
+    return mtot*(1+q)/q
+def m1m2_to_mch(m1,m2):
+    return (m1*m2)**0.6 / (m1+m2)**0.2
+
+class Waveform(object):
+    def __init__(self,mtot=30,q=1,dist=400,fmin=None,noise=0):
+        self.mtot=mtot
+        self.q=q
+        self.dist=dist
+        self.noise=noise
+        self.m1=mtot_to_m1(self.mtot,self.q)
+        self.m2=mtot_to_m2(self.mtot,self.q)
+        self.mch=mtot_to_m2(self.m1,self.m2)
+        self.generate()
+        return
+        
+    def get_flower(self):
+        if self.m1+self.m2 > 67:
+            self.tres=1.0/4096
+            self.f_lower=20
+        elif self.m1+self.m2>5:
+            self.tres=1.0/4096
+            self.f_lower=25
+        else:
+            self.tres=1.0/8192
+            self.f_lower=30
+        return
+    
+    def get_fmin(self):
+        fmin=20*30/self.mtot
+        if fmin<20:
+            fmin=20
+        elif fmin>400:
+            fmin=400
+        if self.m1+self.m2 > 67:
+            fmin=np.min([fmin,20])
+        self.fmin=fmin
+        return(self.fmin)
+        
+    def f_to_t(self,f):
+        K0=K0=2.7e17 #Msun^5 s^-5
+        fitparam=[0.0029658 , 0.96112625] #empirical fit
+        t=K0**(1./3.) * self.mch**(-5./3.) * f**(-8./3.)
+        t=t*(self.mch*fitparam[0] + fitparam[1])
+        return(t)
+    
+    def generate(self):
+        # self.get_flower()
+        self.tres=1./4096
+        self.get_fmin()
+        tmin=self.f_to_t(self.fmin)
+        fref=self.fmin
+        tref=self.f_to_t(fref)
+        print('processing {} + {} [{}] ({} MPc) at 1/{}s resolution from {:.2f}Hz [{:.2f}s from {:.2f}Hz]'.format(self.m1,self.m2,self.mch,self.dist,1./self.tres,self.fmin,tref,fref))
+        hp,hc = get_td_waveform(approximant="SEOBNRv3_opt_rk4",
+                     mass1=self.m1,
+                     mass2=self.m2,
+                     delta_t=self.tres,
+                     f_lower=self.fmin,
+                     distance=self.dist)
+        t= hp.sample_times
+        if self.noise>0:
+            noise=np.random.normal(0,self.noise,len(t.data))
+            hp.data=hp.data+noise
+        self.data=pd.DataFrame({'t':t.data,'strain':hp.data})
         return
         
 def readDetectors(fileIn):
