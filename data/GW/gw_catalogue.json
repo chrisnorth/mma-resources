@@ -1,36 +1,28 @@
-{
-	"events":{
+{"events":
+	{
 		"GW170817":{
-			"name":"GW170817",
-			"messengers":{
-				"GW":"GW170817",
-				"xray":"GW170817"
-			},
 			"datetime":"2017-08-17T12:41:41",
 			"dist_Mpc":38,
 			"gw_dets":["L","H","V"],
-			"loc":[110.25,-20.15],
-			"xray_data":"GW170817_xray.csv",
-			"inclination_deg":28.5
+			"totalmass_Msun":2.73,
+			"massratio":0.87
 		},
 		"GW190412":{
-			"name":"GW190412",
-			"messengers":{"GW":"GW190412"},
 			"datetime":"2019-04-12T05:31:21",
 			"dist_Mpc":740,
 			"gw_dets":["L","K","V"],
-			"loc":[307.5,38]
+			"totalmass_Msun":38.4,
+			"massratio":0.28
 		},
-		"GW190828":{
-			"name":"GW190828",
-			"messengers":{"GW":"GW190828_063405"},
+		"GW190828_063405":{
 			"datetime":"2019-08-28T06:34:05",
 			"dist_Mpc":2130,
 			"gw_dets":["L","H","K"],
-			"loc":[187.5,-55.5]
+			"totalmass_Msun":58.0,
+			"massratio":0.82
 		}
 	},
-	"GWdetectors":{
+	"detectors":{
 		"H":{"code":"H","name":"Hanford","loc":[241,46]},
 		"L":{"code":"L","name":"Livingston","loc":[269,30]},
 		"V":{"code":"V","name":"Virgo","loc":[10,43]},

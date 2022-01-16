@@ -1,0 +1,6 @@
+[
+	"GW170817":{
+		"data":"data/xray/GW170817_xray.csv",
+		"inclination_deg":28
+	}
+]
