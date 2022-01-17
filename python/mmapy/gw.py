@@ -290,20 +290,34 @@ class DetectorPair(object):
         return(fig)
 
 class EventGW(object):
-    def __init__(self,parent,detectors={}):
+    def __init__(self,parent):
         self.parent=parent
-        self.detlist=parent.initParams.get('gw_dets',[])
+        self.name=parent.nameGW
         self.loc=parent.loc
-        self.name=parent.name
-        # self.chirpmass_Msun=parent.initParams.get('chirpmass_Msun',None)
-        self.mtot=parent.initParams.get('totalmass_Msun',None)
-        self.q=parent.initParams.get('massratio',None)
-        self.dist=parent.initParams.get('dist_Mpc',None)
-        self.m1=mtot_to_m1(self.mtot,self.q)
-        self.m2=mtot_to_m2(self.mtot,self.q)
-        self.mch=m1m2_to_mch(self.m1,self.m2)
-        self.setGwDets(detectors)
+        self.readParams()
         return
+    
+    def readParams(self,fileIn='gw_catalogue.json',dirIn='data/GW'):
+        catIn=json.load(open(os.path.join(dirIn,fileIn)))
+        if not 'events' in catIn:
+            print('No events in {}'.format(os.path.join(dirIn,fileIn)))
+            return
+        else:
+            if not self.name in catIn["events"]:
+                print('No entry for {} in GW catalogue'.format(self.name))
+                return
+            else:
+                params=catIn["events"][self.name]
+                self.mtot=params.get('totalmass_Msun',None)
+                self.q=params.get('massratio',None)
+                self.dist=params.get('dist_Mpc',None)
+                self.m1=mtot_to_m1(self.mtot,self.q)
+                self.m2=mtot_to_m2(self.mtot,self.q)
+                self.mch=m1m2_to_mch(self.m1,self.m2)
+                self.detlist=params.get('gw_dets',[])
+                detectors=readDetectors(fileIn,dirIn)
+                self.setGwDets(detectors)
+        return(params)
         
     def gridLoc(self):
         """
@@ -382,10 +396,30 @@ class EventGW(object):
         dRAgrid=nRA/24
         dDecgrid=nDec/12
         
-        plt.figure()
-        plt.clf()
-        plt.imshow(matcharr)
-        ax=plt.gca()
+        npairs=len(self.dt)
+        print(npairs,'pairs')
+        if npairs<4:
+            nrow=2
+            ncol=2
+        else:
+            nrow=2
+            ncol=2
+        fig,axes=plt.subplots(nrows=nrow,ncols=ncol,sharex=True,sharey=True)
+        p=0
+        for pair in self.dt:
+            row=p%nrow
+            col=int(p/nrow)
+            print(pair,row,col)
+            axpair=axes[row,col]
+            axpair.imshow(self.dt[pair]['matchmap'])
+            axpair.title.set_text('{}: {}'.format(self.name,pair))
+            axpair.grid(axis='both',which='major',alpha=1)
+            p=p+1
+        row=p%nrow
+        col=int(p/nrow)
+        ax=axes[row,col]
+        print('all',row,col)
+        matchim=ax.imshow(matcharr)
         ax.set_aspect('equal')
         ax.set_xticks(np.arange(0,nRA,dRAgrid)-0.5,['']*24)
         ax.set_xticks(np.arange(np.max([0,(dRAgrid-1)/2]),nRA,dRAgrid),
@@ -396,12 +430,14 @@ class EventGW(object):
         ax.set_yticks(np.arange(np.max([0,(dDecgrid-1)/2]),nDec,dDecgrid),
             yticklabs,minor=True)
         ax.tick_params(axis='both',which='minor',length=0)
-        plt.title('Matching time differences: {}'.format(self.name))
+        plt.title('Matching cells: {}'.format(self.name))
         
         ax.xaxis.set_ticks_position('bottom')
         ax.yaxis.set_ticks_position('left')
         ax.grid(axis='both',which='major',alpha=1)
-        plt.colorbar(location='bottom',label='N matches')
+        cax=plt.axes([0.25,0.1,0.5,0.02])
+        # plt.colorbar(matcharr,cax=cax,location='bottom',label='N matches')
+        plt.colorbar(matchim,cax=cax,orientation='horizontal',label='N matches')
         
         plt.savefig(os.path.join(plotDir,'{}_matchcells.png'.format(self.name)))
         return
@@ -416,10 +452,29 @@ class EventGW(object):
         wf_print.to_csv(os.path.join(dataDir,csvfile),float_format='%.{}f'.format(precision),index=False)
         return
 
+def readDetectors(fileIn='gw_catalogue.json',dirIn='data/GW'):
+    """
+    Read detector parameters from file, and convert to Detector objects
+    Inputs:
+      * [string OR dict] filename to read parameters from (json format) OR dict of parameters
+    Output: [dict] dict containing Detector objects
+    """
+    if isinstance(fileIn,str):
+        # read from file
+        dataIn=json.load(open(os.path.join(dirIn,fileIn)))
+    else:
+        # use data object
+        dataIn=fileIn
+    if 'detectors' in dataIn:
+        dets={}
+        for d in dataIn['detectors']:
+            dets[d]=Detector(dataIn['detectors'][d])
+    return(dets)
+
 def mtot_to_m1(mtot,q=1):
     return mtot/(1+q)
 def mtot_to_m2(mtot,q=1):
-    return mtot*(1+q)/q
+    return mtot*q/(1+q)
 def m1m2_to_mch(m1,m2):
     return (m1*m2)**0.6 / (m1+m2)**0.2
 
@@ -486,13 +541,13 @@ class Waveform(object):
         self.data=pd.DataFrame({'t':t.data,'strain':hp.data})
         return
         
-def readDetectors(fileIn):
+def readGWDetectors(fileIn):
     if isinstance(fileIn,str):
         dataIn=json.load(open(fileIn))
     else:
         dataIn=fileIn
-    if 'detectors' in dataIn:
-        detsIn=dataIn['detectors']
+    if 'GWdetectors' in dataIn:
+        detsIn=dataIn['GWdetectors']
     else:
         detsIn=dataIn
     
@@ -515,7 +570,7 @@ def dets2pairs(dets):
 
 def readDetPairs(fileIn):
     
-    dets=readDetectors(fileIn)
+    dets=readGWDetectors(fileIn)
     pairs=dets2pairs(dets)
     return(pairs)
 

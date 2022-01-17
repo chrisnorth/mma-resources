@@ -1,4 +1,4 @@
-from . import gw
+from . import gw,xray
 
 import json, string, os
 import numpy as np
@@ -32,16 +32,19 @@ class Event(object):
         for p in paramin:
             self.initParams=paramin
         self.name=paramin.get('name','')
-        self.messengers=paramin.get('messengers',[])
+        self.messengers=paramin.get('messengers',{})
         self.datetime=paramin.get('datetime','')
         self.dist_Mpc=paramin.get('dist_Mpc',None)
         self._setLoc()
         self.vec=self.toVec()
-        
         self.isGw=('GW' in self.messengers)
         self.isXray=('xray' in self.messengers)
         if self.isGw and detectors:
-            self.gw=gw.EventGW(self,detectors=detectors)
+            self.nameGW=self.messengers['GW']
+            self.gw=gw.EventGW(self)
+        if self.isXray:
+            self.nameXray=self.messengers['xray']
+            self.xray=xray.EventXray(self)
         return
         
     def _setLoc(self):
@@ -88,10 +91,10 @@ def readInitParams(fileIn):
         dataIn=json.load(open(fileIn))
     else:
         dataIn=fileIn
-    if 'detectors' in dataIn:
+    if 'GWdetectors' in dataIn:
         dets={}
-        for d in dataIn['detectors']:
-            dets[d]=gw.Detector(dataIn['detectors'][d])
+        for d in dataIn['GWdetectors']:
+            dets[d]=gw.Detector(dataIn['GWdetectors'][d])
     if 'events' in dataIn:
         events={}
         for e in dataIn['events']:
