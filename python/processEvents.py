@@ -21,10 +21,10 @@ fig,wfax=plt.subplots()
 p=0
 for e in initParams['events']:
     ev=initParams['events'][e]
-    pdir=os.path.join(plotDir,'GW',e)
+    pdir=os.path.join(plotDir,'GW','loc_maps')
     if not os.path.isdir(pdir):
         os.makedirs(pdir)
-    ddir=os.path.join(dataDir,'GW',e)
+    ddir=os.path.join(dataDir,'GW','waveforms')
     if not os.path.isdir(ddir):
         os.makedirs(ddir)
     ev.gw.plotmatches(plotDir=pdir)
