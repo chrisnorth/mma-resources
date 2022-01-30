@@ -465,8 +465,8 @@ def readDetectors(fileIn='gw_catalogue.json',dirIn='data/GW'):
     else:
         # use data object
         dataIn=fileIn
+    dets={}
     if 'detectors' in dataIn:
-        dets={}
         for d in dataIn['detectors']:
             dets[d]=Detector(dataIn['detectors'][d])
     return(dets)
