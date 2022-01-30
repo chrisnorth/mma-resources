@@ -23,7 +23,7 @@
 		},
 		"GW190828":{
 			"name":"GW190828",
-			"messengers":{"GW":"GW190828_063405"},
+			"messengers":{"GW":"GW190828_063405","xray":"GW190828_063405"},
 			"datetime":"2019-08-28T06:34:05",
 			"dist_Mpc":2130,
 			"gw_dets":["L","H","K"],
