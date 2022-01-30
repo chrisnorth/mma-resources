@@ -11,7 +11,7 @@ def d2r(d):
     # convert degree to radians
     return(d/180.*np.pi)
 
-def lb2vec(loc):
+def lonlat2vec(loc):
     """
     Convert lon,lat to unit vector
     Input: [list] 2-element list containing [longitude,latitude] (in degrees)
@@ -35,9 +35,9 @@ def vec2dt(vec,d1vec,d2vec):
     return((np.dot(vec,d2vec-d1vec))*const.R_earth/const.c)
 
 def lbvec2dt(lon,lat,d1,d2):
-    d1vec=lb2vec(d1['loc'])
-    d2vec=lb2vec(d2['loc'])
-    vec=lb2vec([lon,lat])
+    d1vec=lonlat2vec(d1['loc'])
+    d2vec=lonlat2vec(d2['loc'])
+    vec=lonlat2vec([lon,lat])
     return((np.dot(vec,d2vec-d1vec))*const.R_earth/const.c)
     
 class Detector(object):
@@ -122,7 +122,7 @@ class DetectorPair(object):
             for r in range(nRA):
                 for d in range(nDec):
                     # get vector for sky localisation
-                    vec=lb2vec([gridRAim[r],gridDecim[d]])
+                    vec=lonlat2vec([gridRAim[r],gridDecim[d]])
                     # dt = vec . (d1-d1) * R_earth / c
                     dt=self.vec2dt(vec)
                     dtarr[d,r]=dt.to(units).value
@@ -242,7 +242,7 @@ class DetectorPair(object):
         for r in range(nRA):
             for d in range(nDec):
                 # get vector for sky localisation
-                vec=lb2vec([gridRA[r],gridDec[d]])
+                vec=lonlat2vec([gridRA[r],gridDec[d]])
                 # dt = vec . (d1-d1) * R_earth / c
                 dt=self.vec2dt(vec)
                 dtarr[d,r]=dt.to(units).value    
@@ -293,7 +293,8 @@ class EventGW(object):
     def __init__(self,parent):
         self.parent=parent
         self.name=parent.nameGW
-        self.loc=parent.loc
+        # self.loc=parent.loc
+        self.setLoc(parent.loc)
         self.readParams()
         return
     
@@ -318,17 +319,57 @@ class EventGW(object):
                 detectors=readDetectors(fileIn,dirIn)
                 self.setGwDets(detectors)
         return(params)
-        
-    def gridLoc(self):
+    
+    def setLoc(self,loc):
         """
         Set location of event, centred on 15deg grid squares
         Inputs: None
-        Output: [float,float]: [lon,lat]
+        Attributes added: [[float,float],[int,int],string]: [[snaplon,snaplat],[cell x, cell y],cellname]
+            * loc [float,float]: array of [lon,lat] (degrees)
+            * grid [float]: grid size (degrees)
+            * cellloc [float,float]: [lat,lon] of cell centre (degrees)
+            * cellxy [float,float]: [x,y] coordinates of cell
+            * cellname: name of cell
         """
-        grid=15.
-        gridlon=np.floor(self.loc[0]/grid)*grid + grid/2
-        gridlat=np.floor(self.loc[1]/grid)*grid + grid/2
-        return [gridlon,gridlat]
+        self.loc=loc
+        self.grid=15.
+        gridlon=np.floor(self.loc[0]/self.grid)*self.grid + self.grid/2
+        gridlat=np.floor(self.loc[1]/self.grid)*self.grid + self.grid/2
+        self.cellloc=[gridlon,gridlat]
+        self.cellxy=[int(self.cellloc[0]/15),int((90-self.cellloc[1])/15)]
+        
+        # get cell names
+        raStr=string.ascii_uppercase[:24]
+        decStr=[str(x) for x in np.arange(12) + 1]
+        decStr.reverse()
+        self.cellname=raStr[int(self.cellloc[0]/15)]+decStr[int((90-self.cellloc[1])/15)]
+        
+        return
+        
+    # def gridSnapLoc(self):
+    #     """
+    #     Set location of event, centred on 15deg grid squares
+    #     Inputs: None
+    #     Output: [float,float]: [lon,lat]
+    #     """
+    #     grid=15.
+    #     gridlon=np.floor(self.loc[0]/grid)*grid + grid/2
+    #     gridlat=np.floor(self.loc[1]/grid)*grid + grid/2
+    #     return [gridlon,gridlat]
+    
+    # def gridCell(self):
+    #     """
+    #     Set location of event, centred on 15deg grid squares
+    #     Inputs: None
+    #     Output: [float,float]: [lon,lat]
+    #     """
+    #     raStr=string.ascii_uppercase[:24]
+    #     decStr=[str(x) for x in np.arange(12) + 1]
+    #     decStr.reverse()
+    #     cellloc=self.cellloc
+    #     self.cell=raStr[int(self.cellloc[0]/15)]+decStr[int((90-self.cellloc[1])/15)]
+    #     # print('\n\n\n',self.name,self.loc,self.cellloc,self.cellloc[0]/15,(self.cellloc[1]+90)/15,self.cell)
+    #     # return [gridlon,gridlat]
     
     def setGwDets(self,detsIn):
         """
@@ -341,8 +382,7 @@ class EventGW(object):
           * [dict]: dictionary containing Detector objects for detectors
         Output: None
         """
-        self.gridloc=self.gridLoc()
-        gridvec=lb2vec(self.gridloc)
+        gridvec=lonlat2vec(self.cellloc)
         self.detectors={}
         for d in self.detlist:
             if d in detsIn:
@@ -350,11 +390,11 @@ class EventGW(object):
                 print('adding detector {}'.format(d))
         self.detpairs=dets2pairs(self.detectors)
         self.dt={}
-        raStr=string.ascii_uppercase[:24]
-        decStr=[str(x) for x in np.arange(12) + 1]
-        decStr.reverse()
-        self.cell=raStr[int(self.gridloc[0]/15)]+decStr[int((90-self.gridloc[1])/15)]
-        print('\n\n\n',self.name,self.loc,self.gridloc,self.gridloc[0]/15,(self.gridloc[1]+90)/15,self.cell)
+        # raStr=string.ascii_uppercase[:24]
+        # decStr=[str(x) for x in np.arange(12) + 1]
+        # decStr.reverse()
+        # self.cell=raStr[int(self.cellloc[0]/15)]+decStr[int((90-self.cellloc[1])/15)]
+        print('\n\n\n',self.name,self.loc,self.cellloc,self.cellxy,self.cellname)
         dplist=[]
         for dd in self.detpairs:
             dtobj={}
@@ -373,6 +413,9 @@ class EventGW(object):
         matcharr=np.zeros_like(dtobj['arr']['arr'])
         for dd in self.detpairs:
             matcharr=matcharr+self.dt[dd]['matchmap']
+        raStr=string.ascii_uppercase[:24]
+        decStr=[str(x) for x in np.arange(12) + 1]
+        decStr.reverse()
         for r in range(len(raStr)):
             for d in range(len(decStr)):
                 if matcharr[d,r]==npair:
