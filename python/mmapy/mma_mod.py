@@ -1,4 +1,4 @@
-from . import gw,xray
+
 
 import json, string, os
 import numpy as np

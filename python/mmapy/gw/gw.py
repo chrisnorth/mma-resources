@@ -7,6 +7,7 @@ from matplotlib import cm
 import pandas as pd
 from pycbc.waveform import get_td_waveform
 
+
 def d2r(d):
     # convert degree to radians
     return(d/180.*np.pi)
