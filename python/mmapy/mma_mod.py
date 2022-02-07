@@ -5,8 +5,68 @@ from . import gw,xray
 from . import utils as ut
 # from . import xray
 
+class Events(object):
+    def __init__(self,eventsIn=[],**kwargs):
+        self.events={}
+        self.meta={}
+        try:
+            for e in eventsIn:
+                if isinstance(eventsIn,list):
+                    ev=e
+                elif isinstance(eventsIn,dict):
+                    ev=eventsIn[e]
+                if isinstance(ev,Event):
+                    self.events[ev.name]=ev
+                else:
+                    try:
+                        event=Event(ev,**kwargs)
+                        self.events[event.name]=event
+                    except:
+                        print('unable to add event',ev)
+        except:
+            pass
+        return
+
+    def addEvent(self,eventIn,**kwargs):
+        if isinstance(eventIn,Event):
+            self.events[eventIn.name]=eventIn
+        else:
+            try:
+                ev=Event(eventIn,**kwargs)
+                self.events[ev.name]=ev
+            except:
+                print('unable to add event',ev)
+        return
+
+    def addMeta(self,metadata):
+        for m in metadata:
+            self.meta[m]=metadata[m]
+        return
+
+    def to_json(self,fileout=None,**kwargs):
+        js={'metadata':{},'events':{}}
+        for m in self.meta:
+            if hasattr(self.meta[m],'to_json'):
+                js['metadata'][m]=self.meta[m].to_json()
+            else:
+                js['metadata'][m]=self.meta[m]
+        for ev in self.events:
+            js['events'][ev]=self.events[ev].to_json()
+        if fileout:
+            try:
+                if isinstance(fileout,str):
+                    json.dump(js,open(fileout,'w'),skipkeys=True,**kwargs)
+                    fileout.close()
+                else:
+                    json.dump(js,fileout,skipkeys=True,**kwargs)
+
+            except:
+                print('unable to write to file:',fileout)
+        return(js)
+
+
 class Event(object):
-    def __init__(self,paramin,detectors={},**kwargs):
+    def __init__(self,paramin,**kwargs):
         """
         Object for event. Created attributes based on parameters
         Inputs:
@@ -24,7 +84,7 @@ class Event(object):
         self.vec=self.toVec()
         self.isGw=('GW' in self.messengers)
         self.isXray=('xray' in self.messengers)
-        if self.isGw and detectors:
+        if self.isGw:
             self.nameGW=self.messengers['GW']
             fromCat=kwargs.get('fromCat',False)
             self.gw=gw.EventGW(self,fromCat=fromCat)
@@ -63,6 +123,13 @@ class Event(object):
             np.sin(ut.d2r(self.lat))])
         return vec
 
+    def to_json(self):
+        js={'name':self.name,'dist':self.dist_Mpc,
+            'location':{'loc':self.loc.loc,'cellname':self.loc.cellname},
+            'datetime':self.datetime}
+        if self.isGw:
+            js['GW']=self.gw.to_json()
+        return(js)
 
 def readInitParams(fileIn,**kwargs):
     """
@@ -106,6 +173,6 @@ def readEvents(fileIn,**kwargs):
     # detlist=[]
     events={}
     for e in eventsIn:
-        events[e]=Event(eventsIn[e])
+        events[e]=Event(eventsIn[e],**kwargs)
 
     return(events)

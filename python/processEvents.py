@@ -15,13 +15,13 @@ else:
 
 import mmapy
 
-initParams=mmapy.readInitParams(os.path.join(dataDir,'init_params.json'),fromCat=True)
+eventsIn=mmapy.readEvents(os.path.join(dataDir,'scenario-1_init.json'),fromCat=False)
 fig,wfax=plt.subplots()
 
 wfp=0
-events=[]
-for e in initParams['events']:
-    ev=initParams['events'][e]
+eventsOut=mmapy.Events()
+for e in eventsIn:
+    ev=eventsIn[e]
     if ev.isGw:
         pdir=os.path.join(plotDir,'GW','loc_maps')
         if not os.path.isdir(pdir):
@@ -33,5 +33,9 @@ for e in initParams['events']:
         ev.gw.makewaveform(dataDir=ddir)
         wfax.plot(ev.gw.waveform.data['t'],wfp+ev.gw.waveform.data['strain']*1e+21)
         wfp=wfp+1
-    events.append(ev)
-    # if ev.isXray:
+    eventsOut.addEvent(ev)
+
+detectors=mmapy.gw.readDetectors('gw_catalogue.json')
+eventsOut.addMeta({'gw-detectors':mmapy.gw.Detectors(detectors)})
+
+eventsOut.to_json(os.path.join(dataDir,'scenario-1.json'),indent=2)

@@ -24,6 +24,42 @@ from .. import utils as ut
 #         np.sin(ut.d2r(loc[1]))])
 #     return vec
 
+class Detectors(object):
+    def __init__(self,detsIn):
+        self.dets={}
+        try:
+            for d in detsIn:
+                if isinstance(detsIn,list):
+                    det=d
+                elif isinstance(detsIn,dict):
+                    det=detsIn[d]
+                if isinstance(det,Detector):
+                    self.dets[det.code]=det
+                else:
+                    try:
+                        detector=Detector(det,**kwargs)
+                        self.dets[detector.code]=detector
+                    except:
+                        print('unable to add detector',detector)
+        except:
+            pass
+        return
+
+    def addDetector(self,detIn,**kwargs):
+        if isinstance(detIn,Event):
+            self.dets[detIn.code]=detIn
+        else:
+            try:
+                det=Detector(detIn,**kwargs)
+                self.dets[dets.code]=det
+            except:
+                print('unable to add detector',det)
+        return
+    def to_json(self):
+        js={}
+        for d in self.dets:
+            js[d]=self.dets[d].to_json()
+        return(js)
 
 class Detector(object):
     def __init__(self,paramin):
@@ -51,6 +87,9 @@ class Detector(object):
             np.sin(ut.d2r(self.lon))*np.cos(ut.d2r(self.lat)),
             np.sin(ut.d2r(self.lat))])
         return vec
+    def to_json(self):
+        js={'name':self.name,'code':self.code,'location':self.loc}
+        return(js)
 
 class DetectorPair(object):
     def __init__(self,d1,d2):
@@ -286,22 +325,23 @@ class EventGW(object):
             self.readCatParams()
         else:
             self.readParams()
+        self.files={}
         return
 
-    def readCatParams(self,fileIn='gw_catalogue.json',catfileIn='gwcat.json',dirIn='data/GW'):
-        catIn=json.load(open(os.path.join(dirIn,catfileIn)))
+    def readCatParams(self,fileIn='gwcat.json',dirIn='data/GW'):
+        catIn=json.load(open(os.path.join(dirIn,fileIn)))
         print('Reading from gwcat catalogue')
-        if not 'data' in catIn:
-            print('No event data in {}'.format(os.path.join(dirIn,catfileIn)))
+        if not 'events' in catIn:
+            print('No event events in {}'.format(os.path.join(dirIn,fileIn)))
             return
         else:
-            if not self.name in catIn["data"]:
+            if not self.name in catIn["events"]:
                 print('No entry for {} in GW catalogue'.format(self.name))
                 return
             else:
                 print('Reading {}'.format(self.name))
                 self.paramsrc='gwcat'
-                params=catIn["data"][self.name]
+                params=catIn["events"][self.name]
                 m1param=params.get('M1',None)
                 if m1param:
                     self.m1=m1param.get('best',None)
@@ -418,6 +458,15 @@ class EventGW(object):
         print('cell matches:',self.cellmatches)
         return
 
+    def to_json(self):
+        js={'m1':self.m1,'m2':self.m2,'chirpmass':self.mch,
+            'totalmass':self.mtot,'massratio':self.q,'detectors':self.detlist,
+            'files':self.files,'origname':self.name}
+        js['timedelta']={}
+        for dd in self.dt:
+            js['timedelta'][dd]=self.dt[dd]['value']
+        return(js)
+
     def plotmatches(self,plotDir=''):
         """
         Plot grid of matches for each cell
@@ -474,7 +523,9 @@ class EventGW(object):
         # plt.colorbar(matcharr,cax=cax,location='bottom',label='N matches')
         plt.colorbar(matchim,cax=cax,orientation='horizontal',label='N matches')
 
-        plt.savefig(os.path.join(plotDir,'{}_matchcells.png'.format(self.name)))
+        pngfile=os.path.join(plotDir,'{}_matchcells.png'.format(self.name))
+        plt.savefig(pngfile)
+        self.files['matchcells_png']=pngfile
         return
 
     def makewaveform(self,dataDir='',csvfile=None,hfact=1e21,precision=4,noise=1e-23,dur=1):
@@ -485,6 +536,7 @@ class EventGW(object):
         wf_print=pd.DataFrame({'t':self.waveform.data['t'][indur],'strain*{}'.format(hfact):self.waveform.data['strain'][indur]*hfact})
         print(wf_print[0:10])
         wf_print.to_csv(os.path.join(dataDir,csvfile),float_format='%.{}f'.format(precision),index=False)
+        self.files['waveform_csv']=csvfile
         return
 
 def readDetectors(fileIn='gw_catalogue.json',dirIn='data/GW'):
