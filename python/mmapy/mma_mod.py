@@ -1,8 +1,8 @@
-
-
 import json, string, os
 import numpy as np
 from matplotlib import pyplot as plt
+from . import gw,xray
+from . import utils as ut
 # from . import xray
 
 def d2r(d):
@@ -100,23 +100,23 @@ class Event(object):
           * lat: [float] latitude (degrees)
         """
         if 'loc' in self.initParams:
-            self.loc=Location(self.initParams['loc'])
+            self.loc=ut.Location(self.initParams['loc'])
             # self.loc=self.initParams['loc']
         elif 'lon' in self.initParams and 'lat' in self.initParams:
-            self.loc=Location([self.initParams['lon'],self.initParams['lat']])
+            self.loc=ut.Location([self.initParams['lon'],self.initParams['lat']])
         self.lon=self.loc.loc[0]
         self.lat=self.loc.loc[1]
-        return 
-    
+        return
+
     def toVec(self):
         """
         Convert lon,lat to a unit vector
         Inputs: None
         Output: [numpy array (length 3)] unit vector
         """
-        vec=np.array([np.cos(d2r(self.lon))*np.cos(d2r(self.lat)),
-            np.sin(d2r(self.lon))*np.cos(d2r(self.lat)),
-            np.sin(d2r(self.lat))])
+        vec=np.array([np.cos(ut.d2r(self.lon))*np.cos(ut.d2r(self.lat)),
+            np.sin(ut.d2r(self.lon))*np.cos(ut.d2r(self.lat)),
+            np.sin(ut.d2r(self.lat))])
         return vec
         
     

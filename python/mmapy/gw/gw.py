@@ -6,41 +6,25 @@ from matplotlib import pyplot as plt
 from matplotlib import cm
 import pandas as pd
 from pycbc.waveform import get_td_waveform
+from .. import utils as ut
 
 
-def d2r(d):
-    # convert degree to radians
-    return(d/180.*np.pi)
+# def ut.d2r(d):
+#     # convert degree to radians
+#     return(d/180.*np.pi)
+#
+# def lonlat2vec(loc):
+#     """
+#     Convert lon,lat to unit vector
+#     Input: [list] 2-element list containing [longitude,latitude] (in degrees)
+#     Output: [lest] unit vector
+#     """
+#     vec=np.array([np.cos(ut.d2r(loc[0]))*np.cos(ut.d2r(loc[1])),
+#         np.sin(ut.d2r(loc[0]))*np.cos(ut.d2r(loc[1])),
+#         np.sin(ut.d2r(loc[1]))])
+#     return vec
 
-def lonlat2vec(loc):
-    """
-    Convert lon,lat to unit vector
-    Input: [list] 2-element list containing [longitude,latitude] (in degrees)
-    Output: [lest] unit vector
-    """
-    vec=np.array([np.cos(d2r(loc[0]))*np.cos(d2r(loc[1])),
-        np.sin(d2r(loc[0]))*np.cos(d2r(loc[1])),
-        np.sin(d2r(loc[1]))])
-    return vec
-        
-def rotate(lon,lat,ang):
-    # create rotation matrix from (1,0,0) to lon,lat,ang)
-    # NOT USED
-    angrot=np.array([[1,0,0],[0,np.cos(d2r(ang)),-np.sin(d2r(ang))],[0,np.sin(d2r(ang)),np.cos(d2r(ang))]])
-    lonrot=np.array([[np.cos(d2r(lon)),-np.sin(d2r(lon)),0],[np.sin(d2r(lon)),np.cos(d2r(lon)),0],[0,0,1]])
-    latrot=np.array([[np.cos(d2r(-lat)),0,np.sin(d2r(-lat))],[0,1,0],[-np.sin(d2r(-lat)),0,np.cos(d2r(-lat))]])
-    matrot=np.matmul(np.matmul(lonrot,latrot),angrot)
-    return matrot
 
-def vec2dt(vec,d1vec,d2vec):
-    return((np.dot(vec,d2vec-d1vec))*const.R_earth/const.c)
-
-def lbvec2dt(lon,lat,d1,d2):
-    d1vec=lonlat2vec(d1['loc'])
-    d2vec=lonlat2vec(d2['loc'])
-    vec=lonlat2vec([lon,lat])
-    return((np.dot(vec,d2vec-d1vec))*const.R_earth/const.c)
-    
 class Detector(object):
     def __init__(self,paramin):
         self.name=paramin.get('name','')
@@ -48,7 +32,7 @@ class Detector(object):
         self._setloc(paramin)
         self.vec=self.tovec()
         return
-    
+
     def _setloc(self,paramin):
         if 'loc' in paramin:
             self.loc=paramin['loc']
@@ -59,13 +43,13 @@ class Detector(object):
         assert len(self.loc)==2, 'ERROR: non-valid location: {}'.format(self.loc)
         self.lon=self.loc[0]
         self.lat=self.loc[1]
-        return 
-    
+        return
+
     def tovec(self):
         # convert a lon,lat pair to a unit vector
-        vec=np.array([np.cos(d2r(self.lon))*np.cos(d2r(self.lat)),
-            np.sin(d2r(self.lon))*np.cos(d2r(self.lat)),
-            np.sin(d2r(self.lat))])
+        vec=np.array([np.cos(ut.d2r(self.lon))*np.cos(ut.d2r(self.lat)),
+            np.sin(ut.d2r(self.lon))*np.cos(ut.d2r(self.lat)),
+            np.sin(ut.d2r(self.lat))])
         return vec
 
 class DetectorPair(object):
@@ -79,17 +63,17 @@ class DetectorPair(object):
         self.sep=self.getsep()
         self.vec=self.getvec()
         return
-    
+
     def getsep(self):
         dvec=self.d2.vec-self.d1.vec
         return(np.sqrt(dvec.dot(dvec))*const.R_earth.to('km'))
-    
+
     def getvec(self):
         return(self.d2.vec-self.d1.vec)
-        
+
     def vec2dt(self,vec):
         return((np.dot(vec,self.vec))*const.R_earth/const.c)
-        
+
     def dtData(self,grid=15,csvFile='',units='ms',decimals=2,overwrite=False,verbose=False):
         recalc=True
         if hasattr(self,'dtarr'):
@@ -113,34 +97,34 @@ class DetectorPair(object):
         if recalc:
             if verbose:print('calculating dt array for {} with grid {}'.format(self.code,grid))
             gridsize=[grid,grid]
-            
+
             nRA=int(360/gridsize[0])
             nDec=int(180/gridsize[1])
             gridRAim=np.arange(gridsize[0]/2,360,gridsize[0])
             gridDecim=np.arange(90-gridsize[1]/2,-90,-gridsize[1])
             dtarr=np.zeros([nDec,nRA])
-            
+
             for r in range(nRA):
                 for d in range(nDec):
                     # get vector for sky localisation
-                    vec=lonlat2vec([gridRAim[r],gridDecim[d]])
+                    vec=ut.lonlat2vec([gridRAim[r],gridDecim[d]])
                     # dt = vec . (d1-d1) * R_earth / c
                     dt=self.vec2dt(vec)
                     dtarr[d,r]=dt.to(units).value
-                    
+
             if np.max(dtarr)<=15:
                 dt_res=2
             elif np.max(dtarr)<50:
                 dt_res=5
-            
+
             cmin=np.floor(np.min(dtarr)/dt_res)*dt_res
             cmax=np.ceil(np.max(dtarr)/dt_res)*dt_res
             clev=2*cmax/dt_res
             cticks=np.linspace(cmin,cmax,int(clev+1))
-            
+
             dtobj={'arr':dtarr,'grid':grid,'dt_res':dt_res,'cticks':cticks,'units':units}
             self.dtarr=dtobj
-            
+
         if csvFile:
             nRA=int(360/gridsize[0])
             nDec=int(180/gridsize[1])
@@ -151,9 +135,9 @@ class DetectorPair(object):
             df=pd.DataFrame(dtcsv)
             if verbose:print('saving dt array for {} to {}'.format(self.code,csvFile))
             df.to_csv(csvFile,header=False,index=False)
-        
+
         return(dtobj)
-        
+
     def getGridLocs(self,vec):
         dtobj=self.dtData()
         dtval=self.vec2dt(vec).to(dtobj['units']).value
@@ -176,30 +160,30 @@ class DetectorPair(object):
                     matchmap[d,r]=1
                     cells.append(raStr[r]+decStr[d])
         return(matchmap,cells)
-        
+
     def plotdtMap(self,grid=15,pngFile='',fignum=None,units='ms',colormap='jet',verbose=False):
         if np.isscalar(grid):
             gridsize=[grid,grid]
         else:
             gridsize=[grid[0],grid[1]]
-        
+
         nRA=int(360/gridsize[0])
         nDec=int(180/gridsize[1])
         dtarr=self.dtData(grid=grid,units=units,verbose=verbose)
-        
+
         labgridRA=np.arange(0,360+gridsize[0],gridsize[0])
         labgridDec=np.arange(-90,90+gridsize[1],gridsize[1])
-            
+
         fig=plt.figure(fignum)
         plt.clf()
-        
+
         # set colour levels
         cticks=dtarr['cticks']
         clev=len(cticks)-1
         cmin=cticks[0]
         cmax=cticks[-1]
         cmap=cm.get_cmap(colormap,clev)
-        
+
         dRAgrid=nRA/24
         dDecgrid=nDec/12
         plt.imshow(dtarr['arr'],aspect='equal',cmap=cmap,vmin=cmin,vmax=cmax)
@@ -215,7 +199,7 @@ class DetectorPair(object):
         ax.set_yticks(np.arange(np.max([0,(dDecgrid-1)/2]),nDec,dDecgrid),
             yticklabs,minor=True)
         ax.tick_params(axis='both',which='minor',length=0)
-        
+
         ax.set_aspect('equal')
         plt.title('Time Difference: {}'.format(self.name))
         ax.xaxis.set_ticks_position('bottom')
@@ -228,29 +212,29 @@ class DetectorPair(object):
             plt.savefig(pngFile)
 
         return(fig)
-    
+
     def plotdtMapContour(self,grid=15,pngFile='',fignum=None,units='ms',colormap='jet',verbose=False):
         gridsize=[grid,grid]
-        
+
         # use contour plot
         # set grid for contour plot - on gridlines, including final line
         nRA=int(360/gridsize[0])+1
         nDec=int(180/gridsize[1])+1
         gridRA=np.arange(0,360+gridsize[0],gridsize[0])
         gridDec=np.arange(-90,90+gridsize[1],gridsize[1])
-        
+
         dtarr=np.zeros([nDec,nRA])
         for r in range(nRA):
             for d in range(nDec):
                 # get vector for sky localisation
-                vec=lonlat2vec([gridRA[r],gridDec[d]])
+                vec=ut.lonlat2vec([gridRA[r],gridDec[d]])
                 # dt = vec . (d1-d1) * R_earth / c
                 dt=self.vec2dt(vec)
-                dtarr[d,r]=dt.to(units).value    
-            
+                dtarr[d,r]=dt.to(units).value
+
         fig=plt.figure(fignum)
         plt.clf()
-        
+
         # set colour levels
         if np.max(dtarr)<=15:
             dcol=2
@@ -261,11 +245,11 @@ class DetectorPair(object):
         clev=2*cmax/dcol
         cmap=cm.get_cmap(colormap,clev)
         cticks=np.linspace(cmin,cmax,int(clev+1))
-        
+
         labgridsize=[15,15]
         labgridRA=np.arange(0,360+labgridsize[0],labgridsize[0])
         labgridDec=np.arange(-90,90+labgridsize[1],labgridsize[1])
-        
+
         plt.contourf(gridRA,gridDec,dtarr,cmap=cmap,vmin=cmin,vmax=cmax,levels=cticks)
         ax=plt.gca()
         # add ticks and labels
@@ -276,7 +260,7 @@ class DetectorPair(object):
         ax.set_yticks(labgridDec[:-1]+labgridsize[1]/2,
             [str(x) for x in np.arange(len(labgridDec)-1) + 1],minor=True)
         ax.tick_params(axis='both',which='minor',length=0)
-    
+
         ax.set_aspect('equal')
         plt.title('Time Difference: {}'.format(self.name))
         ax.xaxis.set_ticks_position('bottom')
@@ -321,7 +305,7 @@ class EventGW(object):
                 detectors=readDetectors(fileIn,dirIn)
                 self.setGwDets(detectors)
         return(params)
-    
+
     def setGwDets(self,detsIn):
         """
         Add detector info to EventGW, based on detector list in Event, and using Detector info provided.
@@ -333,7 +317,7 @@ class EventGW(object):
           * [dict]: dictionary containing Detector objects for detectors
         Output: None
         """
-        gridvec=lonlat2vec(self.loc.cellloc)
+        gridvec=ut.lonlat2vec(self.loc.cellloc)
         self.detectors={}
         for d in self.detlist:
             if d in detsIn:
@@ -352,13 +336,13 @@ class EventGW(object):
             detp=self.detpairs[dd]
             dtobj['arr']=detp.dtData()
             dtobj['value']=detp.vec2dt(gridvec).to(dtobj['arr']['units']).value
-            
+
             dtobj['matchmap'],dtobj['cells']=detp.getGridLocs(gridvec)
             self.dt[dd]=dtobj
-            
+
             print(dd,dtobj['value'])
             print(dtobj['cells'])
-            
+
         cellmatches=[]
         npair=len(self.dt)
         matcharr=np.zeros_like(dtobj['arr']['arr'])
@@ -372,7 +356,7 @@ class EventGW(object):
                 if matcharr[d,r]==npair:
                     cellmatches.append(raStr[r]+decStr[d])
         self.matcharr=matcharr
-        
+
         self.cellmatches=cellmatches
         print('cell matches:',self.cellmatches)
         return
@@ -385,11 +369,11 @@ class EventGW(object):
         Output: none
         """
         matcharr=self.matcharr
-        
+
         (nDec,nRA)=np.shape(matcharr)
         dRAgrid=nRA/24
         dDecgrid=nDec/12
-        
+
         npairs=len(self.dt)
         print(npairs,'pairs')
         if npairs<4:
@@ -425,17 +409,17 @@ class EventGW(object):
             yticklabs,minor=True)
         ax.tick_params(axis='both',which='minor',length=0)
         plt.title('Matching cells: {}'.format(self.name))
-        
+
         ax.xaxis.set_ticks_position('bottom')
         ax.yaxis.set_ticks_position('left')
         ax.grid(axis='both',which='major',alpha=1)
         cax=plt.axes([0.25,0.1,0.5,0.02])
         # plt.colorbar(matcharr,cax=cax,location='bottom',label='N matches')
         plt.colorbar(matchim,cax=cax,orientation='horizontal',label='N matches')
-        
+
         plt.savefig(os.path.join(plotDir,'{}_matchcells.png'.format(self.name)))
         return
-    
+
     def makewaveform(self,dataDir='',csvfile=None,hfact=1e21,precision=4,noise=1e-23,dur=1):
         self.waveform=Waveform(mtot=self.mtot,q=self.q,dist=self.dist)
         if not csvfile:
@@ -483,7 +467,7 @@ class Waveform(object):
         self.mch=mtot_to_m2(self.m1,self.m2)
         self.generate()
         return
-        
+
     def get_flower(self):
         if self.m1+self.m2 > 67:
             self.tres=1.0/4096
@@ -495,7 +479,7 @@ class Waveform(object):
             self.tres=1.0/8192
             self.f_lower=30
         return
-    
+
     def get_fmin(self):
         fmin=20*30/self.mtot
         if fmin<20:
@@ -506,14 +490,14 @@ class Waveform(object):
             fmin=np.min([fmin,20])
         self.fmin=fmin
         return(self.fmin)
-        
+
     def f_to_t(self,f):
         K0=K0=2.7e17 #Msun^5 s^-5
         fitparam=[0.0029658 , 0.96112625] #empirical fit
         t=K0**(1./3.) * self.mch**(-5./3.) * f**(-8./3.)
         t=t*(self.mch*fitparam[0] + fitparam[1])
         return(t)
-    
+
     def generate(self):
         # self.get_flower()
         self.tres=1./4096
@@ -534,7 +518,7 @@ class Waveform(object):
             hp.data=hp.data+noise
         self.data=pd.DataFrame({'t':t.data,'strain':hp.data})
         return
-        
+
 def readGWDetectors(fileIn):
     if isinstance(fileIn,str):
         dataIn=json.load(open(fileIn))
@@ -544,13 +528,13 @@ def readGWDetectors(fileIn):
         detsIn=dataIn['GWdetectors']
     else:
         detsIn=dataIn
-    
+
     # detlist=[]
     dets={}
     for d in detsIn:
         # detlist.append(d)
         dets[d]=Detector(detsIn[d])
-    
+
     return(dets)
 
 def dets2pairs(dets):
@@ -563,7 +547,7 @@ def dets2pairs(dets):
     return(pairs)
 
 def readDetPairs(fileIn):
-    
+
     dets=readGWDetectors(fileIn)
     pairs=dets2pairs(dets)
     return(pairs)
@@ -572,7 +556,7 @@ def plotMaps(detpairs,grid=15,plotDir='',dataDir='',
             fignum=None,units='ms',colormap='jet',plottype='imshow',verbose=False,pngPrefix='',csvPrefix=''):
     allowedtypes=['contour','imshow']
     assert plottype in allowedtypes,'ERROR: INVALID PLOTTYPE [{}]'.format(plottype)
-        
+
     p=0
     for dd in detpairs:
         if verbose:print('plotting dt map for {} [type={}, grid={}]'.format(detpairs[dd].code,plottype,grid))
@@ -586,5 +570,3 @@ def plotMaps(detpairs,grid=15,plotDir='',dataDir='',
             detpairs[dd].dtData(csvFile=csvFile,verbose=verbose)
             detpairs[dd].plotdtMap(pngFile=pngFile,fignum=p,units=units,colormap=colormap,verbose=verbose,grid=grid)
     plt.show()
-    
-
