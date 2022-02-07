@@ -6,7 +6,7 @@ from . import utils as ut
 # from . import xray
 
 class Event(object):
-    def __init__(self,paramin,detectors={}):
+    def __init__(self,paramin,detectors={},**kwargs):
         """
         Object for event. Created attributes based on parameters
         Inputs:
@@ -26,12 +26,13 @@ class Event(object):
         self.isXray=('xray' in self.messengers)
         if self.isGw and detectors:
             self.nameGW=self.messengers['GW']
-            self.gw=gw.EventGW(self)
+            fromCat=kwargs.get('fromCat',False)
+            self.gw=gw.EventGW(self,fromCat=fromCat)
         if self.isXray:
             self.nameXray=self.messengers['xray']
             self.xray=xray.EventXray(self)
         return
-        
+
     def _setLoc(self):
         """
         Set location of event, based on initParams
@@ -61,9 +62,9 @@ class Event(object):
             np.sin(ut.d2r(self.lon))*np.cos(ut.d2r(self.lat)),
             np.sin(ut.d2r(self.lat))])
         return vec
-        
-    
-def readInitParams(fileIn):
+
+
+def readInitParams(fileIn,**kwargs):
     """
     Read event and detector parameters from file, and convert to Event and Detector objects
     Inputs:
@@ -81,12 +82,12 @@ def readInitParams(fileIn):
     if 'events' in dataIn:
         events={}
         for e in dataIn['events']:
-            events[e]=Event(dataIn['events'][e],detectors=dets)
-            
+            events[e]=Event(dataIn['events'][e],detectors=dets,**kwargs)
+
     initParams={'events':events,'detectors':dets}
     return(initParams)
-    
-def readEvents(fileIn):
+
+def readEvents(fileIn,**kwargs):
     """
     Read event parameters from file, and convert to Event objects
     Inputs:
@@ -101,11 +102,10 @@ def readEvents(fileIn):
         eventsIn=dataIn['events']
     else:
         eventsIn=dataIn
-    
+
     # detlist=[]
     events={}
     for e in eventsIn:
         events[e]=Event(eventsIn[e])
-    
-    return(events)
 
+    return(events)

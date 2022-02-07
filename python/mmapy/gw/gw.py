@@ -275,15 +275,71 @@ class DetectorPair(object):
         return(fig)
 
 class EventGW(object):
-    def __init__(self,parent):
+    def __init__(self,parent,**kwargs):
         self.parent=parent
         self.name=parent.nameGW
         # self.loc=parent.loc
         # self.setLoc(parent.loc)
         self.loc=parent.loc
-        self.readParams()
+        fromCat=kwargs.get('fromCat',False)
+        if 'fromCat':
+            self.readCatParams()
+        else:
+            self.readParams()
         return
-    
+
+    def readCatParams(self,fileIn='gw_catalogue.json',catfileIn='gwcat.json',dirIn='data/GW'):
+        catIn=json.load(open(os.path.join(dirIn,catfileIn)))
+        print('Reading from gwcat catalogue')
+        if not 'data' in catIn:
+            print('No event data in {}'.format(os.path.join(dirIn,catfileIn)))
+            return
+        else:
+            if not self.name in catIn["data"]:
+                print('No entry for {} in GW catalogue'.format(self.name))
+                return
+            else:
+                print('Reading {}'.format(self.name))
+                self.paramsrc='gwcat'
+                params=catIn["data"][self.name]
+                m1param=params.get('M1',None)
+                if m1param:
+                    self.m1=m1param.get('best',None)
+                m2param=params.get('M2',None)
+                if m2param:
+                    self.m2=m2param.get('best',None)
+                mtotparam=params.get('Mtotal',None)
+                if mtotparam:
+                    self.mtot=mtotparam.get('best',None)
+                else:
+                    self.mtot=self.m1+self.m2
+                mchirpparam=params.get('Mchirp',None)
+                if mchirpparam:
+                    self.mch=mchirpparam.get('best',None)
+                mratioparams=params.get('Mratio',None)
+                if mratioparams:
+                    self.q=mratioparams.get('best',None)
+                else:
+                    self.q=self.m2/self.m1
+                distparam=params.get('DL',None)
+                if distparam:
+                    self.dist=distparam.get('best',None)
+
+                if 'gw_dets' in self.parent.initParams:
+                    self.detlist=self.parent.initParams.get('gw_dets',[])
+
+                else:
+                    detparams=params.get('net',None)
+                    if detparams:
+                        detlist=detparams.get('best','')
+                        self.detlist=[]
+                        for d in range(len(detlist)):
+                            self.detlist.append(detlist[d])
+                print('detlist',self.detlist)
+                detectors=readDetectors(fileIn,dirIn)
+                self.setGwDets(detectors)
+        return(params)
+
     def readParams(self,fileIn='gw_catalogue.json',dirIn='data/GW'):
         catIn=json.load(open(os.path.join(dirIn,fileIn)))
         if not 'events' in catIn:
@@ -294,6 +350,7 @@ class EventGW(object):
                 print('No entry for {} in GW catalogue'.format(self.name))
                 return
             else:
+                self.paramsrc='initparams'
                 params=catIn["events"][self.name]
                 self.mtot=params.get('totalmass_Msun',None)
                 self.q=params.get('massratio',None)
