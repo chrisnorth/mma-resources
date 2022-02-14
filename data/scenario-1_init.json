@@ -1,7 +1,6 @@
 {
 	"events":{
-		"GW170817":{
-			"name":"GW170817",
+		"LVK170817":{
 			"messengers":{
 				"GW":"GW170817",
 				"xray":"GW170817"
@@ -13,17 +12,15 @@
 			"xray_data":"GW170817_xray.csv",
 			"inclination_deg":28.5
 		},
-		"GW190412":{
-			"name":"GW190412",
+		"LVK190412":{
 			"messengers":{"GW":"GW190412"},
 			"datetime":"2019-04-12T05:31:21",
 			"dist_Mpc":740,
 			"gw_dets":["L","K","V"],
 			"loc":[307.5,38]
 		},
-		"GW190828":{
-			"name":"GW190828",
-			"messengers":{"GW":"GW190828_063405","xray":"GW190828_063405"},
+		"LVK190828":{
+			"messengers":{"GW":"GW190828_063405"},
 			"datetime":"2019-08-28T06:34:05",
 			"dist_Mpc":2130,
 			"gw_dets":["L","H","K"],
