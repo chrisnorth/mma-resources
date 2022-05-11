@@ -55,8 +55,9 @@ class Events(object):
         if fileout:
             try:
                 if isinstance(fileout,str):
-                    json.dump(js,open(fileout,'w'),skipkeys=True,**kwargs)
-                    fileout.close()
+                    fs=open(fileout,'w')
+                    json.dump(js,fs,skipkeys=True,**kwargs)
+                    fs.close()
                 else:
                     json.dump(js,fileout,skipkeys=True,**kwargs)
 

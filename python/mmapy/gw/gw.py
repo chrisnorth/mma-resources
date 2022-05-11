@@ -416,8 +416,11 @@ class EventGW(object):
         """
         gridvec=ut.lonlat2vec(self.loc.cellloc)
         self.detectors={}
+        self.dtvals={}
         for d in self.detlist:
             if d in detsIn:
+                if not hasattr(self,'refdet'):
+                    self.refdet=d
                 self.detectors[d]=detsIn[d]
                 print('adding detector {}'.format(d))
         self.detpairs=dets2pairs(self.detectors)
@@ -436,7 +439,20 @@ class EventGW(object):
 
             dtobj['matchmap'],dtobj['cells']=detp.getGridLocs(gridvec)
             self.dt[dd]=dtobj
-
+            d1=detp.d1.code
+            d2=detp.d2.code
+            if self.refdet==d1:
+                self.dtvals[d1]=0
+                print('setting reference dt=0 for {}'.format(d1))
+            elif self.refdet==d2:
+                self.dtvals[d2]=0
+                print('setting reference dt=0 for {}'.format(d2))
+            if d1 in self.dtvals:
+                self.dtvals[d2]=self.dtvals[d1] - dtobj['value']*1e-3
+            elif d2 in self.dtvals:
+                self.dtvals[d1]=dtobj['value']*1e-3 - self.dtvals[d2]
+            else:
+                print('WARNING: neither {} or {} in dtvals [{}]'.format(d1,d2,self.dtvals))
             print(dd,dtobj['value'])
             print(dtobj['cells'])
 
@@ -462,9 +478,12 @@ class EventGW(object):
         js={'m1':self.m1,'m2':self.m2,'chirpmass':self.mch,
             'totalmass':self.mtot,'massratio':self.q,'detectors':self.detlist,
             'files':self.files,'origname':self.name}
-        js['timedelta']={}
+        js['timedelta_ms']={}
+        js['tmerger_s']={}
         for dd in self.dt:
-            js['timedelta'][dd]=self.dt[dd]['value']
+            js['timedelta_ms'][dd]=self.dt[dd]['value']
+        for d in self.dtvals:
+            js['tmerger_s'][d]=self.dtvals[d]
         return(js)
 
     def plotmatches(self,plotDir=''):
@@ -609,7 +628,7 @@ class Waveform(object):
 
     def generate(self):
         # self.get_flower()
-        self.tres=1./4096
+        self.tres=1./8192
         self.get_fmin()
         tmin=self.f_to_t(self.fmin)
         fref=self.fmin
@@ -626,6 +645,16 @@ class Waveform(object):
             noise=np.random.normal(0,self.noise,len(t.data))
             hp.data=hp.data+noise
         self.data=pd.DataFrame({'t':t.data,'strain':hp.data})
+        return
+
+    def addNoise(self,noise):
+        if noise>0:
+            if self.noise>0:
+                print('WARNING: noise already present')
+            self.noise=noise
+            datalen=len(self.data['t'])
+            noisedata=np.random.normal(0,self.noise,datalen)
+            self.data['strain']=self.data['strain']+noisedata
         return
 
 def readGWDetectors(fileIn):
