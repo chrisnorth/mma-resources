@@ -93,7 +93,7 @@ button[disabled]:hover, button[disabled]:focus { background: #dfdfdf; color: bla
 .op-highlight:hover, .op-highlight:focus { background: #A3D96D; }
 
 
-.cc { background: #fef445; color: black; }
+.cc { background: #FFD1B3; color: black; }
 .cc-highlight { background: #FF6700; color: black; }
 .cc-highlight:hover, .cc-highlight:focus { background: #FF781F; }
 
@@ -136,7 +136,7 @@ button[disabled]:hover, button[disabled]:focus { background: #dfdfdf; color: bla
 .login__content__input {
 	display: block;
 	border: solid 1px #ccc;
-	padding: 0.75em 1em;
+	padding: 0.5em 0.5em;
 	font-size: 1em;
 	width: 100%;
 	border-radius: 0.25em;

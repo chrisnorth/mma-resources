@@ -8,9 +8,13 @@ text:
             cy: Don't shoot us... (Welsh)
     login:
         title:
-            en: Observer Sign In
-        button:
+            en: Observer Portal Sign In
+        intro:
+            en: Welcome to the Observer Portal. Please sign in to continue.
+        signin:
             en: Sign In
+        signout:
+            en: Sign Out
         username:
             en: User name
         password:
@@ -66,7 +70,7 @@ text:
                     en: Copy to clipboard
             steps:
                 title:
-                    en: Observation workflow
+                    en: Observer Portal
             step1:
                 title:
                     en: Initial event selection
@@ -124,7 +128,7 @@ text:
         gamma:
             title:
                 en: Gamma-ray Observatory
-        xray:
+        xr:
             title:
                 en: X-ray & Radio Observatory
     cosmocalc:
