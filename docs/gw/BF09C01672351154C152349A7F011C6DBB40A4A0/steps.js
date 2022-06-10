@@ -32,7 +32,7 @@ function Steps(){
 		{'id':'step-1'},
 		{'id':'step-2','ready':function(){ return (selections.event && selections.date); } },
 		{'id':'step-3','ready':function(){ return (selections.event && selections.date && selections.gridsquares.length > 0); }},
-		{'id':'step-4','ready':function(){ return (selections.event && selections.date && selections.gridsquares.length > 0 && selections.mass.length == 2 && selections.dist.length == 2); }}
+		{'id':'step-4','ready':function(){ return (selections.event && selections.date && selections.gridsquares.length > 0 && selections.mass.length == 2 && selections.distance.length == 2); }}
 	];
 	for(i = 0; i < steps.length; i++){
 		steps[i].el = document.getElementById(steps[i].id);
