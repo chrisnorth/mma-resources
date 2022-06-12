@@ -29,9 +29,12 @@ for e in eventsIn:
         ddir=os.path.join(dataDir,'GW','waveforms')
         if not os.path.isdir(ddir):
             os.makedirs(ddir)
+        templatedir=os.path.join(dataDir,'GW','templates')
+        if not os.path.isdir(templatedir):
+            os.makedirs(templatedir)
         ev.gw.plotmatches(plotDir=pdir)
         ev.gw.makewaveform(dataDir=ddir)
-        wfax.plot(ev.gw.waveform.data['t'],wfp+ev.gw.waveform.data['strain']*1e+21)
+        ev.gw.makeSims(dataDir=templatedir)
         wfax.plot(ev.gw.waveform.data['t']-ev.gw.t0_ms/1000,wfp+ev.gw.waveform.data['strain']*1e+21)
         wfp=wfp+1
 

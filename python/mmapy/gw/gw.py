@@ -478,9 +478,11 @@ class EventGW(object):
         return
 
     def to_json(self):
-        js={'m1':self.m1,'m2':self.m2,'chirpmass':self.mch,
+        js={'m1':self.m1,'m2':self.m2,'distance':self.dist,'chirpmass':self.mch,
             'totalmass':self.mtot,'massratio':ut.truncate(self.q),'detectors':self.detlist,
             'files':self.files,'origname':self.nameCat}
+        if hasattr(self,'t0_ms'):
+            js['t0_ms']=self.t0_ms
         if hasattr(self,'simParams'):
             js['simParams']=self.simParams
         js['timedelta_ms']={}
@@ -567,6 +569,39 @@ class EventGW(object):
         self.files['waveform_csv']=csvfile
         self.t0_ms=ms
         return
+
+    def makeSims(self,dataDir='',csvfile=None,hfact=1e21,precision=4,noise=1e-23,dur=1,overwrite=False):
+        simParams={}
+        simsM=[5,10,30,50]
+        simsD=[50,100,300,500,1000,3000,5000]
+        simParams['mtot']=simsM[np.argmin(np.abs(np.array(simsM)-self.mtot))]
+        simParams['dist']=simsD[np.argmin(np.abs(np.array(simsD)-self.dist))]
+
+        qrange=np.arange(0.1,1.1,0.1)
+        simFiles={}
+        for q in qrange:
+            csvfile='wf_Mtot{:.0f}_D{:.0f}_q{:.1f}.csv'.format(simParams['mtot'],simParams['dist'],q)
+            fileout=os.path.join(dataDir,csvfile)
+            simFiles['{:.1f}'.format(q)]=fileout
+            updateFile=False
+            fileex=os.path.isfile(fileout)
+            if fileex:
+                if overwrite:
+                    print('overwriting:',fileout)
+                    updateFile=True
+                else:
+                    print('file exists:',fileout)
+            else:
+                updateFile=True
+            if updateFile:
+                waveform=Waveform(mtot=simParams['mtot'],q=self.q,dist=simParams['dist'])
+
+                indur=np.where(self.waveform.data['t']>-dur)[0]
+                wf_print=pd.DataFrame({'t':self.waveform.data['t'][indur],'strain*{}'.format(hfact):self.waveform.data['strain'][indur]*hfact})
+                print(wf_print[0:10])
+                wf_print.to_csv(fileout,float_format='%.{}f'.format(precision),index=False)
+        self.files['simulations_csv']=simFiles['1.0']
+        self.simParams=simParams
         return
 
 def readDetectors(fileIn='gw_catalogue.json',dirIn='data/GW'):
