@@ -582,7 +582,7 @@ class EventGW(object):
         for q in qrange:
             csvfile='wf_Mtot{:.0f}_D{:.0f}_q{:.1f}.csv'.format(simParams['mtot'],simParams['dist'],q)
             fileout=os.path.join(dataDir,csvfile)
-            simFiles['{:.1f}'.format(q)]=fileout
+            simFiles['{:.1f}'.format(q)]=csvfile
             updateFile=False
             fileex=os.path.isfile(fileout)
             if fileex:

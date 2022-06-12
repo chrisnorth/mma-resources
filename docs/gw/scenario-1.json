@@ -62,7 +62,7 @@
         "files": {
           "matchcells_png": "plots/GW/loc_maps/LVK220617_matchcells.png",
           "waveform_csv": "LVK220617_waveform.csv",
-          "simulations_csv": "data/GW/templates/wf_Mtot5_D50_q1.0.csv"
+          "simulations_csv": "wf_Mtot5_D50_q1.0.csv"
         },
         "origname": "GW170817",
         "t0_ms": 400.0,
@@ -1052,7 +1052,7 @@
         "files": {
           "matchcells_png": "plots/GW/loc_maps/LVK220612_matchcells.png",
           "waveform_csv": "LVK220612_waveform.csv",
-          "simulations_csv": "data/GW/templates/wf_Mtot30_D500_q1.0.csv"
+          "simulations_csv": "wf_Mtot30_D500_q1.0.csv"
         },
         "origname": "GW190412",
         "t0_ms": 200.0,
@@ -2042,7 +2042,7 @@
         "files": {
           "matchcells_png": "plots/GW/loc_maps/LVK220628_matchcells.png",
           "waveform_csv": "LVK220628_waveform.csv",
-          "simulations_csv": "data/GW/templates/wf_Mtot50_D3000_q1.0.csv"
+          "simulations_csv": "wf_Mtot50_D3000_q1.0.csv"
         },
         "origname": "GW190828_063405",
         "t0_ms": 800.0,
