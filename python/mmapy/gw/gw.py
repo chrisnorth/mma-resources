@@ -316,7 +316,8 @@ class DetectorPair(object):
 class EventGW(object):
     def __init__(self,parent,**kwargs):
         self.parent=parent
-        self.name=parent.nameGW
+        self.name=parent.name
+        self.nameCat=parent.nameGW
         # self.loc=parent.loc
         # self.setLoc(parent.loc)
         self.loc=parent.loc
@@ -335,13 +336,13 @@ class EventGW(object):
             print('No event events in {}'.format(os.path.join(dirIn,fileIn)))
             return
         else:
-            if not self.name in catIn["events"]:
-                print('No entry for {} in GW catalogue'.format(self.name))
+            if not self.nameCat in catIn["events"]:
+                print('No entry for {} in GW catalogue'.format(self.nameCat))
                 return
             else:
-                print('Reading {}'.format(self.name))
+                print('Reading {}'.format(self.nameCat))
                 self.paramsrc='gwcat'
-                params=catIn["events"][self.name]
+                params=catIn["events"][self.nameCat]
                 m1param=params.get('M1',None)
                 if m1param:
                     self.m1=m1param.get('best',None)
@@ -386,12 +387,12 @@ class EventGW(object):
             print('No events in {}'.format(os.path.join(dirIn,fileIn)))
             return
         else:
-            if not self.name in catIn["events"]:
-                print('No entry for {} in GW catalogue'.format(self.name))
+            if not self.nameCat in catIn["events"]:
+                print('No entry for {} in GW catalogue'.format(self.nameCat))
                 return
             else:
                 self.paramsrc='initparams'
-                params=catIn["events"][self.name]
+                params=catIn["events"][self.nameCat]
                 self.mtot=params.get('totalmass_Msun',None)
                 self.q=params.get('massratio',None)
                 self.dist=params.get('dist_Mpc',None)
@@ -477,7 +478,7 @@ class EventGW(object):
     def to_json(self):
         js={'m1':self.m1,'m2':self.m2,'chirpmass':self.mch,
             'totalmass':self.mtot,'massratio':ut.truncate(self.q),'detectors':self.detlist,
-            'files':self.files,'origname':self.name}
+            'files':self.files,'origname':self.nameCat}
         js['timedelta_ms']={}
         js['tmerger_s']={}
         js['dt_arr']={}
