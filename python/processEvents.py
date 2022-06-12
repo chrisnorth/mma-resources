@@ -32,6 +32,7 @@ for e in eventsIn:
         ev.gw.plotmatches(plotDir=pdir)
         ev.gw.makewaveform(dataDir=ddir)
         wfax.plot(ev.gw.waveform.data['t'],wfp+ev.gw.waveform.data['strain']*1e+21)
+        wfax.plot(ev.gw.waveform.data['t']-ev.gw.t0_ms/1000,wfp+ev.gw.waveform.data['strain']*1e+21)
         wfp=wfp+1
 
         # plot waveforms for each detector
@@ -44,7 +45,7 @@ for e in eventsIn:
             yticks.append(wfd)
             yticklabels.append(d)
             wfd=wfd+1
-        dtwfax.set_xlim(-0.05,0.05)
+        dtwfax.set_xlim(-0.05+ev.gw.t0_ms/1000,0.05+ev.gw.t0_ms/1000)
         dtwfax.grid(axis='x',which='both')
         dtwfax.set_yticks(yticks,yticklabels)
         dtwffig.savefig(os.path.join(plotDir,'GW/waveforms','dt_waveforms_{}.png'.format(e)))

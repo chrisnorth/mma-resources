@@ -5,6 +5,7 @@ from astropy import constants as const
 from matplotlib import pyplot as plt
 from matplotlib import cm
 import pandas as pd
+import datetime
 from pycbc.waveform import get_td_waveform
 from .. import utils as ut
 
@@ -321,6 +322,7 @@ class EventGW(object):
         # self.loc=parent.loc
         # self.setLoc(parent.loc)
         self.loc=parent.loc
+        self.datetime=parent.datetime
         fromCat=kwargs.get('fromCat',False)
         if 'fromCat':
             self.readCatParams()
@@ -479,6 +481,8 @@ class EventGW(object):
         js={'m1':self.m1,'m2':self.m2,'chirpmass':self.mch,
             'totalmass':self.mtot,'massratio':ut.truncate(self.q),'detectors':self.detlist,
             'files':self.files,'origname':self.nameCat}
+        if hasattr(self,'simParams'):
+            js['simParams']=self.simParams
         js['timedelta_ms']={}
         js['tmerger_s']={}
         js['dt_arr']={}
@@ -555,10 +559,14 @@ class EventGW(object):
         if not csvfile:
             csvfile='{}_waveform.csv'.format(self.name)
         indur=np.where(self.waveform.data['t']>-dur)[0]
+        ms=datetime.datetime.fromisoformat(self.datetime).microsecond/1000
+        self.waveform.data['t']=self.waveform.data['t']+ms/1000
         wf_print=pd.DataFrame({'t':self.waveform.data['t'][indur],'strain*{}'.format(hfact):self.waveform.data['strain'][indur]*hfact})
         print(wf_print[0:10])
         wf_print.to_csv(os.path.join(dataDir,csvfile),float_format='%.{}f'.format(precision),index=False)
         self.files['waveform_csv']=csvfile
+        self.t0_ms=ms
+        return
         return
 
 def readDetectors(fileIn='gw_catalogue.json',dirIn='data/GW'):
@@ -599,27 +607,15 @@ class Waveform(object):
         self.generate()
         return
 
-    def get_flower(self):
-        if self.m1+self.m2 > 67:
-            self.tres=1.0/4096
-            self.f_lower=20
-        elif self.m1+self.m2>5:
-            self.tres=1.0/4096
-            self.f_lower=25
-        else:
-            self.tres=1.0/8192
-            self.f_lower=30
-        return
-
     def get_fmin(self):
-        fmin=20*30/self.mtot
+        fmin=50*30/self.mtot
         if fmin<20:
             fmin=20
-        elif fmin>400:
-            fmin=400
+        elif fmin>200:
+            fmin=200
         if self.m1+self.m2 > 67:
             fmin=np.min([fmin,20])
-        self.fmin=fmin
+        self.fmin=int(fmin)
         return(self.fmin)
 
     def f_to_t(self,f):
