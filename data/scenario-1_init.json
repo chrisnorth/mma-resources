@@ -1,12 +1,12 @@
 {
 	"events":{
 		"LVK170817":{
-			"name":"1",
+			"name":"LVK220617",
 			"messengers":{
 				"GW":"GW170817",
 				"xray":"GW170817"
 			},
-			"datetime":"2017-08-17T12:41:41",
+			"datetime":"2022-06-17T12:41:41",
 			"dist_Mpc":38,
 			"gw_dets":["L","H","V"],
 			"loc":[110.25,-20.15],
@@ -14,17 +14,17 @@
 			"inclination_deg":28.5
 		},
 		"LVK190412":{
-			"name":"2",
+			"name":"LVK220612",
 			"messengers":{"GW":"GW190412"},
-			"datetime":"2019-04-12T05:31:21",
+			"datetime":"2022-06-12T05:31:21",
 			"dist_Mpc":740,
 			"gw_dets":["L","K","V"],
 			"loc":[307.5,38]
 		},
 		"LVK190828":{
-			"name":"3",
+			"name":"LVK220628",
 			"messengers":{"GW":"GW190828_063405"},
-			"datetime":"2019-08-28T06:34:05",
+			"datetime":"2022-06-28T06:34:05",
 			"dist_Mpc":2130,
 			"gw_dets":["L","H","K"],
 			"loc":[187.5,-55.5]
