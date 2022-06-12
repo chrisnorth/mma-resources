@@ -23,6 +23,9 @@ def rotate(lon,lat,ang):
     matrot=np.matmul(np.matmul(lonrot,latrot),angrot)
     return matrot
 
+def truncate(x,dp=3):
+    return float('{0:.{1}f}'.format(x, dp))
+
 class Location(object):
     def __init__(self,loc):
         """

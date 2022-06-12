@@ -476,14 +476,16 @@ class EventGW(object):
 
     def to_json(self):
         js={'m1':self.m1,'m2':self.m2,'chirpmass':self.mch,
-            'totalmass':self.mtot,'massratio':self.q,'detectors':self.detlist,
+            'totalmass':self.mtot,'massratio':ut.truncate(self.q),'detectors':self.detlist,
             'files':self.files,'origname':self.name}
         js['timedelta_ms']={}
         js['tmerger_s']={}
+        js['dt_arr']={}
         for dd in self.dt:
-            js['timedelta_ms'][dd]=self.dt[dd]['value']
+            js['timedelta_ms'][dd]=ut.truncate(self.dt[dd]['value'])
+            js['dt_arr'][dd]=self.dt[dd]['arr']['arr'].tolist()
         for d in self.dtvals:
-            js['tmerger_s'][d]=self.dtvals[d]
+            js['tmerger_s'][d]=ut.truncate(self.dtvals[d])
         return(js)
 
     def plotmatches(self,plotDir=''):
