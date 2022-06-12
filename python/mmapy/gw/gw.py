@@ -486,13 +486,13 @@ class EventGW(object):
         if hasattr(self,'simParams'):
             js['simParams']=self.simParams
         js['timedelta_ms']={}
-        js['tmerger_s']={}
+        js['dtmerger_s']={}
         js['dt_arr']={}
         for dd in self.dt:
             js['timedelta_ms'][dd]=ut.truncate(self.dt[dd]['value'])
             js['dt_arr'][dd]=self.dt[dd]['arr']['arr'].tolist()
         for d in self.dtvals:
-            js['tmerger_s'][d]=ut.truncate(self.dtvals[d])
+            js['dtmerger_s'][d]=ut.truncate(self.dtvals[d],6)
         return(js)
 
     def plotmatches(self,plotDir=''):
