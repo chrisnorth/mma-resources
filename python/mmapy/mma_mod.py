@@ -54,13 +54,13 @@ class Events(object):
             js['events'][ev]=self.events[ev].to_json()
         if fileout:
             try:
+                strout=json.dumps(js,skipkeys=True,**kwargs)
                 if isinstance(fileout,str):
                     fs=open(fileout,'w')
-                    json.dump(js,fs,skipkeys=True,**kwargs)
+                    fs.write(strout)
                     fs.close()
                 else:
-                    json.dump(js,fileout,skipkeys=True,**kwargs)
-
+                    fileout.write(strout)
             except:
                 print('unable to write to file:',fileout)
         return(js)
