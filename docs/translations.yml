@@ -98,6 +98,10 @@ text:
                     en-US: Localization
                 intro:
                     en: Use the detector arrival times to identify the possible locations
+                select:
+                    en: Select the time difference
+                timediff:
+                    en: "Time difference (ms)"
                 selected:
                     en: "Selected grid squares:"
             step3:
@@ -122,6 +126,15 @@ text:
                     en: "Inclination (&deg;)"
                 to:
                     en: &rarr;
+            detectors:
+                H:
+                    en: Hanford
+                L:
+                    en: Livingstone
+                V:
+                    en: Virgo
+                K:
+                    en: KAGRA
         optical:
             title:
                 en: International Optical Telescope
