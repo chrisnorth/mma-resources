@@ -334,12 +334,20 @@ function Grid(opt){
 	}
 	range = max-min;
 	stepsize = (range <= 15 ? 2 : 5);
-	nsteps = Math.ceil(range/stepsize);
+
+	max = Math.max(Math.abs(max),Math.abs(min));
+	nsteps = 2*Math.ceil(max/stepsize);
+	max = stepsize*nsteps/2;
+	min = -max;
+	range = max-min;
+	//nsteps = Math.ceil(range/stepsize);
 	colours.quantiseScale(scale,nsteps,scale+' quantised '+nsteps);
 
 	this.parent = opt.parent;
 	this.scalebar = new ScaleBar({
 		'nsteps':nsteps,
+		'min': min,
+		'max': max,
 		'scale':scale+' quantised '+nsteps,
 		'this': this,
 		'class': opt.class+'-'+opt.n,
@@ -422,6 +430,8 @@ function ScaleBar(opt){
 	for(var c = 0; c < nsteps; c++){
 		b = new ScaleBit({
 			'id':c,
+			'min': opt.min+c*(opt.max-opt.min)/nsteps,
+			'max': opt.min+(c+1)*(opt.max-opt.min)/nsteps,
 			'bg':colours.getColourFromScale(opt.scale,c+0.5,0,nsteps),
 			'class':opt.class,
 			'this': opt.this,
@@ -458,6 +468,7 @@ function ScaleBit(opt){
 	this.opt = opt;
 	var el = document.createElement('div');
 	el.classList.add('colour');
+	el.setAttribute('title',opt.min+' ms → '+opt.max+' ms');
 	el.style.background = opt.bg;
 	var _obj = this;
 	if(typeof opt.click==="function") el.addEventListener('click',function(e){ opt.click.call(opt.this||_obj,e,opt); });
