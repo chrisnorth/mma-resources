@@ -105,3 +105,29 @@ iframe:not([src^=http]){ background: rgba(0,0,0,0); }
 .iframe-holder { position: relative; line-height: 0; }
 .iframe-holder > iframe { position: relative; z-index: 2; }
 .iframe-holder > div { position: absolute; z-index: 0; left: 50%; top: 50%; transform: translate3d(-50%,-50%,0); line-height: 1.5em; text-align:center; }
+
+.highlight-HK, .highlight-HL, .highlight-HV, .highlight-KH, .highlight-KL, .highlight-KV, .highlight-LH, .highlight-LK, .highlight-LV, .highlight-VH, .highlight-VK, .highlight-VL { position: relative; }
+.highlight-HK:after, .highlight-HL:after, .highlight-HV:after, .highlight-KH:after, .highlight-KL:after, .highlight-KV:after, .highlight-LK:after, .highlight-LH:after, .highlight-LV:after, .highlight-VH:after, .highlight-VK:after, .highlight-VL:after { content: ""; position: absolute; left:0; top:0; right: 0; bottom: 0; }
+
+.highlight-VL:after { background: repeating-linear-gradient( -45deg, rgba(0, 0, 255, 0.5) 0, rgba(0, 0, 255, 0.5) 10%, transparent 10%, transparent 25% ); }
+.highlight-VK:after { background: repeating-linear-gradient( -45deg, rgba(0, 255, 0, 0.5) 0, rgba(0, 255, 0, 0.5) 10%, transparent 10%, transparent 25% ); }
+.highlight-LK:after { background: repeating-linear-gradient( -45deg, rgba(255, 0, 0, 0.5) 0, rgba(255, 0, 0, 0.5) 10%, transparent 10%, transparent 25% ); }
+
+.highlight-VL.highlight-VK.highlight-LK:after { background: repeating-linear-gradient( -45deg, rgba(255, 0, 255, 0.5) 0, rgba(255, 0, 255, 0.5) 10%, transparent 10%, transparent 25% );!important; }
+
+.scalebar .highlight-VL { outline: 2px solid rgba(0, 0, 255, 1); }
+.scalebar .highlight-VK { outline: 2px solid rgba(0, 255, 0, 1); }
+.scalebar .highlight-LK { outline: 2px solid rgba(255, 0, 0, 1); }
+.VL { background: rgba(0, 0, 255, 0.5); }
+.VK { background: rgba(0, 255, 0, 0.5); }
+.LK { background: rgba(255, 0, 0, 0.5); }
+
+.grid-map { aspect-ratio: 2 / 1; width: 100%; border-collapse: collapse; }
+.grid-map td { aspect-ratio: 1 / 1; line-height: 1em; aspect-ratio: 1 / 1; width: 1em; height: 1em; padding: 0; }
+.grid-map .lbl { font-weight: bold; }
+.grid-map .lbl.top { text-align:center; position: relative; }
+.grid-map .lbl.top:after { content: ""; position: absolute; right: 0; bottom: 0; width: 1px; height: 0.5em; background: #999; }
+.grid-map .lbl.left { text-align: right; position: relative; padding-right: 2px }
+.grid-map .lbl.left:after { content: ""; position: absolute; right: 0; bottom: 0; width: 0.5em; height: 1px; background: #999; }
+
+.scalebar .colour { height: 1em; }

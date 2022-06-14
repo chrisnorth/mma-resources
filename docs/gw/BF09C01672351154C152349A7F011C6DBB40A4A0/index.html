@@ -38,16 +38,18 @@
 
 					<div class="iframe-holder">
 						<div data-translate="site.translations[text.observatory.gw.step1.intro][site.lang]"></div>
-						<iframe id="waveform1"></iframe>
+						<iframe id="waveform1" loading="lazy"></iframe>
 					</div>
 
 					<div class="padded output gw">
 						<label class="prop" for="select-event" data-translate="site.translations[text.observatory.gw.step1.selected][site.lang]"></label>
 						<select id="select-event">
 							<option value="" data-translate="site.translations[text.observatory.gw.step1.noevent][site.lang]"></option>
-							<option value="LVKyymmdd_hhmmss A" data-date="dd-mmm-yy hh:mm:ss GMT" data-waveform="data/dataHanford.csv">LVKyymmdd_hhmmss A</option>
-							<option value="LVKyymmdd_hhmmss B" data-date="dd-mmm-yy hh:mm:ss GMT" data-waveform="waveforms/GW170817_waveform.csv">LVKyymmdd_hhmmss B</option>
-							<option value="LVKyymmdd_hhmmss C" data-date="dd-mmm-yy hh:mm:ss GMT" data-waveform="waveforms/GW170817_waveform.csv">LVKyymmdd_hhmmss C</option>
+							<!-- EVENT START -->
+							<option value="LVK220612">LVK220612</option>
+							<option value="LVK220617">LVK220617</option>
+							<option value="LVK220628">LVK220628</option>
+							<!-- EVENT END -->
 						</select>
 						<span class="prop" data-translate="site.translations[text.observatory.gw.step1.date][site.lang]"></span> <span class="value event-date">?</span>
 					</div>
@@ -57,7 +59,8 @@
 				<section id="step-2" class="doublepadded">
 					<h2 data-translate="site.translations[text.observatory.gw.step2.title][site.lang]">Step 2</h2>
 					<p data-translate="site.translations[text.observatory.gw.step2.intro][site.lang]"></p>
-
+					<div id="localisation" class="grid-2">
+					</div>
 					<div class="padded output gw">
 						<strong class="prop" data-translate="site.translations[text.observatory.gw.step2.selected][site.lang]"></strong> <input type="text" class="selection grid-squares" id="grid-squares" required />
 					</div>
@@ -68,7 +71,7 @@
 					<h2 data-translate="site.translations[text.observatory.gw.step3.title][site.lang]">Step 3</h2>
 					<p data-translate="site.translations[text.observatory.gw.step3.intro][site.lang]"></p>
 					<div class="iframe-holder">
-						<iframe id="waveform3"></iframe>
+						<iframe id="waveform3" loading="lazy"></iframe>
 					</div>
 					<div class="padded output gw">
 						<p><strong class="prop" data-translate="site.translations[text.observatory.gw.step3.mass][site.lang]"></strong> <input type="number" class="selection" id="mass-lo" min="20" max="100" step="0.01" /> &rarr; <input type="number" class="selection" id="mass-hi" min="20" max="100" step="0.01" /></p>
@@ -81,7 +84,7 @@
 					<h2 data-translate="site.translations[text.observatory.gw.step4.title][site.lang]">Step 4</h2>
 					<p data-translate="site.translations[text.observatory.gw.step4.intro][site.lang]"></p>
 					<div class="iframe-holder">
-						<iframe id="waveform4"></iframe>
+						<iframe id="waveform4" loading="lazy"></iframe>
 					</div>
 					<div class="padded output gw">
 						<p><strong class="prop" data-translate="site.translations[text.observatory.gw.step4.massratio][site.lang]"></strong> <input type="number" class="selection" id="massratio-lo" min="0.1" max="1" step="0.1" /> &rarr; <input type="number" class="selection" id="massratio-hi" min="0.1" max="1" step="0.1" /></p>
@@ -125,15 +128,22 @@
 	<script>
 	ready(function(){
 
-		steps = new Steps();
-		language = new Lang({
-			'dir':'../../',
-			'ready':function(){
-				steps.setLanguage(this);
-				steps.updateValues();
-			}
+		fetch('scenario-1.json').then(response => {
+			if(!response.ok) throw new Error('Network response was not OK');
+			return response.json();
+		}).then(json => {
+			steps = new Steps(json);
+			language = new Lang({
+				'dir':'../../',
+				'ready':function(){
+					steps.setLanguage(this);
+					steps.setEvent();
+					steps.updateValues();
+				}
+			});
+		}).catch(error => {
+			console.error('Unable to load the data "scenario-1.json"',error);
 		});
-
 	});
 	</script>
 </body>
