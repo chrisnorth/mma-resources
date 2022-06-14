@@ -241,6 +241,7 @@ function GridMaps(opt){
 	this.opt = opt;
 	
 	var highlightclass = 'highlight';
+	var ids = ['A','B','C'];
 
 	this.set = function(d){
 		this.data = d;
@@ -252,7 +253,11 @@ function GridMaps(opt){
 		this.opt.el.appendChild(el);
 		
 		// Make the HTML holders for the maps
-		for(var id in d.GW.dt_arr) this.els.push(new Grid({'el':el,'id':id,'class':highlightclass,'data':d.GW.dt_arr[id],'parent':this}));
+		var i = 0;
+		for(var id in d.GW.dt_arr){
+			this.els.push(new Grid({'el':el,'id':id,'n':ids[i],'class':highlightclass,'data':d.GW.dt_arr[id],'parent':this}));
+			i++;
+		}
 	};
 
 	this.highlight = function(cls,sel){
@@ -289,15 +294,14 @@ function Grid(opt){
 		return this;
 	}
 	var el = document.createElement('div');
-	if(opt.id) el.setAttribute('id','pair-'+opt.id);
-	el.classList.add('grid-pair');
+	if(opt.n) el.setAttribute('id','pair-'+opt.n);
+	el.classList.add('grid-pair',opt.n,'padded');
 	opt.el.appendChild(el);
 	
 	var scale = 'grid-map';
 	colours.addScale(scale,'rgb(0,0,0) 0%, rgb(255,255,255) 100%');
 
 	this.title = document.createElement('h3');
-	this.title.classList.add(opt.id,'padded');
 	var pair = language.getKey('site.translations[text.observatory.gw.detectors.'+opt.id[0]+'][site.lang]')+' - '+language.getKey('site.translations[text.observatory.gw.detectors.'+opt.id[1]+'][site.lang]');
 	this.title.setAttribute('data-translate','site.translations[text.observatory.gw.detectors.'+opt.id[0]+'][site.lang] - site.translations[text.observatory.gw.detectors.'+opt.id[1]+'][site.lang]');
 	this.title.innerHTML = pair||"?";
@@ -322,7 +326,6 @@ function Grid(opt){
 	range = max-min;
 	stepsize = (range <= 15 ? 2 : 5);
 	nsteps = Math.ceil(range/stepsize);
-	nsteps = 8;
 	colours.quantiseScale(scale,nsteps,scale+' quantised '+nsteps);
 
 	this.parent = opt.parent;
@@ -330,7 +333,7 @@ function Grid(opt){
 		'nsteps':nsteps,
 		'scale':scale+' quantised '+nsteps,
 		'this': this,
-		'class': opt.class+'-'+opt.id,
+		'class': opt.class+'-'+opt.n,
 		'click':function(e,attr){
 			this.selectLevel(attr.id);
 			this.parent.highlight(attr.class,this.visible ? this.selected : []);
