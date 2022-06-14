@@ -366,13 +366,13 @@ function Grid(opt){
 		tr = document.createElement('tr');
 		this.y[y] = {'el':document.createElement('td')};
 		this.y[y].el.classList.add('lbl','left');
-		this.y[y].el.innerHTML = y+1;
+		this.y[y].el.innerHTML = opt.data.length-y;
 		tr.appendChild(this.y[y].el);
 		for(x = 0; x < opt.data[y].length; x++){
-			id = letters[x]+(y+1);
+			id = letters[x]+(opt.data.length-y);
 			this.grid[id] = {'el':document.createElement('td'),'v':opt.data[y][x],'n':Math.min(nsteps-1,Math.floor(nsteps*(opt.data[y][x]-min)/(range))),'id':id};
 			this.grid[id].el.classList.add('grid-cell');
-			this.grid[id].el.setAttribute('title',letters[x]+(y+1));
+			this.grid[id].el.setAttribute('title',letters[x]+(opt.data.length-y)+': '+opt.data[y][x]+' ms');
 			this.grid[id].el.style.background = colours.getColourFromScale(scale+' quantised '+nsteps,opt.data[y][x],min,max);
 			tr.appendChild(this.grid[id].el);
 		}

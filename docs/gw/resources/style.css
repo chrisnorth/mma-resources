@@ -109,13 +109,15 @@ iframe:not([src^=http]){ background: rgba(0,0,0,0); }
 .grid-pair { text-align: center; }
 .grid-pair p { text-align: left; }
 
+.scalebar { margin-bottom: 1em; }
+.scalebar .colour { height: 1em; }.scalebar .highlight-A { outline: 2px solid rgba(149, 16, 172, 1); }
+
 .highlight-A, .highlight-B, .highlight-C { position: relative; }
 .highlight-A:after, .highlight-B:after, .highlight-C:after { content: ""; position: absolute; left:0; top:0; right: 0; bottom: 0; }
 .highlight-A:after { background: repeating-linear-gradient( -45deg, rgba(149, 16, 172, 0.8) 0, rgba(149, 16, 172, 0.8) 10%, transparent 10%, transparent 25% ); }
 .highlight-B:after { background: repeating-linear-gradient( -45deg, rgba(12, 167, 137, 0.8) 0, rgba(12, 167, 137, 0.8) 10%, transparent 10%, transparent 25% ); }
 .highlight-C:after { background: repeating-linear-gradient( -45deg, rgba(249, 188, 38, 0.8) 0, rgba(249, 188, 38, 0.8) 10%, transparent 10%, transparent 25% ); }
 .highlight-A.highlight-B.highlight-C:after { background: repeating-linear-gradient( -45deg, rgba(214, 3, 3, 0.5) 0, rgba(214, 3, 3, 0.5) 10%, transparent 10%, transparent 25% );!important; }
-.scalebar .highlight-A { outline: 2px solid rgba(149, 16, 172, 1); }
 .scalebar .highlight-B { outline: 2px solid rgba(12, 167, 137, 1); }
 .scalebar .highlight-C { outline: 2px solid rgba(249, 188, 38, 1); }
 .A { background: rgba(149, 16, 172, 0.25); }
@@ -133,4 +135,3 @@ iframe:not([src^=http]){ background: rgba(0,0,0,0); }
 .grid-map .lbl.left { text-align: right; position: relative; padding-right: 2px }
 .grid-map .lbl.left:after { content: ""; position: absolute; right: 0; bottom: 0; width: 0.5em; height: 1px; background: #999; }
 
-.scalebar .colour { height: 1em; }
