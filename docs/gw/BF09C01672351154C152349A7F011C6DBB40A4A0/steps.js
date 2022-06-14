@@ -301,11 +301,20 @@ function Grid(opt){
 	var scale = 'grid-map';
 	colours.addScale(scale,'rgb(0,0,0) 0%, rgb(255,255,255) 100%');
 
-	this.title = document.createElement('h3');
 	var pair = language.getKey('site.translations[text.observatory.gw.detectors.'+opt.id[0]+'][site.lang]')+' - '+language.getKey('site.translations[text.observatory.gw.detectors.'+opt.id[1]+'][site.lang]');
+	this.title = document.createElement('h3');
+	this.title.classList.add('padded');
 	this.title.setAttribute('data-translate','site.translations[text.observatory.gw.detectors.'+opt.id[0]+'][site.lang] - site.translations[text.observatory.gw.detectors.'+opt.id[1]+'][site.lang]');
 	this.title.innerHTML = pair||"?";
 	el.appendChild(this.title);
+
+	this.p = document.createElement('p');
+	this.p.setAttribute('data-translate','site.translations[text.observatory.gw.step2.select][site.lang]');
+	this.p.innerHTML = language.getKey('site.translations[text.observatory.gw.step2.select][site.lang]');
+	el.appendChild(this.p);
+	console.log(this.p);
+
+
 	var x,y;
 	var letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X'];
 	this.grid = {};

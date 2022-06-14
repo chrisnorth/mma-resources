@@ -97,9 +97,9 @@ text:
                     en: Localisation
                     en-US: Localization
                 intro:
-                    en: Use the detector arrival times to identify the possible locations
+                    en: "Use the detector arrival times to identify the possible locations."
                 select:
-                    en: Select the time difference
+                    en: "Select the time difference:"
                 timediff:
                     en: "Time difference (ms)"
                 selected:
