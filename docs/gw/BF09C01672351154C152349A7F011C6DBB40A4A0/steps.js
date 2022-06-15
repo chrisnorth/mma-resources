@@ -370,13 +370,14 @@ function Grid(opt){
 	title.innerHTML = pair||"?";
 	el.appendChild(title);
 
-	p = document.createElement('p');
+	p = document.createElement('label');
+	p.setAttribute('for','timing-select-'+opt.id);
 	p.setAttribute('data-translate','site.translations[text.observatory.gw.step2.select][site.lang]');
 	p.innerHTML = language.getKey('site.translations[text.observatory.gw.step2.select][site.lang]');
 	el.appendChild(p);
 
 	p = document.createElement('p');
-	p.innerHTML = 'NEED TO ADD CHARTS HERE FOR OFFSET:'+opt.GW.timedelta_ms[opt.id]+'ms';
+	p.innerHTML = 'NEED TO ADD CHARTS FOR '+opt.GW.files.waveform_csv+'<br />OFFSET:'+opt.GW.timedelta_ms[opt.id]+'ms';
 	el.appendChild(p);
 
 	var letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X'];
@@ -392,7 +393,7 @@ function Grid(opt){
 		}
 	}
 	range = max-min;
-	stepsize = (range <= 15 ? 2 : 5);
+	stepsize = (range/2 <= 15 ? 2 : 5);
 
 	max = Math.max(Math.abs(max),Math.abs(min));
 	nsteps = 2*Math.ceil(max/stepsize);
@@ -404,6 +405,7 @@ function Grid(opt){
 	this.parent = opt.parent;
 	this.scalebar = new ScaleBar({
 		'nsteps':nsteps,
+		'name': 'timing-select-'+opt.id,
 		'min': min,
 		'max': max,
 		'scale':scale+' quantised '+nsteps,
@@ -513,7 +515,7 @@ function Level(n,opt){
 }
 
 function ScaleBar(opt){
-  var el;
+	var el,inp;
 	if(!opt) opt = {};
 	if(!opt.nsteps) opt.nsteps = 8;
 	if(!opt.scale) opt.scale = 'Viridis';
@@ -522,12 +524,14 @@ function ScaleBar(opt){
 	el.classList.add('scalebar','nsteps-'+opt.nsteps);
 	el.style.display = 'grid';
 	el.style['grid-template-columns'] = 'repeat('+opt.nsteps+',1fr)';
+	
 	this.el = el;
 	this.bars = [];
 	var b;
 	for(var c = 0; c < opt.nsteps; c++){
 		b = new ScaleBit({
 			'id':c,
+			'name': opt.name,
 			'min': opt.min+c*(opt.max-opt.min)/opt.nsteps,
 			'max': opt.min+(c+1)*(opt.max-opt.min)/opt.nsteps,
 			'bg':colours.getColourFromScale(opt.scale,c+0.5,0,opt.nsteps),
@@ -552,8 +556,8 @@ function ScaleBar(opt){
 
 		// Deselect all the colours
 		for(var b = 0; b < this.bars.length; b++){
-			this.bars[b].el.classList.remove(...(opt.class.split(/ /)));
-			if(b==n && this.visible) this.bars[b].el.classList.add(...(opt.class.split(/ /)));
+			this.bars[b].lbl.classList.remove(...(opt.class.split(/ /)));
+			if(b==n && this.visible) this.bars[b].lbl.classList.add(...(opt.class.split(/ /)));
 		}
 
 		this.selectedlevel = n;
@@ -565,12 +569,26 @@ function ScaleBit(opt){
 	if(!opt.bg) opt.bg = 'black';
 	this.opt = opt;
 	var el = document.createElement('div');
-	el.classList.add('colour');
-	el.setAttribute('title',opt.min+' ms → '+opt.max+' ms');
+	el.classList.add('scale-item');
 	el.style.background = opt.bg;
+
+	inp = document.createElement('input');
+	inp.classList.add('colour');
+	inp.setAttribute('type','radio');
+	inp.setAttribute('name',opt.name);
+	inp.setAttribute('id',opt.name+'-'+opt.id);
+	inp.value = opt.min+' ms → '+opt.max+' ms';
+	el.appendChild(inp);
+
+	lbl = document.createElement('label');
+	lbl.setAttribute('for',opt.name+'-'+opt.id);
+	lbl.setAttribute('title',opt.min+' ms → '+opt.max+' ms');
+	el.appendChild(lbl);
+
 	var _obj = this;
-	if(typeof opt.click==="function") el.addEventListener('click',function(e){ opt.click.call(opt.this||_obj,e,opt); });
+	if(typeof opt.click==="function") inp.addEventListener('click',function(e){ opt.click.call(opt.this||_obj,e,opt); });
 	this.el = el;
+	this.lbl = lbl;
 	if(opt.el) opt.el.appendChild(el);
 	return this;
 }
