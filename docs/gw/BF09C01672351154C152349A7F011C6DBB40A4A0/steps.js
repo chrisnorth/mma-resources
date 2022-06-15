@@ -82,12 +82,14 @@ function Steps(data){
 		}
 		el.notification.style.display = 'none';
 		this.updateNav();
+		location.hash = steps[step].el.getAttribute('id') || '';
 		return this;
 	};
 	this.showNotification = function(){
 		el.notification.style.display = '';
 		el.nav.style.display = 'none';
 		for(i = 0; i < steps.length; i++) steps[i].el.style.display = 'none';
+		location.hash = 'event-notification';
 		return this;
 	};
 	this.hideNotification = function(){
@@ -95,6 +97,7 @@ function Steps(data){
 		el.nav.style.display = '';
 		for(i = 0; i < steps.length; i++) steps[i].el.style.display = (i==step ? '':'none');
 		el.breadcrumb.style.display = '';
+		location.hash = steps[step].el.getAttribute('id') || '';
 		return this;
 	};
 	this.setLanguage = function(lang){
