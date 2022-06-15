@@ -286,10 +286,10 @@ function GridMaps(opt){
 		// Make the HTML holders for the maps
 		var i = 0;
 		for(var id in d.GW.dt_arr){
-      if(d.GW.dt_arr[id]){
-				this.els.push(new Grid({'el':el,'id':id,'n':ids[i],'class':'highlight','data':d.GW.dt_arr[id],'parent':this}));
+			if(d.GW.dt_arr[id]){
+				this.els.push(new Grid({'el':el,'id':id,'n':ids[i],'class':'highlight','data':d.GW.dt_arr[id],'GW':d.GW,'parent':this}));
 				i++;
-      }
+			}
 		}
 	};
 
@@ -372,8 +372,11 @@ function Grid(opt){
 	p.innerHTML = language.getKey('site.translations[text.observatory.gw.step2.select][site.lang]');
 	el.appendChild(p);
 
+	p = document.createElement('p');
+	p.innerHTML = 'NEED TO ADD CHARTS HERE FOR OFFSET:'+opt.GW.timedelta_ms[opt.id]+'ms';
+	el.appendChild(p);
+
 	var letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X'];
-	
 	
 	// Calculate range of data
 	max = -1e100;
