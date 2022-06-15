@@ -1,4 +1,4 @@
-var language,steps,colours,scales;
+var language,steps,colours,scales,s;
 
 
 colours = new Colours();
@@ -7,13 +7,15 @@ scales = {
 	'Heat': 'rgb(0,0,0) 0%, rgb(128,0,0) 25%, rgb(255,128,0) 50%, rgb(255,255,128) 75%, rgb(255,255,255) 100%',
 	'Planck': 'rgb(0,0,255) 0, rgb(0,112,255) 16.666%, rgb(0,221,255) 33.3333%, rgb(255,237,217) 50%, rgb(255,180,0) 66.666%, rgb(255,75,0) 100%',
 	'Plasma': 'rgb(12,7,134) 0, rgb(82,1,163) 12.5%, rgb(137,8,165) 25%, rgb(184,50,137) 37.5%, rgb(218,90,104) 50%, rgb(243,135,72) 62.5%, rgb(253,187,43) 75%, rgb(239,248,33) 87.5%'
+};
+for(s in scales){
+  if(scales[s]) colours.addScale(s,scales[s]);
 }
-for(s in scales) colours.addScale(s,scales[s]);
-
 function Steps(data){
-	var step = 0;
-	var selections = {'event':'','date':'','gridsquares':[],'mass':[],'distance':[],'massratio':[],'inclination':[],'waveform':''};
-	var el = {
+  var i,step,el,selections;
+	step = 0;
+	selections = {'event':'','date':'','gridsquares':[],'mass':[],'distance':[],'massratio':[],'inclination':[],'waveform':''};
+	el = {
 		'breadcrumb': document.querySelector('.breadcrumb'),
 		'event': document.getElementById('select-event'),
 		'notification': document.getElementById('event-notification'),
@@ -56,7 +58,7 @@ function Steps(data){
 	}
 	
 	this.goTo = function(s){
-		var i,ok;
+		var i;
 		if(typeof s==="number") step = s--;
 		if(step < 0) step = 0;
 		if(step > steps.length-1){
@@ -115,18 +117,21 @@ function Steps(data){
 			'inclination': (selections.inc[1] ? selections.inc[0] + ' - ' + selections.inc[1] : '')
 		};
 		for(key in this.langdict.text.observatory.gw.notification.template){
-			v = "";
-			rep = this.lang.getKey('site.translations[text.observatory.gw.notification.template.'+key+'][site.lang]')||"";
-			if(rep){
-				if(!required || (required && attr[key])) v = updateFromTemplate(rep,attr)
-			}
-			if(!required || (required && v!=="")) str += (str ? '\n' : '')+v;
+      if(this.langdict.text.observatory.gw.notification.template[key]){
+        v = "";
+        rep = this.lang.getKey('site.translations[text.observatory.gw.notification.template.'+key+'][site.lang]')||"";
+        if(rep){
+          if(!required || (required && attr[key])) v = updateFromTemplate(rep,attr);
+        }
+        if(!required || (required && v!=="")) str += (str ? '\n' : '')+v;
+      }
 		}
 		el.notification.querySelector('textarea').innerHTML = str;
 		return str;
 	};
 	this.updateValues = function(){
-		var opt = el.event.options[el.event.selectedIndex];
+    var opt,ev;
+		opt = el.event.options[el.event.selectedIndex];
 
 		selections.event = opt.getAttribute('value');
 		if(!selections.event || !data.events[selections.event]){
@@ -197,7 +202,7 @@ function Steps(data){
 
 	// Copy the notification to the clipboard
 	el.copy.addEventListener('click',function(e){
-		ta = el.notification.querySelector('textarea');
+		var ta = el.notification.querySelector('textarea');
 		ta.select();
 		ta.setSelectionRange(0, 99999); /* For mobile devices */
 		navigator.clipboard.writeText(ta.value);
@@ -214,15 +219,19 @@ function Steps(data){
 }
 
 function updateFromTemplate(txt,rep){
-	var key,safekey;
+	var key,reg;
 	for(key in rep){
-		reg = new RegExp('\{\{\\s*'+key+'\\s*\}\}');
-		txt = txt.replace(reg,rep[key]);
+    if(rep[key]){
+      reg = new RegExp('\{\{\\s*'+key+'\\s*\}\}');
+      txt = txt.replace(reg,rep[key]);
+    }
 	}
 	// Loop back over in case we've got patterns within our patterns 
 	for(key in rep){
-		reg = new RegExp('\{\{\\s*'+key+'\\s*\}\}');
-		txt = txt.replace(reg,rep[key]);
+    if(rep[key]){
+			reg = new RegExp('\{\{\\s*'+key+'\\s*\}\}');
+			txt = txt.replace(reg,rep[key]);
+    }
 	}
 	// Remove all unreplaced tags
 	txt = txt.replace(/\{\{\s*[^\}]*\s*\}\}/g,"");
@@ -232,6 +241,29 @@ function updateFromTemplate(txt,rep){
 	return txt;
 }
 
+
+function svgElement(t){
+	this._el = document.createElementNS('http://www.w3.org/2000/svg',t);
+	this.append = function(el){ this._el.appendChild(el); return this; };
+	this.appendTo = function(el){ if(el._el){ el._el.appendChild(this._el); }else{ el.appendChild(this._el); } return this; };
+	this.attr = function(obj,v){
+		var key;
+		// Build an object from a key/value pair
+		if(typeof obj==="string"){ key = obj; obj = {}; obj[key] = v; }
+    for(key in obj){
+      if(obj[key]) this._el.setAttribute(key,obj[key]);
+    }
+		return this;
+	};
+	this.html = function(t){ this._el.textContent = t; return this; };
+	this.addClass = function(cls){ this._el.classList.add(...cls.split(" ")); return this; };
+	this.removeClass = function(){ this._el.classList.remove(...arguments); return this; };
+	this.data = function(d){ this._data = d; return this; };
+	return this;
+}
+
+function svgEl(t){ return new svgElement(t); }
+
 function GridMaps(opt){
 	if(!opt) opt = {};
 	if(!opt.el || !opt.input){
@@ -240,7 +272,6 @@ function GridMaps(opt){
 	}
 	this.opt = opt;
 	
-	var highlightclass = 'highlight';
 	var ids = ['A','B','C'];
 
 	this.set = function(d){
@@ -255,31 +286,54 @@ function GridMaps(opt){
 		// Make the HTML holders for the maps
 		var i = 0;
 		for(var id in d.GW.dt_arr){
-			this.els.push(new Grid({'el':el,'id':id,'n':ids[i],'class':highlightclass,'data':d.GW.dt_arr[id],'parent':this}));
-			i++;
+      if(d.GW.dt_arr[id]){
+				this.els.push(new Grid({'el':el,'id':id,'n':ids[i],'class':'highlight','data':d.GW.dt_arr[id],'parent':this}));
+				i++;
+      }
 		}
 	};
 
-	this.highlight = function(cls,sel){
+	this.highlight = function(){
 		var match = {};
-		var i,s,m,o,e;
+		var i,j,s,m,o,e,good,paths,id,p;
+		paths = [];
+		o = '';
 		for(i = 0; i < this.els.length; i++){
-			this.els[i].highlight(cls,sel);
+			console.log(i,this.els[i].visible,this.els[i].selectedel,this.els[i]);
 			if(this.els[i].visible){
-				for(s = 0; s < this.els[i].selected.length; s++){
-					m = this.els[i].selected[s];
+				for(s = 0; s < this.els[i].selectedcells.length; s++){
+					m = this.els[i].selectedcells[s];
 					if(!match[m]) match[m] = 0;
 					match[m]++;
 				}
+				if(this.els[i].selectedel){
+					p = this.els[i].selectedel.cloneNode(true);
+					p.classList.add(this.els[i].class);
+					p.classList.add('overlay');
+					paths.push(p);
+				}
 			}
 		}
-		o = '';
-		for(id in match){
-			if(match[id] == this.els.length) o += (o ? ', ':'')+id;
+		for(i = 0; i < this.els.length; i++){
+			// Remove any existing overlays
+			var ov = this.els[i].svg.querySelectorAll('.overlay');
+			for(j = 0 ; j < ov.length; j++){
+				if(ov[j].parentNode !== null) ov[j].parentNode.removeChild(ov[j]);
+			}
+
+			// Add new overlay paths
+			for(p = 0; p < paths.length; p++) this.els[i].svg.appendChild(paths[p].cloneNode(true));
 		}
-		if(o!=opt.input.value && o){
+		good = [];
+		for(id in match){
+			if(match[id] == this.els.length){
+				o += (o ? ', ':'')+id;
+				good.push(id);
+			}
+		}
+		if(o!=opt.input.value){
 			opt.input.value = o;
-			var e = document.createEvent('HTMLEvents');
+			e = document.createEvent('HTMLEvents');
 			e.initEvent('change', true, false);
 			opt.input.dispatchEvent(e);
 		}
@@ -293,39 +347,38 @@ function Grid(opt){
 		console.error('No element to attach Grid to',opt.el);
 		return this;
 	}
-	var el = document.createElement('div');
+	var x,y,max,min,range,el,p,title,scale,pair,stepsize,nsteps;
+
+	el = document.createElement('div');
 	if(opt.n) el.setAttribute('id','pair-'+opt.n);
 	el.classList.add('grid-pair',opt.n,'padded');
 	opt.el.appendChild(el);
 	
-	var scale = 'grid-map';
+	scale = 'grid-map';
 	colours.addScale(scale,'rgb(0,0,0) 0%, rgb(255,255,255) 100%');
 
-	var pair = language.getKey('site.translations[text.observatory.gw.detectors.'+opt.id[0]+'][site.lang]')+' - '+language.getKey('site.translations[text.observatory.gw.detectors.'+opt.id[1]+'][site.lang]');
-	this.title = document.createElement('h3');
-	this.title.classList.add('padded');
-	this.title.setAttribute('data-translate','site.translations[text.observatory.gw.detectors.'+opt.id[0]+'][site.lang] - site.translations[text.observatory.gw.detectors.'+opt.id[1]+'][site.lang]');
-	this.title.innerHTML = pair||"?";
-	el.appendChild(this.title);
+	// Make grid-specific class
+	this.class = opt.class+'-'+opt.n;
 
-	this.p = document.createElement('p');
-	this.p.setAttribute('data-translate','site.translations[text.observatory.gw.step2.select][site.lang]');
-	this.p.innerHTML = language.getKey('site.translations[text.observatory.gw.step2.select][site.lang]');
-	el.appendChild(this.p);
-	console.log(this.p);
+	pair = language.getKey('site.translations[text.observatory.gw.detectors.'+opt.id[0]+'][site.lang]')+' - '+language.getKey('site.translations[text.observatory.gw.detectors.'+opt.id[1]+'][site.lang]');
+	title = document.createElement('h3');
+	title.classList.add('padded');
+	title.setAttribute('data-translate','site.translations[text.observatory.gw.detectors.'+opt.id[0]+'][site.lang] - site.translations[text.observatory.gw.detectors.'+opt.id[1]+'][site.lang]');
+	title.innerHTML = pair||"?";
+	el.appendChild(title);
 
+	p = document.createElement('p');
+	p.setAttribute('data-translate','site.translations[text.observatory.gw.step2.select][site.lang]');
+	p.innerHTML = language.getKey('site.translations[text.observatory.gw.step2.select][site.lang]');
+	el.appendChild(p);
 
-	var x,y;
 	var letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X'];
-	this.grid = {};
-	this.x = [];
-	this.y = [];
 	
 	
 	// Calculate range of data
-	var max = -1e100;
-	var min = 1e100;
-	var range = 0;
+	max = -1e100;
+	min = 1e100;
+	range = 0;
 	for(y = 0; y < opt.data.length; y++){
 		for(x = 0; x < opt.data[y].length; x++){
 			max = Math.max(max,opt.data[y][x]);
@@ -340,7 +393,6 @@ function Grid(opt){
 	max = stepsize*nsteps/2;
 	min = -max;
 	range = max-min;
-	//nsteps = Math.ceil(range/stepsize);
 	colours.quantiseScale(scale,nsteps,scale+' quantised '+nsteps);
 
 	this.parent = opt.parent;
@@ -350,72 +402,112 @@ function Grid(opt){
 		'max': max,
 		'scale':scale+' quantised '+nsteps,
 		'this': this,
-		'class': opt.class+'-'+opt.n,
-		'click':function(e,attr){
-			this.selectLevel(attr.id);
-			this.parent.highlight(attr.class,this.visible ? this.selected : []);
-		}
+		'class': this.class,
+		'click':function(e,attr){ this.setLevel(attr.id); }
 	});
 
 	this.scalebar.addTo(el);
-	this.map = document.createElement('table');
-	this.map.classList.add('grid-map');
-	var tr;
-	tr = document.createElement('tr');
-	tr.innerHTML = '<th></th>';
-	for(x = 0; x < opt.data[0].length; x++){
-		this.x[x] = {'el':document.createElement('td')};
-		this.x[x].el.classList.add('lbl','top');
-		this.x[x].el.innerHTML = letters[x];
-		tr.appendChild(this.x[x].el);
-	}
-	this.map.appendChild(tr);
+
+	var xy,cols,cells,svg,n,h,w,nx,ny,pad,sz,l,id;
+	xy = [];
+	cols = {};
+	cells = {};
 	for(y = 0; y < opt.data.length; y++){
-		tr = document.createElement('tr');
-		this.y[y] = {'el':document.createElement('td')};
-		this.y[y].el.classList.add('lbl','left');
-		this.y[y].el.innerHTML = opt.data.length-y;
-		tr.appendChild(this.y[y].el);
+		xy.push([]);
 		for(x = 0; x < opt.data[y].length; x++){
 			id = letters[x]+(opt.data.length-y);
-			this.grid[id] = {'el':document.createElement('td'),'v':opt.data[y][x],'n':Math.min(nsteps-1,Math.floor(nsteps*(opt.data[y][x]-min)/(range))),'id':id};
-			this.grid[id].el.classList.add('grid-cell');
-			this.grid[id].el.setAttribute('title',letters[x]+(opt.data.length-y)+': '+opt.data[y][x]+' ms');
-			this.grid[id].el.style.background = colours.getColourFromScale(scale+' quantised '+nsteps,opt.data[y][x],min,max);
-			tr.appendChild(this.grid[id].el);
+			n = Math.min(nsteps-1,Math.floor(nsteps*(opt.data[y][x]-min)/(range)));
+			xy[y].push(n);
+			if(!cols[n]) cols[n] = colours.getColourFromScale(scale+' quantised '+nsteps,opt.data[y][x],min,max);
+			if(!cells[n]) cells[n] = [];
+			cells[n].push(id);
 		}
-		this.map.appendChild(tr);
 	}
-	el.appendChild(this.map);
-	
-	this.highlight = function(cls,selected){
-		// Clear selections
-		for(id in this.grid) this.grid[id].el.classList.remove(...(cls.split(/ /)));
-		// Select grid cells
-		for(s = 0; s < selected.length; s++){
-			this.grid[selected[s]].el.classList.add(...(cls.split(/ /)));
-		}
-		return this;
+
+	// Make timing map as SVG
+	nx = opt.data[0].length;
+	ny = opt.data.length;
+	svg = svgEl('svg');
+	w = 440;
+	h = 220;
+	pad = {'left':20,'right':0,'top':20,'bottom':0};
+	sz = Math.round((w-pad.left-pad.right)/nx);
+	w = sz*nx + pad.left + pad.right;
+	h = sz*ny + pad.top + pad.bottom;
+	svg.attr('width',w).attr('height',h).attr('viewBox','0 0 '+w+' '+h);
+	svg.addClass('grid-map').appendTo(el);
+	this.levels = [];
+	// Make grid labels
+	for(x = 0; x < nx; x++){
+		l = svgEl('text');
+		l.html(letters[x]);
+		l.attr('x',pad.left + ((x+0.5)*sz)).attr('y',pad.top - 4).attr('text-anchor','middle').attr('font-size',16).attr('font-weight','bold').attr('dominant-baseline','text-bottom');
+		l.appendTo(svg);
 	}
+	for(y = 0; y < ny; y++){
+		l = svgEl('text');
+		l.html(ny-y);
+		l.attr('x',pad.left - 4).attr('y',pad.top+((y+0.5)*sz)).attr('text-anchor','end').attr('font-size',16).attr('font-weight','bold').attr('dominant-baseline','central');
+		l.appendTo(svg);
+	}
+	// Build each level as a path
+	for(n = 0; n < nsteps; n++){
+		this.levels[n] = new Level(n,{'xy':xy,'sz':sz,'pad':pad,'cells':cells[n],'colour':cols[n],'this':this});
+		this.levels[n].el.appendTo(svg);
+	}
+	this.svg = svg._el;
+
 	
-	this.visible = true;
+	this.visible = false;
 	this.selectedlevel = -1;
-	this.selected = [];
-	this.selectLevel = function(n){
+	this.selectedcells = [];
+	this.selectedel = undefined;
+	this.selectedpath = '';
+	this.setLevel = function(n){
+
+		var i;
+
+		// Toggle selection
 		if(this.selectedlevel==n) this.visible = !this.visible;
 		else this.visible = true;
-		this.selected = [];
-		for(var id in this.grid){
-			if(this.grid[id].n==n) this.selected.push(id);
+		this.selectedpath = '';
+
+		for(i in this.levels){
+			if(i==n && this.visible){
+				// Set the class
+				this.levels[i].el.addClass(this.class);
+				this.selectedpath = this.levels[i].el._el.getAttribute('d');
+				this.selectedel = this.levels[i].el._el;
+			}else{
+				this.levels[i].el.removeClass(this.class);
+			}
 		}
+		this.selectedcells = (typeof n==="number") ? this.levels[n].cells : [];
 		this.scalebar.selectLevel(n);
-		this.selectedlevel = n;
+		this.selectedlevel = this.visible ? n : undefined;
+
+		// Update parent
+		this.parent.highlight();
+
 		return this;
 	};
 	return this;
 }
 
+function Level(n,opt){
+	if(!opt) return this;
+	this.el = svgEl('path');
+	this.cells = opt.cells;
+	this.el.attr('data-n',n).attr('d',getPathFromValue(opt.xy,n,opt.sz,opt.pad));
+	this.el.attr('fill',opt.colour).attr('stroke',opt.colour).attr('stroke-width',opt.sz*0.05);
+	this.el._el.addEventListener('click',function(e){
+		if(opt.this) opt.this.setLevel(n);
+	});
+	return this;
+}
+
 function ScaleBar(opt){
+  var el;
 	if(!opt) opt = {};
 	if(!opt.nsteps) opt.nsteps = 8;
 	if(!opt.scale) opt.scale = 'Viridis';
@@ -427,12 +519,12 @@ function ScaleBar(opt){
 	this.el = el;
 	this.bars = [];
 	var b;
-	for(var c = 0; c < nsteps; c++){
+	for(var c = 0; c < opt.nsteps; c++){
 		b = new ScaleBit({
 			'id':c,
-			'min': opt.min+c*(opt.max-opt.min)/nsteps,
-			'max': opt.min+(c+1)*(opt.max-opt.min)/nsteps,
-			'bg':colours.getColourFromScale(opt.scale,c+0.5,0,nsteps),
+			'min': opt.min+c*(opt.max-opt.min)/opt.nsteps,
+			'max': opt.min+(c+1)*(opt.max-opt.min)/opt.nsteps,
+			'bg':colours.getColourFromScale(opt.scale,c+0.5,0,opt.nsteps),
 			'class':opt.class,
 			'this': opt.this,
 			'click': opt.click
@@ -476,7 +568,6 @@ function ScaleBit(opt){
 	if(opt.el) opt.el.appendChild(el);
 	return this;
 }
-
 
 /* ============== */
 /* Colours v0.3.2 */
@@ -657,4 +748,143 @@ function Colours(){
 	};
 	
 	return this;
+}
+
+// Adapted from https://github.com/kazuhikoarase/qrcode-generator/blob/master/js/qrcode.js
+// Released under MIT licence
+function getPathFromValue(pattern,v,cellSize,pad){
+	var pointEquals = function (a, b) {
+		return a[0] === b[0] && a[1] === b[1];
+	};
+	if(typeof cellSize!=="number") cellSize = 1;
+
+	// Mark all four edges of each square in clockwise drawing direction
+	var edges = [];
+	var row,col,x0,y0,x1,y1,i,j,k,l,d,polygons,polygon,edge,foundEdge,p1,p2,p3,point,polygon2,point2;
+	for (row = 0; row < pattern.length; row++) {
+		for (col = 0; col < pattern[row].length; col++) {
+			if (pattern[row][col]==v){
+				x0 = col * cellSize + pad.left;
+				y0 = row * cellSize + pad.top;
+				x1 = (col + 1) * cellSize + pad.left;
+				y1 = (row + 1) * cellSize + pad.top;
+				edges.push([[x0, y0], [x1, y0]]);   // top edge (to right)
+				edges.push([[x1, y0], [x1, y1]]);   // right edge (down)
+				edges.push([[x1, y1], [x0, y1]]);   // bottom edge (to left)
+				edges.push([[x0, y1], [x0, y0]]);   // left edge (up)
+			}
+		}
+	}
+
+	// Edges that exist in both directions cancel each other (connecting the rectangles)
+	for (i = edges.length - 1; i >= 0; i--) {
+		for (j = i - 1; j >= 0; j--) {
+			if (pointEquals(edges[i][0], edges[j][1]) &&
+				pointEquals(edges[i][1], edges[j][0])) {
+				// First remove index i, it's greater than j
+				edges.splice(i, 1);
+				edges.splice(j, 1);
+				i--;
+				break;
+			}
+		}
+	}
+
+	polygons = [];
+	while (edges.length > 0) {
+		// Pick a random edge and follow its connected edges to form a path (remove used edges)
+		// If there are multiple connected edges, pick the first
+		// Stop when the starting point of this path is reached
+		polygon = [];
+		polygons.push(polygon);
+		edge = edges.splice(0, 1)[0];
+		polygon.push(edge[0]);
+		polygon.push(edge[1]);
+		do {
+			foundEdge = false;
+			for (i = 0; i < edges.length; i++) {
+				if (pointEquals(edges[i][0], edge[1])) {
+					// Found an edge that starts at the last edge's end
+					foundEdge = true;
+					edge = edges.splice(i, 1)[0];
+					p1 = polygon[polygon.length - 2];   // polygon's second-last point
+					p2 = polygon[polygon.length - 1];   // polygon's current end
+					p3 = edge[1];   // new point
+					// Extend polygon end if it's continuing in the same direction
+					if (p1[0] === p2[0] &&   // polygon ends vertical
+						p2[0] === p3[0]) {   // new point is vertical, too
+						polygon[polygon.length - 1][1] = p3[1];
+					}
+					else if (p1[1] === p2[1] &&   // polygon ends horizontal
+						p2[1] === p3[1]) {   // new point is horizontal, too
+						polygon[polygon.length - 1][0] = p3[0];
+					}
+					else {
+						polygon.push(p3);   // new direction
+					}
+					break;
+				}
+			}
+			if (!foundEdge)
+				throw new Error("no next edge found at", edge[1]);
+		}
+		while (!pointEquals(polygon[polygon.length - 1], polygon[0]));
+		
+		// Move polygon's start and end point into a corner
+		if (polygon[0][0] === polygon[1][0] &&
+			polygon[polygon.length - 2][0] === polygon[polygon.length - 1][0]) {
+			// start/end is along a vertical line
+			polygon.length--;
+			polygon[0][1] = polygon[polygon.length - 1][1];
+		}
+		else if (polygon[0][1] === polygon[1][1] &&
+			polygon[polygon.length - 2][1] === polygon[polygon.length - 1][1]) {
+			// start/end is along a horizontal line
+			polygon.length--;
+			polygon[0][0] = polygon[polygon.length - 1][0];
+		}
+	}
+	// Repeat until there are no more unused edges
+
+	// If two paths touch in at least one point, pick such a point and include one path in the other's sequence of points
+	for (i = 0; i < polygons.length; i++) {
+		polygon = polygons[i];
+		for (j = 0; j < polygon.length; j++) {
+			point = polygon[j];
+			for (k = i + 1; k < polygons.length; k++) {
+				polygon2 = polygons[k];
+				for (l = 0; l < polygon2.length - 1; l++) {   // exclude end point (same as start)
+					point2 = polygon2[l];
+					if (pointEquals(point, point2)) {
+						// Embed polygon2 into polygon
+						if (l > 0) {
+							// Touching point is not other polygon's start/end
+							polygon.splice.apply(polygon, [j + 1, 0].concat(
+								polygon2.slice(1, l + 1)));
+						}
+						polygon.splice.apply(polygon, [j + 1, 0].concat(
+							polygon2.slice(l + 1)));
+						polygons.splice(k, 1);
+						k--;
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	// Generate SVG path data
+	d = "";
+	for (i = 0; i < polygons.length; i++) {
+		polygon = polygons[i];
+		d += "M" + polygon[0][0] + "," + polygon[0][1];
+		for (j = 1; j < polygon.length; j++) {
+			if (polygon[j][0] === polygon[j - 1][0])
+				d += "v" + (polygon[j][1] - polygon[j - 1][1]);
+			else
+				d += "h" + (polygon[j][0] - polygon[j - 1][0]);
+		}
+		d += "z";
+	}
+	return d;
 }
