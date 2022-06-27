@@ -23,7 +23,7 @@
 
 	function WaveFitter(opts){
 
-		this.version = "2.1.0";
+		this.version = "2.1.1";
 		console.info('WaveFitter '+this.version);
 		this._opts = opts||{};
 		this.getUrlVars();
@@ -236,7 +236,6 @@
 		this.graph.updateData();
 
 		// Draw the data
-		this.graph.drawData();
 		this.updateCurves();
 
 		this.graph.update();

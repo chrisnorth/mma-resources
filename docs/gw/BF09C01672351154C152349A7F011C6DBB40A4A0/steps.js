@@ -133,24 +133,27 @@ function Steps(data){
 		return str;
 	};
 	this.updateValues = function(){
-    var opt,ev;
+		var opt,ev,wf;
 		opt = el.event.options[el.event.selectedIndex];
 
 		selections.event = opt.getAttribute('value');
 		if(!selections.event || !data.events[selections.event]){
 			console.warn('No event selected');
-			return this;
+			selections.waveform = null;
+			ev = null;
+			selections.date = null;
+		}else{
+			ev = data.events[selections.event];
+			selections.date = ev.datetime;
 		}
-		ev = data.events[selections.event];
-		selections.date = ev.datetime;
 
 		document.querySelectorAll('.event-name').forEach(function(el){ el.innerHTML = selections.event||'?'; });
 		document.querySelectorAll('.event-date').forEach(function(el){ el.innerHTML = selections.date||'?'; });
 
-		var wf = (ev.GW.files.waveform_csv ? 'waveforms/'+ev.GW.files.waveform_csv : "");
+		wf = (ev) ? (ev.GW.files.waveform_csv ? 'waveforms/'+ev.GW.files.waveform_csv : "") : '';
 		if(wf != selections.waveform){
 			selections.waveform = wf;
-			el.waveform1.setAttribute('src',(wf ? '../waveform-fitter/index.html?data='+wf+'&lang='+this.lang.lang : ''));
+			el.waveform1.setAttribute('src',(wf ? '../waveform-fitter/basic.html?data='+wf+'&lang='+this.lang.lang : ''));
 			el.waveform3.setAttribute('src',(wf ? '../waveform-fitter/index.html?data='+wf+'&lang='+this.lang.lang : ''));
 			el.waveform4.setAttribute('src',(wf ? '../waveform-fitter/index.html?level=advanced&data='+wf+'&lang='+this.lang.lang : ''));
 		}
