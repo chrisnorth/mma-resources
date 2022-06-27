@@ -186,7 +186,6 @@
 
 		return this;
 	};
-	
 	function Series(d,opt){
 		this.original = d;
 		this.data = [];
@@ -200,10 +199,10 @@
 		for(var i = 0; i < this.data.length; i++){
 			if(typeof this.opt.scale==="function") this.data[i].scale = this.opt.scale;
 			if(typeof this.opt.scaleLine==="function") this.data[i].scaleLine = this.opt.scaleLine;
+			if(typeof this.opt.toffset==="number") this.data[i].shiftt(this.opt.toffset);
 		}
 		return this;
 	}
-
 	function Range(min,max){
 		if(typeof min==="object" && min.length==2){
 			max = min[1];

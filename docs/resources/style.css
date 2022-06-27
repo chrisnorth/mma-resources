@@ -59,7 +59,7 @@ ol.grid > li {
 .page .nav-flex { display:flex;grid-gap:0.25em; }
 .page .prop { font-weight: 600; }
 .page .value { font-style: italic; }
-.page iframe { border: 0px; width: 100%; aspect-ratio: 16 / 9; }
+.page iframe, .page .widescreen { border: 0px; width: 100%; aspect-ratio: 16 / 9; }
 
 /* Breadcrumb */
 .breadcrumb { margin: 0; }

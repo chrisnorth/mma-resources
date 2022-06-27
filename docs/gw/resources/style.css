@@ -100,11 +100,11 @@ h3 { font-size: 1.25em; }
 ol.breadcrumb { list-style: none; display: grid; grid-template-columns: repeat(4,1fr); padding-left: 0; }
 ol.breadcrumb .step { font-weight: bold; font-family: 'Play', sans-serif; }
 
-iframe { background: black; }
+iframe, .widescreen { background: black; }
 iframe:not([src^=http]){ background: rgba(0,0,0,0); }
 .iframe-holder { position: relative; line-height: 0; }
 .iframe-holder > iframe { position: relative; z-index: 2; }
-.iframe-holder > div { position: absolute; z-index: 0; left: 50%; top: 50%; transform: translate3d(-50%,-50%,0); line-height: 1.5em; text-align:center; }
+.iframe-holder > div:first-child { position: absolute; z-index: 0; left: 50%; top: 50%; transform: translate3d(-50%,-50%,0); line-height: 1.5em; text-align:center; }
 
 .grid-pair { text-align: center; }
 .grid-pair p { text-align: left; }

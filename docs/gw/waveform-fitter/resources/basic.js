@@ -110,7 +110,7 @@
 
 		// Set the data series
 		if(this.wavedata.dataH!==null && !this.graph.series[0]){
-			this.graph.setSeries(0,this.wavedata.dataH,{'id':'line-data','text':'text.legend.data','class':'','stroke':this.urlVars.color||'rgba(0,150,200,1)'});
+			this.graph.setSeries(0,this.wavedata.dataH,{'id':'line-data','text':'text.legend.data','class':'','stroke':this.urlVars.color||'rgba(0,150,200,1)','toffset':parseFloat(this.urlVars.toffset)||0});
 			// Update the ranges
 			this.graph.axes.x.setRange(this.graph.series[0]);
 		}

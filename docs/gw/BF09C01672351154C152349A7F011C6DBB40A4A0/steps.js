@@ -153,7 +153,7 @@ function Steps(data){
 		wf = (ev) ? (ev.GW.files.waveform_csv ? 'waveforms/'+ev.GW.files.waveform_csv : "") : '';
 		if(wf != selections.waveform){
 			selections.waveform = wf;
-			el.waveform1.setAttribute('src',(wf ? '../waveform-fitter/basic.html?data='+wf+'&lang='+this.lang.lang : ''));
+			el.waveform1.setAttribute('src',(wf ? '../waveform-fitter/basic.html?data='+wf+(data.events[selections.event] ? '&toffset='+(-data.events[selections.event].GW.t0_ms/1000) : '')+'&lang='+this.lang.lang : ''));
 			el.waveform3.setAttribute('src',(wf ? '../waveform-fitter/index.html?data='+wf+'&lang='+this.lang.lang : ''));
 			el.waveform4.setAttribute('src',(wf ? '../waveform-fitter/index.html?level=advanced&data='+wf+'&lang='+this.lang.lang : ''));
 		}
