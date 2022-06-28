@@ -154,7 +154,7 @@ function Steps(data){
 		key = 'additional';
 		if(this.langdict.text.observatory.gw.notification.template[key]){
 			rep = this.lang.getKey('site.translations[text.observatory.gw.notification.template.'+key+'][site.lang]')||"";
-			str += (extra ? '\n\n'+rep+'\n'+('=').repeat(Math.max(10,rep.length))+'\n'+extra : '');
+			str += '\n\n'+rep+'\n'+('=').repeat(Math.max(10,rep.length))+'\n'+extra;
 		}
 		el.notification.querySelector('textarea').value = str;
 		return str;
