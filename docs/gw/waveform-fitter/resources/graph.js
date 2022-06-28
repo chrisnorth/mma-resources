@@ -15,6 +15,7 @@
 		this.scales = {};
 		this.axes = {};
 		this.series = [];
+		this.events = {};
 		this.init();
 		return this;
 	}
@@ -30,7 +31,41 @@
 			this.el.appendChild(this.svg.el);
 		}
 		this.svg.el.classList.add('graph');
-
+		var _obj = this;
+		this.el.addEventListener('mousemove',function(e){
+			if(_obj.events['mousemove']) _obj.trigger('mousemove',e,_obj.getValueAt(e.clientX,e.clientY));
+		});
+		this.el.addEventListener('click',function(e){
+			if(_obj.events['click']) _obj.trigger('click',e,_obj.getValueAt(e.clientX,e.clientY));
+		});
+		return this;
+	};
+	Graph.prototype.getValueAt = function(x,y){
+		var bb,ax,ay,s,dx,dy;
+		bb = this.el.getBoundingClientRect();
+		ax = this.axes.x.scale;
+		ay = this.axes.y.scale;
+		s = this.scales;
+		dx = x - bb.left - s.svgMargin.left;
+		dy = y - bb.top - s.svgMargin.top;
+		x = ax.min + (ax.range)*Math.min(1,Math.max(0,dx/s.graphWidth));
+		y = ay.max - (ay.range)*Math.min(1,Math.max(0,dy/s.graphHeight));
+		return {'x':x,'y':y};
+	};
+	Graph.prototype.on = function(type,data,fn){
+		if(!fn && typeof data==="function"){
+			fn = data;
+			data = {};
+		}
+		if(!this.events[type]) this.events[type] = [];
+		this.events[type].push({'data':data,'fn':fn});
+		return this;
+	};
+	Graph.prototype.trigger = function(t,e,d){
+		for(var i = 0; i < this.events[t].length; i++){
+			if(this.events[t][i].data) e.data = this.events[t][i].data;
+			this.events[t][i].fn.call(e.data['this']||this,e,d);
+		}
 		return this;
 	};
 	Graph.prototype.update = function(){

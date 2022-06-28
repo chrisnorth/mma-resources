@@ -361,7 +361,6 @@ function GridMaps(opt){
 		paths = [];
 		o = '';
 		for(i = 0; i < this.els.length; i++){
-			console.log(i,this.els[i].visible,this.els[i].selectedel,this.els[i]);
 			if(this.els[i].visible){
 				for(s = 0; s < this.els[i].selectedcells.length; s++){
 					m = this.els[i].selectedcells[s];
@@ -421,7 +420,7 @@ function Grid(opt){
 		console.error('No element to attach Grid to',opt.el);
 		return this;
 	}
-	var x,y,max,min,range,el,p,title,scale,pair,stepsize,nsteps;
+	var x,y,max,min,range,el,p,lbl,title,scale,pair,stepsize,nsteps;
 
 	el = document.createElement('div');
 	if(opt.n) el.setAttribute('id','pair-'+opt.n);
@@ -443,22 +442,24 @@ function Grid(opt){
 	title.innerHTML = pair||"?";
 	el.appendChild(title);
 
-	p = document.createElement('label');
-	p.setAttribute('for','timing-select-'+opt.id);
-	p.setAttribute('data-translate','site.translations[text.observatory.gw.step2.select][site.lang]');
-	p.innerHTML = language.getKey('site.translations[text.observatory.gw.step2.select][site.lang]');
-	el.appendChild(p);
-
-	p = document.createElement('p');
-	p.innerHTML = 'OFFSET:'+opt.GW.timedelta_ms[opt.id]+'ms';
-	el.appendChild(p);
-
-	var wf = (opt) ? (opt.GW.files.waveform_csv ? '../waveform-fitter/waveforms/'+opt.GW.files.waveform_csv : "") : '';
-
 	var graphholder = document.createElement('div');
 	graphholder.classList.add('widescreen','waveform');
 	el.appendChild(graphholder);
 	
+	p = document.createElement('p');
+	p.innerHTML = '';//'OFFSET:'+opt.GW.timedelta_ms[opt.id]+'ms';
+	el.appendChild(p);
+
+	lbl = document.createElement('label');
+	lbl.setAttribute('for','timing-select-'+opt.id);
+	lbl.setAttribute('data-translate','site.translations[text.observatory.gw.step2.select][site.lang]');
+	lbl.innerHTML = language.getKey('site.translations[text.observatory.gw.step2.select][site.lang]');
+	el.appendChild(lbl);
+
+
+	var wf = (opt) ? (opt.GW.files.waveform_csv ? '../waveform-fitter/waveforms/'+opt.GW.files.waveform_csv : "") : '';
+	this.mouseactive = true;
+
 	this.showGraph = function(data){
 		console.warn('showGraph',this);
 		if(!this.graph){
@@ -468,6 +469,13 @@ function Grid(opt){
 				}
 			});
 			this.graph.update();
+			this.graph.on('mousemove',{this:this},function(e,d){
+				// If the mouse montoring is active we update the value
+				if(this.mouseactive) p.innerHTML = language.getKey('site.translations[text.observatory.gw.step2.timediff][site.lang]')+': '+(d.x*1000).toFixed(2)+'ms';
+			}).on('click',{this:this},function(e,d){
+				// Toggle montioring of mouse position
+				this.mouseactive = !this.mouseactive;
+			});
 		}
 
 		var t0 = opt.GW.t0_ms;
