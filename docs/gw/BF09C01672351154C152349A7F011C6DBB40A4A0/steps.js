@@ -464,10 +464,10 @@ function Grid(opt){
 		var t0 = opt.GW.t0_ms;
 
 		this.graph.setSeries(0,data,{'id':'line-data','text':det_a,'class':'detector-'+opt.id[0],'stroke':'rgba(0,150,200,1)','toffset':(-(t0)/1000)||0});
-		this.graph.setSeries(1,data,{'id':'line-data','text':det_b,'class':'detector-'+opt.id[1],'stroke':'rgba(200,150,100,1)','toffset':(-(t0-opt.GW.timedelta_ms[opt.id])/1000)||0});
+		this.graph.setSeries(1,data,{'id':'line-data','text':det_b,'class':'detector-'+opt.id[1],'stroke':'rgba(200,150,100,1)','toffset':(-(t0+opt.GW.timedelta_ms[opt.id])/1000)||0});
 
 		// Update the ranges
-		this.graph.axes.x.setRange(-0.05,0.01);
+		this.graph.axes.x.setRange(-0.04,0.04);
 
 		this.graph.axes.y.setRange(-2,2);
 

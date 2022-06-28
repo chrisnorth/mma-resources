@@ -18,7 +18,7 @@ body, html {
 }
 .centred h1 { text-align:center; }
 .centred p { text-align: justify; }
-.holder { position: relative; width: 1080px; max-width: 100%; margin: auto; }
+.holder { position: relative; width: 1200px; max-width: 100%; margin: auto; }
 .padded { padding: 1em; }
 .block { display: block; }
 .padded-vertical { padding: 1em 0; }
