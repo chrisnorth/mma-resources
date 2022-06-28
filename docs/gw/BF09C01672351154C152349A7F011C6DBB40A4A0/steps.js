@@ -128,6 +128,10 @@ function Steps(data){
 		if(!this.langdict) return "";
 		var str,attr,key,v,rep;
 		str = '';
+		v = el.notification.querySelector('textarea').value;
+		var extra = '';
+		if(v.match(/\={10,}/)) v.replace(/^.*\={10,}\n(.*)$/m,function(m,p1){ extra = p1;; });
+
 		attr = {
 			'name': selections.event,
 			'date': selections.date,
@@ -138,16 +142,21 @@ function Steps(data){
 			'inclination': (selections.inc[1] ? selections.inc[0] + ' - ' + selections.inc[1] : '')
 		};
 		for(key in this.langdict.text.observatory.gw.notification.template){
-      if(this.langdict.text.observatory.gw.notification.template[key]){
-        v = "";
-        rep = this.lang.getKey('site.translations[text.observatory.gw.notification.template.'+key+'][site.lang]')||"";
-        if(rep){
-          if(!required || (required && attr[key])) v = updateFromTemplate(rep,attr);
-        }
-        if(!required || (required && v!=="")) str += (str ? '\n' : '')+v;
-      }
+			if(this.langdict.text.observatory.gw.notification.template[key]){
+				v = "";
+				rep = this.lang.getKey('site.translations[text.observatory.gw.notification.template.'+key+'][site.lang]')||"";
+				if(rep){
+					if(!required || (required && attr[key])) v = updateFromTemplate(rep,attr);
+				}
+				if(!required || (required && v!=="")) str += (str ? '\n' : '')+v;
+			}
 		}
-		el.notification.querySelector('textarea').innerHTML = str;
+		key = 'additional';
+		if(this.langdict.text.observatory.gw.notification.template[key]){
+			rep = this.lang.getKey('site.translations[text.observatory.gw.notification.template.'+key+'][site.lang]')||"";
+			str += (extra ? '\n\n'+rep+'\n'+('=').repeat(Math.max(10,rep.length))+'\n'+extra : '');
+		}
+		el.notification.querySelector('textarea').value = str;
 		return str;
 	};
 	this.updateValues = function(){

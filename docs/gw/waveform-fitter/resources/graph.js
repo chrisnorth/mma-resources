@@ -63,6 +63,8 @@
 
 		this.svg.cliprect.attr({'width':this.scales.graphWidth,'height':this.scales.graphHeight});
 
+		// Get font size
+		var fs = (this.scales.svgMargin.left/4);
 
 		// Create axes
 		if(!this.axes) this.axes = {};
@@ -82,7 +84,7 @@
 			this.axes.x.setDomain(0,this.scales.graphWidth).setProps(xprops).updateSize();
 		}
 		this.svg.xaxis.attr({'transform': "translate("+this.scales.svgMargin.left+"," + (this.scales.graphHeight + this.scales.svgMargin.top) + ")"});
-		if(this.axes.x.label) this.axes.x.label.attr({'x':this.scales.graphWidth/2,'y':(this.scales.svgMargin.bottom-(this.scales.svgMargin.left/4)-5)+"px","font-size":(this.scales.svgMargin.left/4)+"px"});
+		if(this.axes.x.label) this.axes.x.label.attr({'x':this.scales.graphWidth/2,'y':(this.scales.svgMargin.bottom-(this.scales.svgMargin.left/4)-5)+"px","font-size":fs+"px"});
 		var yprops = {
 			'key': 'h',
 			'dir': 'left',
@@ -99,7 +101,7 @@
 			this.axes.y.setDomain(this.scales.graphHeight,0).setProps(yprops).updateSize();
 		}
 		this.svg.yaxis.attr({'transform': "translate("+this.scales.svgMargin.left+"," + this.scales.svgMargin.top + ")"});
-		if(this.axes.y.label) this.axes.y.label.attr({'x':-this.scales.graphHeight/2,'y':(-this.scales.svgMargin.left*0.95 + 5)+'px',"font-size":(this.scales.svgMargin.left/4)+"px"});
+		if(this.axes.y.label) this.axes.y.label.attr({'x':-this.scales.graphHeight/2,'y':(-this.scales.svgMargin.left*0.95 + 5)+'px',"font-size":fs+"px"});
 
 		// Make data
 		if(!this.svg.data) this.svg.data = svgEl("g").appendTo(this.svg.el).attr({"id":"data-g",'clip-path':'url(#clip)'});
@@ -112,7 +114,7 @@
 			this.svg.legenditems = [];
 		}
 		// Update legend position
-		this.svg.legend.attr('transform',"translate("+(this.scales.svgMargin.left+10)+"," + (this.scales.svgMargin.top+20) + ")");
+		this.svg.legend.attr('transform',"translate("+(this.scales.svgMargin.left+fs*0.5)+"," + (this.scales.svgMargin.top+fs) + ")");
 
 		// Add legend items
 		var s,y,cls,txt,i;
@@ -126,13 +128,13 @@
 		}
 		y = 0;
 		// Add each series item to the legend
-		for(s = 0; s < this.series.length; s++, y+=30){
+		for(s = 0; s < this.series.length; s++, y+=fs){
 			if(this.series[s]){
 				cls = (this.series[s].opt.class ? ' '+this.series[s].opt.class : '');
 				txt = this.series[s].opt.text||'text.legend.data';
 				this.svg.legenditems[s] = {
-					'line':svgEl('line').appendTo(this.svg.legend).addClass('line'+cls).attr({'x1':0,'x2':(50).toFixed(1),'y1':y,'y2':y}),
-					'text':svgEl('text').appendTo(this.svg.legend).addClass('leg-text translate'+cls).attr({'x':(50 + 10).toFixed(1),'y':y,'data-translate':'site.translations['+txt+'][site.lang]'}).html(this.opt.getText(txt))
+					'line':svgEl('line').appendTo(this.svg.legend).addClass('line'+cls).attr({'x1':0,'x2':(fs*1.5).toFixed(1),'y1':y,'y2':y}),
+					'text':svgEl('text').appendTo(this.svg.legend).addClass('leg-text translate'+cls).attr({'x':(fs*1.5 + fs*0.5).toFixed(1),'y':y,'dominant-baseline':'middle','data-translate':'site.translations['+txt+'][site.lang]'}).html(this.opt.getText(txt))
 				};
 				if(this.series[s].opt.fill){
 					this.svg.legenditems[s].line.attr({'fill':this.series[s].opt.fill});

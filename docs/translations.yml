@@ -57,8 +57,8 @@ text:
                     locations:
                         en: "Possible locations: {{ locations }}"
                     mass:
-                        en: "Mass estimate (M&#9737;): {{ mass }}"
-                        cy: "Cyfanswm Màs (M&#9737;): {{ mass }}"
+                        en: "Mass estimate (M☉): {{ mass }}"
+                        cy: "Cyfanswm Màs (M☉): {{ mass }}"
                     distance:
                         en: "Distance estimate (Mpc): {{ distance }}"
                         cy: "Pellter (Mpc): {{ distance }}"
@@ -66,6 +66,8 @@ text:
                         en: "Mass ratio: {{ massratio }}"
                     inclination:
                         en: "Inclination (&deg;): {{ inclination }}"
+                    additional:
+                        en: "Additional notes:"
                 copy:
                     en: Copy to clipboard
             steps:
