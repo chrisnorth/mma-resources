@@ -111,12 +111,9 @@
 				txt = txt.replace(/\\n/g,"<br />");
 			}
 			return txt;
-		}
-		this.setLanguage = function(lang){
-			var i,rtxt,els,site;
-			this.lang = lang||this.lang;
-			console.info('Lang.setLanguage',lang,this.lang);
-			site = {'translations':this.translations,'lang':lang};
+		};
+		this.updateLanguage = function(){
+			var i,els,txt,tgt;
 			els = document.querySelectorAll('[data-translate]');
 			for(i = 0; i < els.length; i++){
 				txt = els[i].getAttribute('data-translate');
@@ -136,9 +133,14 @@
 					els[i].setAttribute('lang',this.lang);
 				}
 			}
-			
+			return this;
+		};
+		this.setLanguage = function(lang){
+			this.lang = lang||this.lang;
+			console.info('Lang.setLanguage',lang,this.lang);
+			var site = {'translations':this.translations,'lang':lang};
+			this.updateLanguage();
 			if(opt && typeof opt.ready==="function") ready(function(){ _obj.updatePicker(); opt.ready.call(_obj); });
-			
 			return this;
 		};
 

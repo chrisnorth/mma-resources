@@ -1,16 +1,16 @@
 var language,steps,colours,scales,s;
 
-
-colours = new Colours();
-scales = {
-	'Viridis8': 'rgb(122,76,139) 0, rgb(124,109,168) 12.5%, rgb(115,138,177) 25%, rgb(107,164,178) 37.5%, rgb(104,188,170) 50%, rgb(133,211,146) 62.5%, rgb(189,229,97) 75%, rgb(254,240,65) 87.5%, rgb(254,240,65) 100%',
-	'Heat': 'rgb(0,0,0) 0%, rgb(128,0,0) 25%, rgb(255,128,0) 50%, rgb(255,255,128) 75%, rgb(255,255,255) 100%',
-	'Planck': 'rgb(0,0,255) 0, rgb(0,112,255) 16.666%, rgb(0,221,255) 33.3333%, rgb(255,237,217) 50%, rgb(255,180,0) 66.666%, rgb(255,75,0) 100%',
-	'Plasma': 'rgb(12,7,134) 0, rgb(82,1,163) 12.5%, rgb(137,8,165) 25%, rgb(184,50,137) 37.5%, rgb(218,90,104) 50%, rgb(243,135,72) 62.5%, rgb(253,187,43) 75%, rgb(239,248,33) 87.5%'
-};
-for(s in scales){
-  if(scales[s]) colours.addScale(s,scales[s]);
+function errorMessage(msg,error){
+	console.error(msg,error);
+	var el = document.getElementById('error-message');
+	if(!el){
+		el = document.createElement('div');
+		el.style = 'background:#FFBABA;color:#D8000C;padding:0.5em;position:fixed;bottom:0;left:0;right:0;text-align:center;';
+		document.body.appendChild(el);
+	}
+	el.innerHTML = '<span style="border-radius:100%;width:1em;height:1em;line-height:1em;margin-right:0.5em;display:inline-block;background:#D8000C;color:white;">&times;</span>'+msg;
 }
+
 function Steps(data){
   var i,step,el,selections;
 	step = 0;
@@ -45,12 +45,27 @@ function Steps(data){
 		'this':this
 	});
 	var nav = el.breadcrumb.querySelectorAll('li');
-	var steps = [
-		{'id':'step-1'},
-		{'id':'step-2','ready':function(){ return (selections.event && selections.date); } },
-		{'id':'step-3','ready':function(){ return (selections.event && selections.date && selections.gridsquares.length > 0); }},
-		{'id':'step-4','ready':function(){ return (selections.event && selections.date && selections.gridsquares.length > 0 && selections.mass.length == 2 && selections.distance.length == 2); }}
-	];
+	var steps = [{
+		'id':'step-1'
+	},{
+		'id':'step-2',
+		'ready':function(){
+			return (selections.event && selections.date && grids.wfdata);
+		},
+		'onshow': function(){
+			grids.show();
+		}
+	},{
+		'id':'step-3',
+		'ready':function(){
+			return (selections.event && selections.date && selections.gridsquares.length > 0);
+		}
+	},{
+		'id':'step-4',
+		'ready':function(){
+			return (selections.event && selections.date && selections.gridsquares.length > 0 && selections.mass.length == 2 && selections.distance.length == 2);
+		}
+	}];
 	for(i = 0; i < steps.length; i++){
 		steps[i].el = document.getElementById(steps[i].id);
 		steps[i].nav = nav[i];
@@ -75,9 +90,12 @@ function Steps(data){
 			if(steps[i].nav){
 				steps[i].nav.classList.remove('current');
 				steps[i].nav.classList.remove('visited');
-				if(i < step) steps[i].nav.classList.add('visited');
-				else if(i == step) steps[i].nav.classList.add('current');
-				else steps[i].nav.classList.remove('visited');
+				if(i < step){
+					steps[i].nav.classList.add('visited');
+				}else if(i == step){
+					steps[i].nav.classList.add('current');
+					if(typeof steps[i].onshow==="function") steps[i].onshow.call(this);
+				}else steps[i].nav.classList.remove('visited');
 			}
 		}
 		el.notification.style.display = 'none';
@@ -248,6 +266,17 @@ function updateFromTemplate(txt,rep){
 }
 
 
+colours = new Colours();
+scales = {
+	'Viridis8': 'rgb(122,76,139) 0, rgb(124,109,168) 12.5%, rgb(115,138,177) 25%, rgb(107,164,178) 37.5%, rgb(104,188,170) 50%, rgb(133,211,146) 62.5%, rgb(189,229,97) 75%, rgb(254,240,65) 87.5%, rgb(254,240,65) 100%',
+	'Heat': 'rgb(0,0,0) 0%, rgb(128,0,0) 25%, rgb(255,128,0) 50%, rgb(255,255,128) 75%, rgb(255,255,255) 100%',
+	'Planck': 'rgb(0,0,255) 0, rgb(0,112,255) 16.666%, rgb(0,221,255) 33.3333%, rgb(255,237,217) 50%, rgb(255,180,0) 66.666%, rgb(255,75,0) 100%',
+	'Plasma': 'rgb(12,7,134) 0, rgb(82,1,163) 12.5%, rgb(137,8,165) 25%, rgb(184,50,137) 37.5%, rgb(218,90,104) 50%, rgb(243,135,72) 62.5%, rgb(253,187,43) 75%, rgb(239,248,33) 87.5%'
+};
+for(s in scales){
+  if(scales[s]) colours.addScale(s,scales[s]);
+}
+
 function svgElement(t){
 	this._el = document.createElementNS('http://www.w3.org/2000/svg',t);
 	this.append = function(el){ this._el.appendChild(el); return this; };
@@ -279,6 +308,11 @@ function GridMaps(opt){
 	this.opt = opt;
 	
 	var ids = ['A','B','C'];
+	
+	this.show = function(){
+		for(var i = 0; i < this.els.length; i++) this.els[i].showGraph(this.wfdata);
+		return;
+	}
 
 	this.set = function(d){
 		this.data = d;
@@ -288,7 +322,20 @@ function GridMaps(opt){
 		el.classList.add('grid');
 		this.opt.el.innerHTML = '';
 		this.opt.el.appendChild(el);
-		
+		delete this.wfdata;
+
+		// Get waveform data
+		var file = (d.GW.files.waveform_csv ? '../waveform-fitter/waveforms/'+d.GW.files.waveform_csv : "");
+		fetch(file).then(response => {
+			if(!response.ok) throw new Error('Network response was not OK');
+			return response.text();
+		}).then(txt => {
+			this.wfdata = parseCSV(txt);
+			opt.this.updateNav();
+		}).catch(error => {
+			errorMessage('Unable to load the data "'+wf+'"',error);
+		});
+
 		// Make the HTML holders for the maps
 		var i = 0;
 		for(var id in d.GW.dt_arr){
@@ -346,7 +393,19 @@ function GridMaps(opt){
 	};
 	return this;
 }
-
+function parseCSV(str) {
+	var lines = str.split(/\n/g);
+	var rows = [];
+	var r,i,c;
+	for(i = 1; i < lines.length; i++){
+		if(lines[i] != ""){
+			rows.push(lines[i].split(/,/g));
+			r = rows.length-1;
+			for(c = 0; c < rows[r].length; c++) rows[r][c] = parseFloat(rows[r][c]);
+		}
+	}
+	return rows;
+}
 function Grid(opt){
 	if(!opt) opt = {};
 	if(!opt.el){
@@ -367,6 +426,8 @@ function Grid(opt){
 	this.class = opt.class+'-'+opt.n;
 
 	pair = language.getKey('site.translations[text.observatory.gw.detectors.'+opt.id[0]+'][site.lang]')+' - '+language.getKey('site.translations[text.observatory.gw.detectors.'+opt.id[1]+'][site.lang]');
+	var det_a = language.getKey('site.translations[text.observatory.gw.detectors.'+opt.id[0]+'][site.lang]');
+	var det_b = language.getKey('site.translations[text.observatory.gw.detectors.'+opt.id[1]+'][site.lang]');
 	title = document.createElement('h3');
 	title.classList.add('padded');
 	title.setAttribute('data-translate','site.translations[text.observatory.gw.detectors.'+opt.id[0]+'][site.lang] - site.translations[text.observatory.gw.detectors.'+opt.id[1]+'][site.lang]');
@@ -380,8 +441,43 @@ function Grid(opt){
 	el.appendChild(p);
 
 	p = document.createElement('p');
-	p.innerHTML = 'NEED TO ADD CHARTS FOR '+opt.GW.files.waveform_csv+'<br />OFFSET:'+opt.GW.timedelta_ms[opt.id]+'ms';
+	p.innerHTML = 'OFFSET:'+opt.GW.timedelta_ms[opt.id]+'ms';
 	el.appendChild(p);
+
+	var wf = (opt) ? (opt.GW.files.waveform_csv ? '../waveform-fitter/waveforms/'+opt.GW.files.waveform_csv : "") : '';
+
+	var graphholder = document.createElement('div');
+	graphholder.classList.add('widescreen','waveform');
+	el.appendChild(graphholder);
+	
+	this.showGraph = function(data){
+		console.warn('showGraph',this);
+		if(!this.graph){
+			this.graph = new Graph(graphholder,{
+				'axes':{
+					'x':{}
+				}
+			});
+			this.graph.update();
+		}
+
+		var t0 = opt.GW.t0_ms;
+
+		this.graph.setSeries(0,data,{'id':'line-data','text':det_a,'class':'detector-'+opt.id[0],'stroke':'rgba(0,150,200,1)','toffset':(-(t0)/1000)||0});
+		this.graph.setSeries(1,data,{'id':'line-data','text':det_b,'class':'detector-'+opt.id[1],'stroke':'rgba(200,150,100,1)','toffset':(-(t0-opt.GW.timedelta_ms[opt.id])/1000)||0});
+
+		// Update the ranges
+		this.graph.axes.x.setRange(-0.05,0.01);
+
+		this.graph.axes.y.setRange(-2,2);
+
+		// Update the scales and domains
+		this.graph.updateData();
+
+		this.graph.update();
+		return this;
+	};
+
 
 	var letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X'];
 	

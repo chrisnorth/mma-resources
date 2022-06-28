@@ -6,6 +6,7 @@
 	<link href='../resources/icon.svg' rel='icon' type='image/svg'>
 	<link rel="stylesheet" href="../../resources/style.css">
 	<link rel="stylesheet" href="../resources/style.css">
+	<script type="text/javascript" src="../waveform-fitter/resources/graph.js"></script>
 </head>
 <body class="gw-bg">
 	<div id="main" class="page">
@@ -126,6 +127,7 @@
 	<script type="text/javascript" src="../../resources/lang.js"></script>
 	<script type="text/javascript" src="steps.js"></script>
 	<script>
+	var steps,language;
 	ready(function(){
 
 		fetch('scenario-1.json').then(response => {
