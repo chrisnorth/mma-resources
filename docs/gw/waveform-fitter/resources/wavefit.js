@@ -24,13 +24,15 @@
 	function WaveFitter(opts){
 
 		this.version = "2.1.1";
-		console.info('WaveFitter '+this.version);
+		this.title = "WaveFitter";
+		console.info(this.title+' '+this.version);
 		this._opts = opts||{};
+		this.ns = opts.ns||"wavefitter";
 		this.getUrlVars();
 		this.debug = (this.urlVars.debug) ? this.urlVars.debug : false;
 		this.sliders = opts.sliders || null;
 		var _obj = this;
-		this.graph = new Graph(opts.graphholder,{'getText':function(txt){ return _obj.getTl(txt); }});
+		this.graph = new Graph(opts.graphholder,{'ns':this.ns,'getText':function(txt){ return _obj.getTl(txt); }});
 		this.scales = {};
 		if(this.urlVars.simulation) opts.simulation = this.urlVars.simulation;
 		if(this.urlVars.data) opts.data = this.urlVars.data;

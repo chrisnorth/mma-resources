@@ -3,7 +3,7 @@
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta charset="utf-8" />
-	<title data-translate="site.translations[text.title][site.lang]">Waveform Fitter</title>
+	<title data-translate="site.translations.wavefitter[text.title][site.lang]">Waveform Fitter</title>
 	<link rel="icon" type="image/vnd.microsoft.icon" href="resources/favicon-32x32.png" />
 	<link rel="stylesheet" href="resources/gwfitter.css">
 	<script type="text/javascript" src="resources/lang.js"></script>
@@ -32,9 +32,9 @@
 			"graphholder":document.getElementById("graph-holder"),
 			"data": "data/dataHanford.csv"
 		});
-
 		language = new Lang({
 			'dir': 'data/',
+			'ns': wf.ns,
 			'ready': function(){
 				// Update the WaveFitter
 				wf.setLanguage(this);

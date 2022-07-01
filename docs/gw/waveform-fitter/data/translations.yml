@@ -65,22 +65,22 @@ text:
             cy: Amser (e)
 
         strain:
-            en: Strain x10^{21}
-            cy: Straen x10^{21}
+            en: "Strain x10^{21}"
+            cy: "Straen x10^{21}"
 
 data:
 
     totalmass:
-        en: Total Mass (M<sub>☉</sub>)
-        cy: Cyfanswm Màs (M<sub>☉</sub>)
+        en: "Total Mass (M<sub>☉</sub>)"
+        cy: "Cyfanswm Màs (M<sub>☉</sub>)"
 
     distance:
         en: Distance (Mpc)
         cy: Pellter (Mpc)
 
     inclination:
-        en: Inclination (&deg;)
-        cy: Inclination (&deg;)
+        en: "Inclination (&deg;)"
+        cy: "Inclination (&deg;)"
 
     massratio:
         en: Mass ratio

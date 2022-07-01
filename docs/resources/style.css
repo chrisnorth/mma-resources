@@ -1,6 +1,5 @@
 *, *:after, *:before { box-sizing: border-box; }
 
-
 body, html {
 	font-family: sans-serif;
 	font-weight: 300;
@@ -26,6 +25,7 @@ body, html {
 .tallpadded { padding-top: 5em; padding-bottom: 5em; }
 .clear { clear: both; }
 p:first-child, h2:first-child, h3:first-child { margin-top: 0; }
+strong { font-weight: bold; }
 select, input { line-height: 2em; height: 2em; font-size: 1em; }
 textarea { font-size: 1em; line-height: 1.5em; border: solid 1px #ccc; margin-bottom: 0.25em; }
 

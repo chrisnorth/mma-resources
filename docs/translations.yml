@@ -37,7 +37,7 @@ text:
                     title:
                         en: Useful links
                 footer:
-                    en: &copy; Some footer text
+                    en: "&copy; Some footer text"
             prev:
                 en: "&laquo; Previous"
             next:
@@ -103,7 +103,7 @@ text:
                 select:
                     en: "Select the time difference:"
                 timediff:
-                    en: "Time difference (ms)"
+                    en: "Time difference: <strong>{{ dt }}</strong> (ms)"
                 selected:
                     en: "Selected grid squares:"
             step3:

@@ -133,7 +133,7 @@ text.detector-L { fill: green; }
 .scalebar .highlight-A { outline: 2px solid rgba(149, 16, 172, 1); }
 .scalebar .highlight-B { outline: 2px solid rgba(12, 167, 137, 1); }
 .scalebar .highlight-C { outline: 2px solid rgba(249, 188, 38, 1); }
-.highlight-A, .highlight-B, .highlight-C { position: relative; }
+.highlight-A, .highlight-B, .highlight-C { position: relative; opacity: 0.5; }
 .highlight-A:after, .highlight-B:after, .highlight-C:after { content: ""; position: absolute; left:0; top:0; right: 0; bottom: 0; }
 .highlight-A:after { background: repeating-linear-gradient( -45deg, rgba(149, 16, 172, 0.8) 0, rgba(149, 16, 172, 0.8) 10%, transparent 10%, transparent 25% ); }
 .highlight-B:after { background: repeating-linear-gradient( -45deg, rgba(12, 167, 137, 0.8) 0, rgba(12, 167, 137, 0.8) 10%, transparent 10%, transparent 25% ); }
@@ -141,6 +141,7 @@ text.detector-L { fill: green; }
 path.highlight-A { fill: rgba(149, 16, 172, 0.25); stroke: rgba(149, 16, 172, 1); stroke-width: 2; }
 path.highlight-B { fill: rgba(12, 167, 137, 0.25); stroke: rgba(12, 167, 137, 1); stroke-width: 2; }
 path.highlight-C { fill: rgba(249, 188, 38, 0.25); stroke: rgba(249, 188, 38, 1); stroke-width: 2; }
+.A .highlight-A, .B .highlight-B, .C .highlight-C { opacity: 1; }
 .highlight-A.highlight-B.highlight-C:after { background: repeating-linear-gradient( -45deg, rgba(214, 3, 3, 0.5) 0, rgba(214, 3, 3, 0.5) 10%, transparent 10%, transparent 25% );!important; }
 .A { background: rgba(149, 16, 172, 0.25); }
 .B { background: rgba(12, 167, 137, 0.25); }

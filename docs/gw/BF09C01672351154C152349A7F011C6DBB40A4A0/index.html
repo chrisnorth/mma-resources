@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title data-translate="site.translations[text.observatory.gw.title][site.lang]">{{ Title }}</title>
+	<title data-translate="site.translations.mma[text.observatory.gw.title][site.lang]">{{ Title }}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href='../resources/icon.svg' rel='icon' type='image/svg'>
 	<link rel="stylesheet" href="../../resources/style.css">
@@ -14,13 +14,13 @@
 			<div class="padded">
 				<div class="holder">
 					<svg width="2em" height="2em" version="1.1" viewBox="0 0 33.867 33.867" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"><g transform="translate(0 -263.13)"><path transform="matrix(.26458 0 0 .26458 0 263.13)" d="m0 0v128h128v-128h-128zm29.121 6.0605h10.176a40 40 0 0 1-33.488 33.105v-10.133a30 30 0 0 0 23.313-22.973zm20.248 0h10.049a60 60 0 0 1-53.609 53.307v-10.123a50 50 0 0 0 43.561-43.184zm20.141 0h10.029a80 80 0 0 1-73.73 73.307v-10.002a70 70 0 0 0 63.701-63.305zm20 0h10.094a100 100 0 0 1-93.795 93.307v-9.9121a90 90 0 0 0 83.701-83.395zm20 0h10.094a120 120 0 0 1-113.79 113.31v-9.9121a110 110 0 0 0 103.7-103.39z" fill="white" /></g></svg>
-					<a href="../index.html" class="login-link button gw-highlight" data-translate="site.translations[text.login.signout][site.lang]">Logout</a>
-					<h1 data-translate="site.translations[text.observatory.gw.title][site.lang]">{{ Title }}</h1>
+					<a href="../index.html" class="login-link button gw-highlight" data-translate="site.translations.mma[text.login.signout][site.lang]">Logout</a>
+					<h1 data-translate="site.translations.mma[text.observatory.gw.title][site.lang]">{{ Title }}</h1>
 				</div>
 			</div>
 			<div class="gw padded">
 				<div class="holder">
-					<h2 data-translate="site.translations[text.observatory.gw.steps.title][site.lang]">Steps</h2>
+					<h2 data-translate="site.translations.mma[text.observatory.gw.steps.title][site.lang]">Steps</h2>
 				</div>
 			</div>
 		</header>
@@ -28,82 +28,82 @@
 		<div class="tallpadded">
 			<div class="holder b6-bg doublepadded">
 				<ol class="breadcrumb gw-breadcrumb">
-					<li class="step current"><strong href="#step-1" data-translate="site.translations[text.observatory.gw.step1.title][site.lang]" aria-current="page">Step 1</strong></li>
-					<li class="step"><strong data-translate="site.translations[text.observatory.gw.step2.title][site.lang]">Step 2</strong></li>
-					<li class="step"><strong data-translate="site.translations[text.observatory.gw.step3.title][site.lang]">Step 3</strong></li>
-					<li class="step"><strong data-translate="site.translations[text.observatory.gw.step4.title][site.lang]">Step 4</strong></li>
+					<li class="step current"><strong href="#step-1" data-translate="site.translations.mma[text.observatory.gw.step1.title][site.lang]" aria-current="page">Step 1</strong></li>
+					<li class="step"><strong data-translate="site.translations.mma[text.observatory.gw.step2.title][site.lang]">Step 2</strong></li>
+					<li class="step"><strong data-translate="site.translations.mma[text.observatory.gw.step3.title][site.lang]">Step 3</strong></li>
+					<li class="step"><strong data-translate="site.translations.mma[text.observatory.gw.step4.title][site.lang]">Step 4</strong></li>
 				</ol>
 
 				<section id="step-1" class="doublepadded">
-					<h2 data-translate="site.translations[text.observatory.gw.step1.title][site.lang]">Step 1</h2>
+					<h2 data-translate="site.translations.mma[text.observatory.gw.step1.title][site.lang]">Step 1</h2>
 
 					<div class="iframe-holder">
-						<div data-translate="site.translations[text.observatory.gw.step1.intro][site.lang]"></div>
+						<div data-translate="site.translations.mma[text.observatory.gw.step1.intro][site.lang]"></div>
 						<iframe id="waveform1" loading="lazy"></iframe>
 					</div>
 
 					<div class="padded output gw">
-						<label class="prop" for="select-event" data-translate="site.translations[text.observatory.gw.step1.selected][site.lang]"></label>
+						<label class="prop" for="select-event" data-translate="site.translations.mma[text.observatory.gw.step1.selected][site.lang]"></label>
 						<select id="select-event">
-							<option value="" data-translate="site.translations[text.observatory.gw.step1.noevent][site.lang]"></option>
+							<option value="" data-translate="site.translations.mma[text.observatory.gw.step1.noevent][site.lang]"></option>
 							<!-- EVENT START -->
 							<option value="LVK220612">LVK220612</option>
 							<option value="LVK220617">LVK220617</option>
 							<option value="LVK220628">LVK220628</option>
 							<!-- EVENT END -->
 						</select>
-						<span class="prop" data-translate="site.translations[text.observatory.gw.step1.date][site.lang]"></span> <span class="value event-date">?</span>
+						<span class="prop" data-translate="site.translations.mma[text.observatory.gw.step1.date][site.lang]"></span> <span class="value event-date">?</span>
 					</div>
 				</section>
 
 
 				<section id="step-2" class="doublepadded">
-					<h2 data-translate="site.translations[text.observatory.gw.step2.title][site.lang]">Step 2</h2>
-					<p data-translate="site.translations[text.observatory.gw.step2.intro][site.lang]"></p>
+					<h2 data-translate="site.translations.mma[text.observatory.gw.step2.title][site.lang]">Step 2</h2>
+					<p data-translate="site.translations.mma[text.observatory.gw.step2.intro][site.lang]"></p>
 					<div id="localisation" class="grid-2">
 					</div>
 					<div class="padded output gw">
-						<strong class="prop" data-translate="site.translations[text.observatory.gw.step2.selected][site.lang]"></strong> <input type="text" class="selection grid-squares" id="grid-squares" required />
+						<strong class="prop" data-translate="site.translations.mma[text.observatory.gw.step2.selected][site.lang]"></strong> <input type="text" class="selection grid-squares" id="grid-squares" required />
 					</div>
 				</section>
 
 
 				<section id="step-3" class="doublepadded">
-					<h2 data-translate="site.translations[text.observatory.gw.step3.title][site.lang]">Step 3</h2>
-					<p data-translate="site.translations[text.observatory.gw.step3.intro][site.lang]"></p>
+					<h2 data-translate="site.translations.mma[text.observatory.gw.step3.title][site.lang]">Step 3</h2>
+					<p data-translate="site.translations.mma[text.observatory.gw.step3.intro][site.lang]"></p>
 					<div class="iframe-holder">
 						<iframe id="waveform3" loading="lazy"></iframe>
 					</div>
 					<div class="padded output gw">
-						<p><strong class="prop" data-translate="site.translations[text.observatory.gw.step3.mass][site.lang]"></strong> <input type="number" class="selection" id="mass-lo" min="20" max="100" step="0.01" /> &rarr; <input type="number" class="selection" id="mass-hi" min="20" max="100" step="0.01" /></p>
-						<p><strong class="prop" data-translate="site.translations[text.observatory.gw.step3.distance][site.lang]"></strong> <input type="number" class="selection" id="dist-lo" min="100" max="800" step="0.01" /> &rarr; <input type="number" class="selection" id="dist-hi" min="100" max="800" step="0.01" /></p>
+						<p><strong class="prop" data-translate="site.translations.mma[text.observatory.gw.step3.mass][site.lang]"></strong> <input type="number" class="selection" id="mass-lo" min="20" max="100" step="0.01" /> &rarr; <input type="number" class="selection" id="mass-hi" min="20" max="100" step="0.01" /></p>
+						<p><strong class="prop" data-translate="site.translations.mma[text.observatory.gw.step3.distance][site.lang]"></strong> <input type="number" class="selection" id="dist-lo" min="100" max="800" step="0.01" /> &rarr; <input type="number" class="selection" id="dist-hi" min="100" max="800" step="0.01" /></p>
 					</div>
 				</section>
 
 
 				<section id="step-4" class="doublepadded">
-					<h2 data-translate="site.translations[text.observatory.gw.step4.title][site.lang]">Step 4</h2>
-					<p data-translate="site.translations[text.observatory.gw.step4.intro][site.lang]"></p>
+					<h2 data-translate="site.translations.mma[text.observatory.gw.step4.title][site.lang]">Step 4</h2>
+					<p data-translate="site.translations.mma[text.observatory.gw.step4.intro][site.lang]"></p>
 					<div class="iframe-holder">
 						<iframe id="waveform4" loading="lazy"></iframe>
 					</div>
 					<div class="padded output gw">
-						<p><strong class="prop" data-translate="site.translations[text.observatory.gw.step4.massratio][site.lang]"></strong> <input type="number" class="selection" id="massratio-lo" min="0.1" max="1" step="0.1" /> &rarr; <input type="number" class="selection" id="massratio-hi" min="0.1" max="1" step="0.1" /></p>
-						<p><strong class="prop" data-translate="site.translations[text.observatory.gw.step4.inclination][site.lang]"></strong> <input type="number" class="selection" id="inc-lo" min="0" max="90" step="1" /> &rarr; <input type="number" class="selection" id="inc-hi" min="0" max="90" step="1" /></p>
+						<p><strong class="prop" data-translate="site.translations.mma[text.observatory.gw.step4.massratio][site.lang]"></strong> <input type="number" class="selection" id="massratio-lo" min="0.1" max="1" step="0.1" /> &rarr; <input type="number" class="selection" id="massratio-hi" min="0.1" max="1" step="0.1" /></p>
+						<p><strong class="prop" data-translate="site.translations.mma[text.observatory.gw.step4.inclination][site.lang]"></strong> <input type="number" class="selection" id="inc-lo" min="0" max="90" step="1" /> &rarr; <input type="number" class="selection" id="inc-hi" min="0" max="90" step="1" /></p>
 					</div>
 				</section>
 
 
 				<section id="event-notification" class="doublepadded">
-					<h2 data-translate="site.translations[text.observatory.gw.notification.title][site.lang]">Event notification</h2>
-					<p data-translate="site.translations[text.observatory.gw.notification.intro][site.lang]"></p>
+					<h2 data-translate="site.translations.mma[text.observatory.gw.notification.title][site.lang]">Event notification</h2>
+					<p data-translate="site.translations.mma[text.observatory.gw.notification.intro][site.lang]"></p>
 					<textarea class="padded b6-bg"></textarea>
 					<div class="nav-right">
 						<div class="nav-inner">
 							<div class="nav-flex">
-								<button id="show-steps" class="button gw-highlight" data-translate="site.translations[text.observatory.gw.back][site.lang]"></button>
-								<button class="button gw-highlight" id="event-copy" data-translate="site.translations[text.observatory.gw.notification.copy][site.lang]"></button>
-								<a href="../cosmological-calculator/index.html" class="cc-highlight button" data-translate="site.translations[text.cosmocalc.title][site.lang]" id="cosmocalc">CosmoCalc</a>
+								<button id="show-steps" class="button gw-highlight" data-translate="site.translations.mma[text.observatory.gw.back][site.lang]"></button>
+								<button class="button gw-highlight" id="event-copy" data-translate="site.translations.mma[text.observatory.gw.notification.copy][site.lang]"></button>
+								<a href="../cosmological-calculator/index.html" class="cc-highlight button" data-translate="site.translations.mma[text.cosmocalc.title][site.lang]" id="cosmocalc">CosmoCalc</a>
 							</div>
 						</div>
 					</div>
@@ -113,9 +113,9 @@
 					<div class="nav-right">
 						<div class="nav-inner">
 							<div class="nav-flex">
-								<button id="prev" class="button gw-highlight" data-translate="site.translations[text.observatory.gw.prev][site.lang]"></button>
-								<button id="show-notification" class="button gw-highlight" data-translate="site.translations[text.observatory.gw.notification.title][site.lang]"></button>
-								<button id="next" class="button gw-highlight" data-translate="site.translations[text.observatory.gw.next][site.lang]"></button>
+								<button id="prev" class="button gw-highlight" data-translate="site.translations.mma[text.observatory.gw.prev][site.lang]"></button>
+								<button id="show-notification" class="button gw-highlight" data-translate="site.translations.mma[text.observatory.gw.notification.title][site.lang]"></button>
+								<button id="next" class="button gw-highlight" data-translate="site.translations.mma[text.observatory.gw.next][site.lang]"></button>
 							</div>
 						</div>
 					</div>
@@ -136,7 +136,10 @@
 		}).then(json => {
 			steps = new Steps(json);
 			language = new Lang({
-				'dir':'../../',
+				'files':{
+					'languages':'../../languages.yml',
+					'translations': [{'file':'../../translations.yml','ns':'mma'},{'file':'../waveform-fitter/data/translations.yml','ns':'waveform'}],
+				},
 				'ready':function(){
 					steps.setLanguage(this);
 					steps.setEvent();

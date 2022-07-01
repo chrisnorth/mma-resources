@@ -100,7 +100,8 @@ function Steps(data){
 		}
 		el.notification.style.display = 'none';
 		this.updateNav();
-		location.hash = steps[step].el.getAttribute('id') || '';
+		if(typeof s==="number") location.hash = steps[step].el.getAttribute('id') || '';
+		location.hash = '';
 		return this;
 	};
 	this.showNotification = function(){
@@ -141,10 +142,10 @@ function Steps(data){
 			'distance': (selections.distance[1] ? selections.distance[0] + ' - ' + selections.distance[1] : ''),
 			'inclination': (selections.inc[1] ? selections.inc[0] + ' - ' + selections.inc[1] : '')
 		};
-		for(key in this.langdict.text.observatory.gw.notification.template){
-			if(this.langdict.text.observatory.gw.notification.template[key]){
+		for(key in this.langdict.mma.text.observatory.gw.notification.template){
+			if(this.langdict.mma.text.observatory.gw.notification.template[key]){
 				v = "";
-				rep = this.lang.getKey('site.translations[text.observatory.gw.notification.template.'+key+'][site.lang]')||"";
+				rep = this.lang.getKey('site.translations.mma[text.observatory.gw.notification.template.'+key+'][site.lang]')||"";
 				if(rep){
 					if(!required || (required && attr[key])) v = updateFromTemplate(rep,attr);
 				}
@@ -152,8 +153,8 @@ function Steps(data){
 			}
 		}
 		key = 'additional';
-		if(this.langdict.text.observatory.gw.notification.template[key]){
-			rep = this.lang.getKey('site.translations[text.observatory.gw.notification.template.'+key+'][site.lang]')||"";
+		if(this.langdict.mma.text.observatory.gw.notification.template[key]){
+			rep = this.lang.getKey('site.translations.mma[text.observatory.gw.notification.template.'+key+'][site.lang]')||"";
 			str += '\n\n'+rep+'\n'+('=').repeat(Math.max(10,rep.length))+'\n'+extra;
 		}
 		el.notification.querySelector('textarea').value = str;
@@ -433,12 +434,12 @@ function Grid(opt){
 	// Make grid-specific class
 	this.class = opt.class+'-'+opt.n;
 
-	pair = language.getKey('site.translations[text.observatory.gw.detectors.'+opt.id[0]+'][site.lang]')+' - '+language.getKey('site.translations[text.observatory.gw.detectors.'+opt.id[1]+'][site.lang]');
-	var det_a = language.getKey('site.translations[text.observatory.gw.detectors.'+opt.id[0]+'][site.lang]');
-	var det_b = language.getKey('site.translations[text.observatory.gw.detectors.'+opt.id[1]+'][site.lang]');
+	pair = language.getKey('site.translations.mma[text.observatory.gw.detectors.'+opt.id[0]+'][site.lang]')+' - '+language.getKey('site.translations.mma[text.observatory.gw.detectors.'+opt.id[1]+'][site.lang]');
+	var det_a = language.getKey('site.translations.mma[text.observatory.gw.detectors.'+opt.id[0]+'][site.lang]');
+	var det_b = language.getKey('site.translations.mma[text.observatory.gw.detectors.'+opt.id[1]+'][site.lang]');
 	title = document.createElement('h3');
 	title.classList.add('padded');
-	title.setAttribute('data-translate','site.translations[text.observatory.gw.detectors.'+opt.id[0]+'][site.lang] - site.translations[text.observatory.gw.detectors.'+opt.id[1]+'][site.lang]');
+	title.setAttribute('data-translate','site.translations.mma[text.observatory.gw.detectors.'+opt.id[0]+'][site.lang] - site.translations.mma[text.observatory.gw.detectors.'+opt.id[1]+'][site.lang]');
 	title.innerHTML = pair||"?";
 	el.appendChild(title);
 
@@ -447,13 +448,13 @@ function Grid(opt){
 	el.appendChild(graphholder);
 	
 	p = document.createElement('p');
-	p.innerHTML = '';//'OFFSET:'+opt.GW.timedelta_ms[opt.id]+'ms';
+	p.innerHTML = '';
 	el.appendChild(p);
 
 	lbl = document.createElement('label');
 	lbl.setAttribute('for','timing-select-'+opt.id);
-	lbl.setAttribute('data-translate','site.translations[text.observatory.gw.step2.select][site.lang]');
-	lbl.innerHTML = language.getKey('site.translations[text.observatory.gw.step2.select][site.lang]');
+	lbl.setAttribute('data-translate','site.translations.mma[text.observatory.gw.step2.select][site.lang]');
+	lbl.innerHTML = language.getKey('site.translations.mma[text.observatory.gw.step2.select][site.lang]');
 	el.appendChild(lbl);
 
 
@@ -471,7 +472,7 @@ function Grid(opt){
 			this.graph.update();
 			this.graph.on('mousemove',{this:this},function(e,d){
 				// If the mouse montoring is active we update the value
-				if(this.mouseactive) p.innerHTML = language.getKey('site.translations[text.observatory.gw.step2.timediff][site.lang]')+': '+(d.x*1000).toFixed(2)+'ms';
+				if(this.mouseactive) p.innerHTML = updateFromTemplate(language.getKey('site.translations.mma[text.observatory.gw.step2.timediff][site.lang]'),{'dt':(d.x*1000).toFixed(2)});
 			}).on('click',{this:this},function(e,d){
 				// Toggle montioring of mouse position
 				this.mouseactive = !this.mouseactive;
