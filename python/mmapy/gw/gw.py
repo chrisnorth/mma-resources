@@ -1,10 +1,13 @@
 import numpy as np
+from scipy.interpolate import interp1d
 import json,string,os
 from astropy import units as u
 from astropy import constants as const
 from matplotlib import pyplot as plt
 from matplotlib import cm
 import pandas as pd
+from gwpy.timeseries import TimeSeries
+from gwpy.frequencyseries import FrequencySeries
 import datetime
 from pycbc.waveform import get_td_waveform
 from .. import utils as ut
@@ -556,13 +559,15 @@ class EventGW(object):
         self.files['matchcells_png']=pngfile
         return
 
-    def makewaveform(self,dataDir='',csvfile=None,hfact=1e21,precision=4,noise=1e-23,dur=1):
-        self.waveform=Waveform(mtot=self.mtot,q=self.q,dist=self.dist)
+    def makewaveform(self,dataDir='',csvfile=None,hfact=1e21,precision=4,noise=1e-22,dur=1):
+        self.waveform=Waveform(mtot=self.mtot,q=self.q,dist=self.dist,noise=noise)
         if not csvfile:
             csvfile='{}_waveform.csv'.format(self.name)
         indur=np.where(self.waveform.data['t']>-dur)[0]
         ms=datetime.datetime.fromisoformat(self.datetime).microsecond/1000
         self.waveform.data['t']=self.waveform.data['t']+ms/1000
+
+        # save to file
         wf_print=pd.DataFrame({'t':self.waveform.data['t'][indur],'strain*{}'.format(hfact):self.waveform.data['strain'][indur]*hfact})
         print(wf_print[0:10])
         wf_print.to_csv(os.path.join(dataDir,csvfile),float_format='%.{}f'.format(precision),index=False)
@@ -570,7 +575,7 @@ class EventGW(object):
         self.t0_ms=ms
         return
 
-    def makeSims(self,dataDir='',csvfile=None,hfact=1e21,precision=4,noise=1e-23,dur=1,overwrite=False):
+    def makeSims(self,dataDir='',csvfile=None,hfact=1e21,precision=4,noise=0,dur=1,overwrite=False):
         simParams={}
         simsM=[5,10,30,50]
         simsD=[50,100,300,500,1000,3000,5000]
@@ -678,6 +683,8 @@ class Waveform(object):
         if self.noise>0:
             noise=np.random.normal(0,self.noise,len(t.data))
             hp.data=hp.data+noise
+        ts=TimeSeries(hp,dt=self.tres)
+        self.timeseries=ts
         self.data=pd.DataFrame({'t':t.data,'strain':hp.data})
         return
 
@@ -690,6 +697,48 @@ class Waveform(object):
             noisedata=np.random.normal(0,self.noise,datalen)
             self.data['strain']=self.data['strain']+noisedata
         return
+
+    def addNoiseReal(self,noise):
+
+        noiseTime=TimeSeries.read('data/GW/waveforms/H-H1_GWOSC_4KHZ_R1-1126259447-32.hdf5',format='hdf5.losc')
+        # noiseTime.write('data/GW/waveforms/H-H1_GWOSC_4KHZ_R1-1126259447-32.csv',format='csv')
+        # noiseAsd=noiseTime.asd(fftlength=8)
+        # noiseAsd.write('data/GW/waveforms/H-H1_GWOSC_4KHZ_R1-1126259447-32_ASD.csv',format='csv')
+
+        from gwpy.signal import filter_design
+        noiseFilt = noiseTime.bandpass(40, 250, filtfilt=True)
+        notches = [filter_design.notch(f, noiseTime.sample_rate) for f in (60, 120, 180)]
+        powernotch = filter_design.concatenate_zpks(*notches)
+        hclean = noiseFilt.filter(powernotch, filtfilt=True)
+
+        #shift times to centre on zero
+
+        noiseStdIn=np.std(hclean)
+        print('Noise std in:',noiseStdIn)
+        hclean = hclean * noise / noiseStdIn
+        noiseStdScaled=np.std(hclean)
+        print('Noise std scaled:',noiseStdScaled)
+        h_dt=hclean.dt
+        # hclean.times = hclean.times - hclean.times[len(hclean) - int(1/h_dt)]
+        # hcleanasd=hclean.asd(fftlength=8)
+
+        hcleanout=hclean.crop(np.min(hclean.times)+0.5*u.s,np.max(hclean.times)-0.5*u.s)
+        hcleanout.times=hcleanout.times-hcleanout.t0
+        hcleanasd=hcleanout.asd(fftlength=8)
+        noiseInterp=interp1d(hcleanout.times,hcleanout.data)
+        noiseOut=noiseInterp(self.timeseries.times)
+        self.timeseries=self.timeseries+noiseOut
+        self.data['strain']=self.data['strain']+noiseOut
+        # hclean.write('data/GW/waveforms/noise-only-timeseries1.csv')
+        # hcleanout.write('data/GW/waveforms/noise-only-timeseries.csv')
+        # hcleanasd.write('data/GW/waveforms/noise-only-asd.csv')
+
+        self.asd=self.timeseries.asd()
+        # print('signal ({}*{}={}): {} datapoints'.format(len(self.timeseries.data),self.timeseries.dt,len(self.timeseries.data)*self.timeseries.dt,len(self.asd)))
+        # print('noise ({}*{}={}): {} datapoints'.format(len(hclean.data),hclean.dt,len(hclean.data)*hclean.dt,len(hcleanasd)))
+        self.noise={'timeseries':hcleanout,'asd':hcleanasd}
+        return
+
 
 def readGWDetectors(fileIn):
     if isinstance(fileIn,str):

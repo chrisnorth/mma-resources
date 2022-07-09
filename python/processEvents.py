@@ -34,7 +34,10 @@ for e in eventsIn:
             os.makedirs(templatedir)
         ev.gw.plotmatches(plotDir=pdir)
         ev.gw.makewaveform(dataDir=ddir)
+        ev.gw.waveform.addNoiseReal(1e-23)
         ev.gw.makeSims(dataDir=templatedir)
+
+        # plot all waveforms
         wfax.plot(ev.gw.waveform.data['t']-ev.gw.t0_ms/1000,wfp+ev.gw.waveform.data['strain']*1e+21)
         wfp=wfp+1
 
@@ -48,11 +51,20 @@ for e in eventsIn:
             yticks.append(wfd)
             yticklabels.append(d)
             wfd=wfd+1
-        dtwfax.set_xlim(-0.05+ev.gw.t0_ms/1000,0.05+ev.gw.t0_ms/1000)
+        dtwfax.set_xlim(-0.1+ev.gw.t0_ms/1000,0.1+ev.gw.t0_ms/1000)
         dtwfax.grid(axis='x',which='both')
         dtwfax.set_yticks(yticks,yticklabels)
         dtwffig.savefig(os.path.join(plotDir,'GW/waveforms','dt_waveforms_{}.png'.format(e)))
 
+
+        # noiseAsd=ev.gw.waveform.addNoiseReal(1e-21)
+        plot=ev.gw.waveform.noise['asd'].plot(label='noise`')
+        ax=plot.gca()
+        ax.plot(ev.gw.waveform.asd,label='signal')
+        plt.legend()
+        plt.savefig(os.path.join(plotDir,'GW/waveforms','noiseAsd_{}.png'.format(e)))
+
+    wfax.set_xlim(-0.1,0.1)
     allwffig.savefig(os.path.join(plotDir,'GW/waveforms','waveforms.png'))
     eventsOut.addEvent(ev)
 
