@@ -1,2 +1,4 @@
 *.pyc
 */__pychache__/*
+plots/GW/waveforms/*.png
+data/GW/waveforms/*.csv
