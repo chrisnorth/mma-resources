@@ -104,12 +104,12 @@ iframe { background: black; }
 iframe:not([src^=http]){ background: rgba(0,0,0,0); }
 .iframe-holder { position: relative; line-height: 0; }
 .iframe-holder > iframe { position: relative; z-index: 2; }
-.iframe-holder > div:first-child { position: absolute; z-index: 0; left: 50%; top: 50%; transform: translate3d(-50%,-50%,0); line-height: 1.5em; text-align:center; }
+.text-center { position: absolute; z-index: 0; left: 50%; top: 50%; transform: translate3d(-50%,-50%,0); line-height: 1.5em; text-align:center; }
 
 .grid-pair { text-align: center; }
 .grid-pair p { text-align: left; }
 .grid-pair > svg { max-width: 100%; height:auto; }
-.waveform { margin-bottom: 1em; line-height: 0; }
+.waveform { margin-bottom: 1em; line-height: 0; width: 100%; height: 100%; }
 .waveform svg { width: 100%; max-width: 100%; height: 100%; }
 .waveform .axis text { fill: black; font-size:1em; stroke-width: 0.5px; }
 .waveform .axis path { stroke: black; }
@@ -124,11 +124,14 @@ text.detector-H { fill: blue; }
 path.detector-L, line.detector-L { stroke: green; } 
 text.detector-L { fill: green; }
 
-.scalebar { margin-bottom: 1em; }
+.scalebar { list-style: none; margin: 0 1em 2em 1em; padding-left: 0; }
 .scalebar .scale-item { height: 2em; position: relative; }
 .scalebar .scale-item input[type=radio] { position:absolute; padding:0; margin: 0; left: 0; top: 0; width: 100%;height:100%; max-height:100%; opacity:0.01; }
 .scalebar .scale-item label { position: absolute; top: 0; left:0; width: 100%; height:100%; }
 .scalebar .scale-item input[type=radio] + label { z-index: 6; }
+.scalebar .scale-item .number { position: absolute; top: 100%; text-align: left; padding: 0.1em 0.25em; font-size: 0.8em; left: 0; transform: translate3d(-50%,0,0); border: 0!important; display: inline-block; }
+.scalebar .scale-item .number.max { left: 100%; transform: translate3d(-50%,0,0); display: none; }
+.scalebar .scale-item:last-child .number.max { display: inline-block; }
 
 .scalebar .highlight-A { outline: 2px solid rgba(149, 16, 172, 1); }
 .scalebar .highlight-B { outline: 2px solid rgba(12, 167, 137, 1); }

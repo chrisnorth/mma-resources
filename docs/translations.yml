@@ -65,14 +65,16 @@ text:
                     massratio:
                         en: "Mass ratio: {{ massratio }}"
                     inclination:
-                        en: "Inclination (&deg;): {{ inclination }}"
-                    additional:
-                        en: "Additional notes:"
+                        en: "Inclination (°): {{ inclination }}"
+                additional:
+                    en: "Additional notes:"
                 copy:
                     en: Copy to clipboard
             steps:
                 title:
                     en: Observer Portal
+                intro:
+                    en: "Welcome to the Observer Portal. Clicking 'Next' will take you to the event selection."
             step1:
                 title:
                     en: Initial event selection
@@ -101,9 +103,9 @@ text:
                 intro:
                     en: "Use the detector arrival times to identify the possible locations."
                 select:
-                    en: "Select the time difference:"
+                    en: "Select the time difference (ms):"
                 timediff:
-                    en: "Time difference: <strong>{{ dt }}</strong> (ms)"
+                    en: "Time difference: <strong>{{ dt }}</strong> seconds"
                 selected:
                     en: "Selected grid squares:"
             step3:
