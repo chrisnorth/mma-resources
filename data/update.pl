@@ -3,6 +3,7 @@
 use Cwd qw(abs_path);
 use Data::Dumper;
 use JSON::XS;
+use POSIX qw(strftime);
 
 
 # Get the real base directory for this script
@@ -11,34 +12,54 @@ if(abs_path($0) =~ /^(.*\/)[^\/]*/){ $basedir = $1; }
 
 $basedir .= "../";
 
-$dir = "docs/gw/";
-$subdir = "BF09C01672351154C152349A7F011C6DBB40A4A0/";
+$idir = $basedir."data/";
+$odir = $basedir."docs/gw/BF09C01672351154C152349A7F011C6DBB40A4A0/";
+$wwdir = $basedir."data/GW/waveforms/";
+$wsdir = $basedir."data/GW/templates/";
+$wodir = $basedir."docs/gw/waveform-fitter/waveforms/";
 $dp = 3;
 
 
 # Open the scenario file for GW
-$file = $dir."scenario-1.json";
-open(FILE,$basedir.$file);
+$file = $idir."scenario-1.json";
+open(FILE,$file);
 @lines = <FILE>;
 close(FILE);
 eval { $json = JSON::XS->new->utf8->decode(join("",@lines)); }
 or do { $json = {}; };
 
 # Add generation note
-$json->{'_notes'} = "Created by data/update.pl from $file";
+$json->{'_notes'} = "Created by data/update.pl from data/scenario-1.json";
+$json->{'_update'} = strftime("%FT%TZ",gmtime);
 
 # Trim decimal places in grid map values
 foreach $ev (sort(keys(%{$json->{'events'}}))){
-	foreach $det (sort(keys(%{$json->{'events'}{$ev}{'GW'}{'dt_arr'}}))){
-		for($i = 0; $i < @{$json->{'events'}{$ev}{'GW'}{'dt_arr'}{$det}}; $i++){
-			for($j = 0; $j < @{$json->{'events'}{$ev}{'GW'}{'dt_arr'}{$det}[$i]}; $j++){
-				$json->{'events'}{$ev}{'GW'}{'dt_arr'}{$det}[$i][$j] = sprintf("%0.".$dp."f",$json->{'events'}{$ev}{'GW'}{'dt_arr'}{$det}[$i][$j])+0;
+	foreach $det (sort(keys(%{$json->{'events'}{$ev}{'GW'}{'dt_arr_ms'}}))){
+		for($i = 0; $i < @{$json->{'events'}{$ev}{'GW'}{'dt_arr_ms'}{$det}}; $i++){
+			for($j = 0; $j < @{$json->{'events'}{$ev}{'GW'}{'dt_arr_ms'}{$det}[$i]}; $j++){
+				$json->{'events'}{$ev}{'GW'}{'dt_arr_ms'}{$det}[$i][$j] = sprintf("%0.".$dp."f",$json->{'events'}{$ev}{'GW'}{'dt_arr_ms'}{$det}[$i][$j])+0;
 			}
 		}
 	}
+	foreach $f (sort(keys(%{$json->{'events'}{$ev}{'GW'}{'files'}}))){
+		if($f =~ /\_csv/){
+			if($f =~ /waveform/){
+				$w = $wwdir;
+			}else{
+				$w = $wsdir;
+			}
+			if(-e $w.$json->{'events'}{$ev}{'GW'}{'files'}{$f}){
+				print "Copying $w$json->{'events'}{$ev}{'GW'}{'files'}{$f} to $wodir\n";
+				`cp $w$json->{'events'}{$ev}{'GW'}{'files'}{$f} $wodir$json->{'events'}{$ev}{'GW'}{'files'}{$f}`;
+			}else{
+				print "Can't copy $w$json->{'events'}{$ev}{'GW'}{'files'}{$f}\n";
+			}
+		}
+	}
+	
 }
 
-saveJSON($basedir.$dir.$subdir."scenario-1.json",$json);
+saveJSON($odir."scenario-1.json",$json);
 
 $opts = "";
 foreach $ev (sort(keys(%{$json->{'events'}}))){
@@ -62,7 +83,8 @@ foreach $ev (sort(keys(%{$json->{'events'}}))){
 	}
 	$opts .= "<option value=\"$ev\">$json->{'events'}{$ev}{'name'}</option>\n";
 }
-partOfHTML($basedir.$dir.$subdir."index.html",{"EVENT"=>$opts});
+#partOfHTML($odir."index.html",{"EVENT"=>$opts});
+partOfHTML($odir."1.html",{"EVENT"=>$opts});
 
 
 
