@@ -41,6 +41,7 @@ function Step(data,opt){
 
 		if(e){
 			if(data.events[e]){
+				vals.ev = data.events[e];
 				el.next.removeAttribute('disabled');
 				el.none.style.display = 'none';
 				el.waveform.style.display = '';

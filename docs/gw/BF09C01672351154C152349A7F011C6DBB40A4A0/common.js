@@ -120,7 +120,7 @@ function Notification(){
 		this.vals = selection;
 		this.attr = {
 			'name': selection.event,
-			'date': selection.date||"",
+			'date': selection.ev.datetime||"",
 			'locations': decodeURI(selection.gridsquares),
 			'mass': (selection.mass && selection.mass[1] ? selection.mass[0] + ' - ' + selection.mass[1] : ''),
 			'massratio': (selection.massratio && selection.massratio[1] ? selection.massratio[0] + ' - ' + selection.massratio[1] : ''),
