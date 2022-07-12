@@ -103,6 +103,7 @@ function Notification(){
 
 		var q = '?event='+this.vals.event;
 		if(this.vals.gridsquares) q += '&gridsquares='+this.vals.gridsquares;
+		if(this.vals.toffset) q += '&toffset='+this.vals.toffset;
 		if(this.vals.mass && !isNaN(this.vals.mass[0])) q += '&mass='+this.vals.mass.join(';');
 		if(this.vals.dist && !isNaN(this.vals.dist[0])) q += '&dist='+this.vals.dist.join(';');
 		if(this.vals.massratio && !isNaN(this.vals.massratio[0])) q += '&massratio='+this.vals.massratio.join(';');

@@ -14,6 +14,7 @@ function Step(data,opt){
 	var vals = {
 		'ev': data.events[query.event],
 		'event': query.event,
+		'toffset': query.toffset,
 		'gridsquares': query.gridsquares,
 		'mass': (query.mass||";").split(/;/),
 		'dist': (query.dist||";").split(/;/),

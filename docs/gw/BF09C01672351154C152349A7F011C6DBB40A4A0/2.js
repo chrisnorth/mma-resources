@@ -23,6 +23,7 @@ function Step(data,opt){
 	var vals = {
 		'ev': data.events[query.event],
 		'event': query.event,
+		'toffset': query.toffset,
 		'gridsquares': query.gridsquares,
 		'mass': (query.mass||";").split(/;/),
 		'dist': (query.dist||";").split(/;/),
@@ -49,7 +50,8 @@ function Step(data,opt){
 	var grids = new GridMaps({
 		'input':document.getElementById('grid-squares'),
 		'el':document.getElementById('localisation'),
-		'this':this
+		'defaults': vals.toffset,
+		'this':_obj
 	});
 
 	if(vals.event && data.events[vals.event]) grids.set(data.events[vals.event]);
@@ -60,6 +62,14 @@ function Step(data,opt){
 
 		if(opt.notification) opt.notification.set(vals);
 	};
+	
+	this.setToffset = function(v){
+		console.log('Step setToffset');
+		vals.toffset = v;
+		if(opt.notification) opt.notification.set(vals);
+		return this;
+	};
+	
 	if(query.gridsquares) el.gridsquares.value = decodeURI(query.gridsquares);
 
 	this.setGridsquares(el.gridsquares.value);
@@ -68,7 +78,9 @@ function Step(data,opt){
 }
 
 function GridMaps(opt){
+	this.title = "GridMaps";
 	if(!opt) opt = {};
+	if(opt.defaults.indexOf(';') > 0) opt.defaults = opt.defaults.split(/;/);
 	if(!opt.el || !opt.input){
 		console.error('Invalid elements to attach to',opt.el,opt.input);
 		return this;
@@ -78,7 +90,13 @@ function GridMaps(opt){
 	var ids = ['A','B','C'];
 	
 	this.show = function(){
-		for(var i = 0; i < this.els.length; i++) this.els[i].showGraph(this.wfdata);
+		var i;
+		for(i = 0; i < this.els.length; i++) this.els[i].showGraph(this.wfdata);
+		for(i = 0; i < opt.defaults.length; i++) opt.defaults[i] = parseInt(opt.defaults[i]);
+		// Set the default levels
+		for(i = 0; i < this.els.length; i++){
+			if(opt.defaults[i] >= 0) this.els[i].setLevel(opt.defaults[i]);
+		}
 		return;
 	}
 
@@ -108,10 +126,19 @@ function GridMaps(opt){
 		var i = 0;
 		for(var id in d.GW.dt_arr_ms){
 			if(d.GW.dt_arr_ms[id]){
-				this.els.push(new Grid({'el':el,'id':id,'n':ids[i],'class':'highlight','data':d.GW.dt_arr_ms[id],'GW':d.GW,'parent':this}));
+				this.els.push(new Grid({'el':el,'id':id,'n':ids[i],'class':'highlight','data':d.GW.dt_arr_ms[id],'GW':d.GW,'parent':this,'origin':opt.this}));
 				i++;
 			}
 		}
+		
+		return this;
+	};
+	
+	this.setToffset = function(){
+		v = '';
+		for(var i = 0; i < this.els.length; i++) v += (v ? ';':'')+this.els[i].selectedlevel;
+		console.log('setToffset',this,opt.this.setToffset(v));
+		return this;
 	};
 
 	this.highlight = function(){
@@ -157,6 +184,9 @@ function GridMaps(opt){
 			e.initEvent('change', true, false);
 			opt.input.dispatchEvent(e);
 		}
+
+		this.setToffset();
+		return this;
 	};
 	return this;
 }
@@ -173,7 +203,7 @@ function Grid(opt){
 	if(opt.n) el.setAttribute('id','pair-'+opt.n);
 	el.classList.add('grid-pair',opt.n,'padded');
 	opt.el.appendChild(el);
-	
+
 	scale = 'grid-map';
 	colours.addScale(scale,'rgb(0,0,0) 0%, rgb(255,255,255) 100%');
 
@@ -280,6 +310,7 @@ function Grid(opt){
 		'max': max,
 		'scale':scale+' quantised '+nsteps,
 		'this': this,
+		'parent': opt.parent,
 		'class': this.class,
 		'click':function(e,attr){ this.setLevel(attr.id); }
 	});
@@ -369,6 +400,7 @@ function Grid(opt){
 
 		return this;
 	};
+
 	return this;
 }
 
