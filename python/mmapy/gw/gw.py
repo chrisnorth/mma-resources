@@ -760,11 +760,15 @@ def readGWDetectors(fileIn):
 
 def dets2pairs(dets):
     pairs={}
+    ndet=len(dets)
+    n=0
     for d1 in dets:
         for d2 in dets:
             if d1>d2:
-                pair=DetectorPair(dets[d1],dets[d2])
-                pairs[pair.code]=pair
+                n=n+1
+                if n<=ndet-1:
+                    pair=DetectorPair(dets[d1],dets[d2])
+                    pairs[pair.code]=pair
     return(pairs)
 
 def readDetPairs(fileIn):
