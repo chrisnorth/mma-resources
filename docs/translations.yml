@@ -153,6 +153,8 @@ text:
             en: Cosmological Calculator
         intro:
             en: "Placeholder text."
+        result:
+            en: "Result"
         redshift:
             en: Redshift
         distance:
