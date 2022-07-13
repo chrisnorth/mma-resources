@@ -151,3 +151,13 @@ text:
     cosmocalc:
         title:
             en: Cosmological Calculator
+        intro:
+            en: "Placeholder text."
+        redshift:
+            en: Redshift
+        distance:
+            en: "Distance (Mpc)"
+        yourvalue:
+            en: Your value
+        age:
+            en: Age of the Universe (billion years)
