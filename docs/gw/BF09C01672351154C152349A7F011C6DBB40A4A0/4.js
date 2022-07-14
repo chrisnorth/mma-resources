@@ -33,6 +33,13 @@ function Step(data,opt){
 		e.preventDefault();
 		location.href = e.target.getAttribute('href')+opt.notification.queryString();
 	});
+	var breadcrumb = document.querySelectorAll('.breadcrumb .step a');
+	for(var i = 0; i < breadcrumb.length; i++){
+		breadcrumb[i].addEventListener('click',function(e){
+			e.preventDefault();
+			if(e.target.getAttribute('disabled')!="disabled") location.href = e.target.getAttribute('href')+opt.notification.queryString();
+		});
+	}
 
 	this.updateValues = function(){
 		vals.massratio = [parseFloat(el.massratioLo.value),parseFloat(el.massratioHi.value)];
