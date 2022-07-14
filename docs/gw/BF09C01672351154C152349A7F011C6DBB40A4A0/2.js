@@ -80,6 +80,7 @@ function Step(data,opt){
 function GridMaps(opt){
 	this.title = "GridMaps";
 	if(!opt) opt = {};
+	if(!opt.defaults) opt.defaults = "";
 	if(opt.defaults.indexOf(';') > 0) opt.defaults = opt.defaults.split(/;/);
 	if(!opt.el || !opt.input){
 		console.error('Invalid elements to attach to',opt.el,opt.input);

@@ -73,7 +73,7 @@
 				opt.files.translations[i].loaded = true;
 				y = YAML.eval(txt);
 				var ns = opt.files.translations[i].ns||opt.ns||"main";
-				this.translations[ns] = deepmerge(this.translations[ns]||{},y)
+				this.translations[ns] = deepmerge(this.translations[ns]||{},y);
 				this.setLanguage(this.lang);
 			}).catch(error => {
 				console.error('There has been a problem getting '+opt.files.translations[i].file+':', error);

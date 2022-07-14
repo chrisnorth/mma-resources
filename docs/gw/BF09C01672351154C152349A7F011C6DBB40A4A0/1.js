@@ -33,7 +33,7 @@ function Step(data,opt){
 		var file,ev,dt;
 		dt = '';
 		vals.event = e;
-		console.log('setEvent',e);
+		vals.ev = {};
 		vals.gridsquares = '';
 		vals.mass = '';
 		vals.dist = '';

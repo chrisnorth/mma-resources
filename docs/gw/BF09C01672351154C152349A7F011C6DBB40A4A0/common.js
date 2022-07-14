@@ -118,9 +118,12 @@ function Notification(){
 		var extra = '';
 		if(v.match(/\={10,}/)) v.replace(/^.*\={10,}\n(.*)$/m,function(m,p1){ extra = p1; });
 
+		if(!selection) selection = {};
+		if(!selection.ev) selection.ev = {};
+
 		this.vals = selection;
 		this.attr = {
-			'name': selection.event,
+			'name': selection.event||"",
 			'date': selection.ev.datetime||"",
 			'locations': decodeURI(selection.gridsquares),
 			'mass': (selection.mass && selection.mass[1] ? selection.mass[0] + ' - ' + selection.mass[1] : ''),
