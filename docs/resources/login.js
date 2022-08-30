@@ -6,7 +6,7 @@ var username = document.getElementById('username');
 
 function login(secret) {
 	var hash = sha1(secret);
-	var url = hash.toUpperCase() + "/index.html";
+	var url = '../' + hash.toUpperCase() + "/index.html";
 	var alert = document.getElementById('alert');
 
 	var request = new XMLHttpRequest();

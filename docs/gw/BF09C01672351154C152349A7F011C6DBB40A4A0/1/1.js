@@ -54,7 +54,6 @@ function Step(data,opt){
 					});
 					this.graph.update();
 					this.graph.on('mousemove',{this:this},function(e,d){
-						console.log('mousemove',e,d);
 						// If the mouse montoring is active we update the value
 						//if(this.mouseactive) p.innerHTML = updateFromTemplate(language.getKey('site.translations.mma[text.observatory.gw.step2.timediff][site.lang]'),{'dt':(d.x*1000).toFixed(2)});
 					}).on('click',{this:this},function(e,d){
@@ -65,7 +64,7 @@ function Step(data,opt){
 				}
 				ev = data.events[e];
 				dt = ev.datetime;
-				file = (ev) ? (ev.GW.files.waveform_csv ? '../waveform-fitter/waveforms/'+ev.GW.files.waveform_csv : "") : '';
+				file = (ev) ? (ev.GW.files.waveform_csv ? '../../waveform-fitter/waveforms/'+ev.GW.files.waveform_csv : "") : '';
 				
 				// Get waveform data
 				fetch(file).then(response => {

@@ -252,7 +252,10 @@
 		this.frac = function(t){ return (t-this.min)/this.range; };
 		this.valueFromFrac = function(f){ return this.min + f*this.range; };
 		this.domain = function(mn,mx){ this._domain = new Range(mn,mx); return this; };
-		this.value = function(v){ return (this._domain||this).valueFromFrac(this.frac(v)); };
+		this.value = function(v){
+//			console.log(v,this.min,this.max,this.range,(this._domain||this).valueFromFrac(this.frac(v)));
+			return (this._domain||this).valueFromFrac(this.frac(v));
+		};
 		return this;
 	}
 	class WaveData{
@@ -376,6 +379,7 @@
 		var d = '';
 		var i;
 		if(axes.x.scale && axes.y.scale){
+			//for(i = data.length-1; i >= 0; i--) console.log(data[i][axes.x.key],axes.x.scale.value(data[i][axes.x.key]));
 			if(reverse){
 				for(i = data.length-1; i >= 0; i--) d += (i==0 ? 'M':'L')+axes.x.scale.value(data[i][axes.x.key]).toFixed(2)+','+axes.y.scale.value(data[i][axes.y.key]).toFixed(2);			
 			}else{

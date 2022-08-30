@@ -12,7 +12,7 @@ function errorMessage(msg,error){
 }
 
 function Steps(data){
-  var i,step,el,selections;
+	var i,step,el,selections,values;
 	step = 0;
 	selections = {'event':'','date':'','gridsquares':[],'mass':[],'distance':[],'massratio':[],'inclination':[],'waveform':''};
 	el = {
@@ -46,7 +46,7 @@ function Steps(data){
 	});
 	var nav = el.breadcrumb.querySelectorAll('li');
 	var steps = [{
-		'id':'step-1'
+		'id':'step-1',
 	},{
 		'id':'step-2',
 		'ready':function(){
@@ -58,7 +58,11 @@ function Steps(data){
 	},{
 		'id':'step-3',
 		'ready':function(){
+			console.log('ready 3');
 			return (selections.event && selections.date && selections.gridsquares.length > 0);
+		},
+		'onshow': function(){
+			console.log('onshow 3');
 		}
 	},{
 		'id':'step-4',
@@ -88,12 +92,12 @@ function Steps(data){
 		for(i = 0; i < steps.length; i++){
 			steps[i].el.style.display = (i==step ? '':'none');
 			if(steps[i].nav){
-				steps[i].nav.classList.remove('current');
+				steps[i].nav.querySelector('strong').removeAttribute('aria-current');
 				steps[i].nav.classList.remove('visited');
 				if(i < step){
 					steps[i].nav.classList.add('visited');
 				}else if(i == step){
-					steps[i].nav.classList.add('current');
+					steps[i].nav.querySelector('strong').setAttribute('aria-current',true);
 					if(typeof steps[i].onshow==="function") steps[i].onshow.call(this);
 				}else steps[i].nav.classList.remove('visited');
 			}
@@ -255,17 +259,17 @@ function Steps(data){
 function updateFromTemplate(txt,rep){
 	var key,reg;
 	for(key in rep){
-    if(rep[key]){
-      reg = new RegExp('\{\{\\s*'+key+'\\s*\}\}');
-      txt = txt.replace(reg,rep[key]);
-    }
+		if(rep[key]){
+			reg = new RegExp('\{\{\\s*'+key+'\\s*\}\}');
+			txt = txt.replace(reg,rep[key]);
+		}
 	}
 	// Loop back over in case we've got patterns within our patterns 
 	for(key in rep){
-    if(rep[key]){
+		if(rep[key]){
 			reg = new RegExp('\{\{\\s*'+key+'\\s*\}\}');
 			txt = txt.replace(reg,rep[key]);
-    }
+		}
 	}
 	// Remove all unreplaced tags
 	txt = txt.replace(/\{\{\s*[^\}]*\s*\}\}/g,"");
@@ -284,7 +288,7 @@ scales = {
 	'Plasma': 'rgb(12,7,134) 0, rgb(82,1,163) 12.5%, rgb(137,8,165) 25%, rgb(184,50,137) 37.5%, rgb(218,90,104) 50%, rgb(243,135,72) 62.5%, rgb(253,187,43) 75%, rgb(239,248,33) 87.5%'
 };
 for(s in scales){
-  if(scales[s]) colours.addScale(s,scales[s]);
+	if(scales[s]) colours.addScale(s,scales[s]);
 }
 
 function svgElement(t){
@@ -295,9 +299,9 @@ function svgElement(t){
 		var key;
 		// Build an object from a key/value pair
 		if(typeof obj==="string"){ key = obj; obj = {}; obj[key] = v; }
-    for(key in obj){
-      if(obj[key]) this._el.setAttribute(key,obj[key]);
-    }
+		for(key in obj){
+			if(obj[key]) this._el.setAttribute(key,obj[key]);
+		}
 		return this;
 	};
 	this.html = function(t){ this._el.textContent = t; return this; };
@@ -909,10 +913,10 @@ function getPathFromValue(pattern,v,cellSize,pad){
 				y0 = row * cellSize + pad.top;
 				x1 = (col + 1) * cellSize + pad.left;
 				y1 = (row + 1) * cellSize + pad.top;
-				edges.push([[x0, y0], [x1, y0]]);   // top edge (to right)
-				edges.push([[x1, y0], [x1, y1]]);   // right edge (down)
-				edges.push([[x1, y1], [x0, y1]]);   // bottom edge (to left)
-				edges.push([[x0, y1], [x0, y0]]);   // left edge (up)
+				edges.push([[x0, y0], [x1, y0]]);	 // top edge (to right)
+				edges.push([[x1, y0], [x1, y1]]);	 // right edge (down)
+				edges.push([[x1, y1], [x0, y1]]);	 // bottom edge (to left)
+				edges.push([[x0, y1], [x0, y0]]);	 // left edge (up)
 			}
 		}
 	}
@@ -948,20 +952,20 @@ function getPathFromValue(pattern,v,cellSize,pad){
 					// Found an edge that starts at the last edge's end
 					foundEdge = true;
 					edge = edges.splice(i, 1)[0];
-					p1 = polygon[polygon.length - 2];   // polygon's second-last point
-					p2 = polygon[polygon.length - 1];   // polygon's current end
-					p3 = edge[1];   // new point
+					p1 = polygon[polygon.length - 2];	 // polygon's second-last point
+					p2 = polygon[polygon.length - 1];	 // polygon's current end
+					p3 = edge[1];	 // new point
 					// Extend polygon end if it's continuing in the same direction
-					if (p1[0] === p2[0] &&   // polygon ends vertical
-						p2[0] === p3[0]) {   // new point is vertical, too
+					if (p1[0] === p2[0] &&	 // polygon ends vertical
+						p2[0] === p3[0]) {	 // new point is vertical, too
 						polygon[polygon.length - 1][1] = p3[1];
 					}
-					else if (p1[1] === p2[1] &&   // polygon ends horizontal
-						p2[1] === p3[1]) {   // new point is horizontal, too
+					else if (p1[1] === p2[1] &&	 // polygon ends horizontal
+						p2[1] === p3[1]) {	 // new point is horizontal, too
 						polygon[polygon.length - 1][0] = p3[0];
 					}
 					else {
-						polygon.push(p3);   // new direction
+						polygon.push(p3);	 // new direction
 					}
 					break;
 				}
@@ -994,7 +998,7 @@ function getPathFromValue(pattern,v,cellSize,pad){
 			point = polygon[j];
 			for (k = i + 1; k < polygons.length; k++) {
 				polygon2 = polygons[k];
-				for (l = 0; l < polygon2.length - 1; l++) {   // exclude end point (same as start)
+				for (l = 0; l < polygon2.length - 1; l++) {	 // exclude end point (same as start)
 					point2 = polygon2[l];
 					if (pointEquals(point, point2)) {
 						// Embed polygon2 into polygon

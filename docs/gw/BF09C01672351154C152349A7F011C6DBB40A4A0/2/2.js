@@ -119,7 +119,7 @@ function GridMaps(opt){
 		delete this.wfdata;
 
 		// Get waveform data
-		var file = (d.GW.files.waveform_csv ? '../waveform-fitter/waveforms/'+d.GW.files.waveform_csv : "");
+		var file = (d.GW.files.waveform_csv ? '../../waveform-fitter/waveforms/'+d.GW.files.waveform_csv : "");
 		fetch(file).then(response => {
 			if(!response.ok) throw new Error('Network response was not OK');
 			return response.text();
@@ -245,11 +245,10 @@ function Grid(opt){
 	el.appendChild(lbl);
 
 
-	var wf = (opt) ? (opt.GW.files.waveform_csv ? '../waveform-fitter/waveforms/'+opt.GW.files.waveform_csv : "") : '';
+	var wf = (opt) ? (opt.GW.files.waveform_csv ? '../../waveform-fitter/waveforms/'+opt.GW.files.waveform_csv : "") : '';
 	this.mouseactive = true;
 
 	this.showGraph = function(data){
-		console.warn('showGraph',this);
 		if(!this.graph){
 			this.graph = new Graph(graphinner,{
 				'axes':{
@@ -268,7 +267,9 @@ function Grid(opt){
 
 		var t0 = opt.GW.t0_ms;
 		var delta = Math.abs(opt.GW.dtmerger_s[opt.id[0]] - opt.GW.dtmerger_s[opt.id[1]])*2;
-		delta = Math.round(delta*100)/100;
+
+		// Round the value (this can cause range issues)
+		delta = Math.round(delta*1e6)/1e6;
 
 		this.graph.setSeries(0,data,{'id':'line-data','text':det_a,'class':'detector-'+opt.id[0],'stroke':'rgba(0,150,200,1)','toffset':(opt.GW.dtmerger_s[opt.id[0]])||0});
 		this.graph.setSeries(1,data,{'id':'line-data','text':det_b,'class':'detector-'+opt.id[1],'stroke':'rgba(200,150,100,1)','toffset':(opt.GW.dtmerger_s[opt.id[1]])||0});
@@ -276,8 +277,12 @@ function Grid(opt){
 		var toff = ((t0/1000)||0) + opt.GW.dtmerger_s[opt.id[0]];
 
 		// Update the ranges
-		this.graph.axes.x.setRange(toff-delta,toff+delta);
-
+		if(delta > 1e-3){
+			this.graph.axes.x.setRange(toff-delta,toff+delta);
+		}else{
+			// If the range is effectively zero we manually set it
+			this.graph.axes.x.setRange(toff-0.01,toff+0.01);
+		}
 		this.graph.axes.y.setRange(-1.5,1.5);
 
 		// Update the scales and domains

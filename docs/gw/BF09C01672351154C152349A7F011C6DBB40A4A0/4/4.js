@@ -67,7 +67,7 @@ function Step(data,opt){
 	var ev = data.events[vals.event];
 	var wf = (ev) ? (ev.GW.files.waveform_csv ? 'waveforms/'+ev.GW.files.waveform_csv : "") : '';
 	var sm = (ev) ? (ev.GW.files.simulations_csv ? 'waveforms/'+ev.GW.files.simulations_csv : "") : '';
-	el.waveform.setAttribute('src',(wf ? '../waveform-fitter/index.html?level=advanced&data='+wf+'&lang='+opt.language.lang+'&simulation='+sm : ''));
+	el.waveform.setAttribute('src',(wf ? '../../waveform-fitter/index.html?level=advanced&data='+wf+'&lang='+opt.language.lang+'&simulation='+sm : ''));
 
 	console.log('here',opt);
 
