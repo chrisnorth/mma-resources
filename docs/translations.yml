@@ -145,6 +145,14 @@ text:
         gamma:
             title:
                 en: Gamma-ray Observatory
+            front:
+                intro:
+                    en: Welcome to the Gamma Ray Observatory. We're bursting to get started...
+                links:
+                    title:
+                        en: Operations
+                footer:
+                    en: "&copy; Some footer text"
         xr:
             title:
                 en: X-ray & Radio Observatory

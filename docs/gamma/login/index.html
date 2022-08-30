@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" class="gw">
+<head>
+	<title data-translate="site.translations.main[text.login.title][site.lang]">Password Protected</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="robots" content="noindex, nofollow">
+	<link rel="stylesheet" href="../../resources/style.css">
+	<link rel="stylesheet" href="../resources/style.css">
+</head>
+<body class="ga">
+	<div id="main" class="ga-bg">
+		<div class="holder">
+			<header class="b2-bg padded">
+				<h1 data-translate="site.translations.main[text.observatory.gamma.title][site.lang]">{{ Title }}</h1>
+			</header>
+
+			<div id="content-wrapper" class="padded">
+				<div class="doublepadded">
+					<h2 data-translate="site.translations.main[text.login.title][site.lang]">Sign in</h2>
+				</div>
+				<div class="login">
+					<div class="login__alert" id="alert" data-translate="site.translations.main[text.login.wrong][site.lang]">You entered the wrong password</div>
+					<div class="login__content">
+						<p data-translate="site.translations.main[text.login.intro][site.lang]"></p>
+						<form>
+							<label for="username"  data-translate="site.translations.main[text.login.username][site.lang]">Username</label>
+							<input class="login__content__input" type="text" id="username" name="username" />
+							<label for="password"  data-translate="site.translations.main[text.login.password][site.lang]">Password</label>
+							<input class="login__content__input" id="password" type="password" />
+							<button id="submit" type="button" class="login__content__btn gw-highlight" data-translate="site.translations.main[text.login.signin][site.lang]">Sign in</button>
+						</form>
+					</div>
+				</div>
+			</div>
+			<footer class="b2-bg doublepadded">
+				<p data-translate="site.translations.main[text.observatory.gamma.front.footer][site.lang]">Footer</p>
+			</footer>
+		</div>
+	</div>
+	<script type="text/javascript" src="../../resources/sha1.min.js"></script>
+	<script type="text/javascript" src="../../resources/login.js"></script>
+	<script type="text/javascript" src="../../resources/lang.js"></script>
+	<script type="text/javascript">
+	ready(function(){
+		language = new Lang({
+			'files':{
+				'languages':'../../languages.yml',
+				'translations': [{'file':'../../translations.yml','ns':'main'}],
+			}
+		});
+	});
+	</script>
+</body>
+</html>

@@ -1,17 +1,50 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title data-translate="site.translations.main[text.observatory.gamma.title][site.lang]">&gamma;</title>
+	<title data-translate="site.translations.main[text.observatory.gamma.title][site.lang]">{{ Title }}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="robots" content="noindex, nofollow">
+	<link href='resources/icon.svg' rel='icon' type='image/svg'>
 	<link rel="stylesheet" href="../resources/style.css">
-	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="resources/style.css">
 </head>
-<body class="ga centred">
-	<header class="b6-bg doublepadded">
-		<h1 data-translate="site.translations.main[text.observatory.gamma.title][site.lang]">&gamma;</h1>
-		<p>This page is under construction.</p>
-	</header>
+<body class="ga">
+	<div id="main" class="ga-bg">
+		<div class="holder">
+			<header class="b2-bg padded">
+				<h1 data-translate="site.translations.main[text.observatory.gamma.title][site.lang]">{{ Title }}</h1>
+			</header>
+			<div></div>
+			<div id="content-wrapper" class="padded">
+				<div class="padded">
+
+					<div class="front-grid">
+
+						<div class="panel span2">
+							<div class="padded">
+								<h2 data-translate="site.translations.main[text.observatory.gamma.title][site.lang]">{{ Title }}</h2>
+								<p data-translate="site.translations.main[text.observatory.gamma.front.intro][site.lang]"></p>
+							</div>
+						</div>
+							
+						<div class="panel ga">
+							<div>
+								<div class="heading" data-translate="site.translations.main[text.observatory.gamma.front.links.title][site.lang]">Links</div>
+
+								<ul>
+									<li><a href="login/index.html" data-translate="site.translations.main[text.login.signin][site.lang]">Login</a></li>
+									<li><a href="../cosmological-calculator/index.html" data-translate="site.translations.main[text.cosmocalc.title][site.lang]">CosmoCalc</a></li>
+								</ul>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<footer class="b2-bg doublepadded">
+				<p data-translate="site.translations.main[text.observatory.gamma.front.footer][site.lang]">Footer</p>
+			</footer>
+		</div>
+	</div>
 	<script type="text/javascript" src="../resources/lang.js"></script>
 	<script type="text/javascript">ready(function(){ language = new Lang({'dir':'../'}); });</script>
 </body>
