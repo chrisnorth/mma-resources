@@ -153,6 +153,17 @@ text:
                         en: Operations
                 footer:
                     en: "&copy; Some footer text"
+            prev:
+                en: "&laquo; Previous"
+            next:
+                en: "Next &raquo;"
+            back:
+                en: Back
+            steps:
+                title:
+                    en: Observer Portal
+                intro:
+                    en: "Welcome to the Observer Portal. Clicking 'Next' will take you to the event selection."
         xr:
             title:
                 en: X-ray & Radio Observatory
