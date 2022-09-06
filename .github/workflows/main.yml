@@ -15,8 +15,9 @@ jobs:
       - name: install cpanm and multiple modules
         uses: perl-actions/install-with-cpanm@v1
         with:
-          install: JSON::XS
-          install: YAML::XS
+          install: |
+            JSON::XS
+            YAML::XS
 
       # Runs script
       - name: Update site
