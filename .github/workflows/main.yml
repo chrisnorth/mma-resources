@@ -1,0 +1,31 @@
+name: Publish on GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+
+      - name: install cpanm and multiple modules
+        uses: perl-actions/install-with-cpanm@v1
+        with:
+          install: JSON::XS
+          install: YAML::XS
+
+      # Runs script
+      - name: Update site
+        run: |
+          perl update.pl
+
+      - name: Deploy
+        uses: crazy-max/ghaction-github-pages@v2.0.1
+        with:
+          build_dir: dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
