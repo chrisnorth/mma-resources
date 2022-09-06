@@ -72,9 +72,9 @@ sub siteCopy {
 
 	# Create each translation
 	foreach $lang (sort(keys(%{$config->{'language'}{'languages'}}))){
-#
-#		# Create a copy in the language sub-directory
-		siteCopyLanguage($lang,$config->{'build'}.$lang."/",$config);
+
+		# Create a copy in the language sub-directory
+#		siteCopyLanguage($lang,$config->{'build'}.$lang."/",$config);
 	}
 	return;
 }
