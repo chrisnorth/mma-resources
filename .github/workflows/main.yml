@@ -22,7 +22,7 @@ jobs:
       # Runs script
       - name: Update site
         run: |
-          perl update.pl
+          perl build.pl
 
       - name: Deploy
         uses: crazy-max/ghaction-github-pages@v2.0.1
