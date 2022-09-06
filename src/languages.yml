@@ -1,0 +1,8 @@
+en:
+    label:  English
+en-US:
+    label:  English (US)
+    inherit: en
+cy:
+    label:  Cymraeg
+    inherit: en

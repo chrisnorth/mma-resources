@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" class="gw">
+<head>
+	<title>{{ site.translations.main.login.title }}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="robots" content="noindex, nofollow">
+	<link rel="stylesheet" href="../../resources/style.css">
+	<link rel="stylesheet" href="../resources/style.css">
+</head>
+<body class="ga">
+	<div id="main" class="ga-bg">
+		<div class="holder">
+			<header class="b2-bg padded">
+				<h1>{{ site.translations.main.observatory.gamma.title }}</h1>
+			</header>
+
+			<div id="content-wrapper" class="padded">
+				<div class="doublepadded">
+					<h2>{{ site.translations.main.login.title }}</h2>
+				</div>
+				<div class="login">
+					<div class="login__alert" id="alert">{{ site.translations.main.login.wrong }}</div>
+					<div class="login__content">
+						<p>{{ site.translations.main.login.intro }}</p>
+						<form>
+							<label for="username" >{{ site.translations.main.login.username }}</label>
+							<input class="login__content__input" type="text" id="username" name="username" />
+							<label for="password" >{{ site.translations.main.login.password }}</label>
+							<input class="login__content__input" id="password" type="password" />
+							<button id="submit" type="button" class="login__content__btn gw-highlight">{{ site.translations.main.login.signin }}</button>
+						</form>
+					</div>
+				</div>
+			</div>
+			<footer class="b2-bg doublepadded">
+				<p>{{ site.translations.main.observatory.gamma.front.footer }}</p>
+			</footer>
+		</div>
+	</div>
+	<script type="text/javascript" src="../../resources/sha1.min.js"></script>
+	<script type="text/javascript" src="../../resources/login.js"></script>
+</body>
+</html>

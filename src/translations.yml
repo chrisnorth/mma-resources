@@ -1,0 +1,198 @@
+text:
+    welcome:
+        title:
+            en: Welcome to the Multi-messenger Observatory
+            cy: Croeso
+        intro:
+            en: Don't shoot us...
+            cy: Don't shoot us... (Welsh)
+    login:
+        title:
+            en: Observer Portal Sign In
+        intro:
+            en: Welcome to the Observer Portal. Please sign in to continue.
+        signin:
+            en: Sign In
+        signout:
+            en: Sign Out
+        username:
+            en: User name
+        password:
+            en: Password
+        wrong:
+            en: Your login details were incorrect
+    observatory:
+        gw:
+            title:
+                en: Gravitational Wave Network Observatory
+            front:
+                intro:
+                    en: Welcome to the Gravitational Wave Network Observatory. Some inspiral-ational text...
+                hero:
+                    title:
+                        en: LIGO-Virgo-KAGRA Finds Elusive Mergers of Black Holes with Neutron Stars
+                    desc:
+                        en: LVK scientists capture two NSBH merger events 10 days apart in January 2020.
+                links:
+                    title:
+                        en: Useful links
+                footer:
+                    en: "&copy; Some footer text"
+            prev:
+                en: "&laquo; Previous"
+            next:
+                en: "Next &raquo;"
+            back:
+                en: Back
+            notification:
+                title:
+                    en: Event notification
+                intro:
+                    en: Below is all the information you have determined so far. You may wish to circulate this to the other teams. You can do so at any time - you do not need to know all the information.
+                text:
+                    en: "Name: {{ name }}\nTime/date: {{ date }}\nPossible locations: {{ locations }}\nMass estimate (M☉): {{ mass }}\nDistance estimate (Mpc): {{ distance }}\nMass ratio: {{ massratio }}\nInclination (°): {{ inclination }}\n\nAdditional notes:\n==========\n"
+                copy:
+                    en: Copy to clipboard
+            steps:
+                title:
+                    en: Observer Portal
+                intro:
+                    en: "Welcome to the Observer Portal. Clicking 'Next' will take you to the event selection."
+            step1:
+                title:
+                    en: Initial event selection
+                intro:
+                    en: "Select the event that you would like to investigate further below."
+                noevent:
+                    en: No event selected
+                view:
+                    en: View
+                details:
+                    en: Event details
+                name:
+                    en: Name
+                date:
+                    en: "Time/date:"
+                waveform:
+                    en: Waveform
+                selected:
+                    en: "Selected event:"
+                noiframe:
+                    en: No event selected yet
+            step2:
+                title:
+                    en: Localisation
+                    en-US: Localization
+                intro:
+                    en: "Use the detector arrival times to identify the possible locations."
+                select:
+                    en: "Select the time difference (ms):"
+                timediff:
+                    en: "Time difference: <strong>{{ dt }}</strong> seconds"
+                selected:
+                    en: "Selected grid squares:"
+            step3:
+                title:
+                    en: Basic parameters
+                intro:
+                    en: Use the interface below to estimate the basic parameters of the system. You will find a range of values will fit the data. Enter the ranges below.
+                mass:
+                    en: "Mass estimate (M<sub>&#9737;</sub>):"
+                distance:
+                    en: "Distance estimate (Mpc):"
+                to:
+                    en: "&rarr;"
+            step4:
+                title:
+                    en: Advanced parameters
+                intro:
+                    en: If you have more information about your event, you may be able to refine your estimates of the mass, distance etc.
+                massratio:
+                    en: Mass ratio
+                inclination:
+                    en: "Inclination (&deg;)"
+                to:
+                    en: "&rarr;"
+            detectors:
+                H:
+                    en: Hanford
+                L:
+                    en: Livingstone
+                V:
+                    en: Virgo
+                K:
+                    en: KAGRA
+        optical:
+            title:
+                en: International Optical Telescope
+        gamma:
+            title:
+                en: Gamma-ray Observatory
+            front:
+                intro:
+                    en: Welcome to the Gamma Ray Observatory. We're bursting to get started...
+                links:
+                    title:
+                        en: Operations
+                footer:
+                    en: "&copy; Some footer text"
+            prev:
+                en: "&laquo; Previous"
+            next:
+                en: "Next &raquo;"
+            back:
+                en: Back
+            steps:
+                title:
+                    en: Observer Portal
+                intro:
+                    en: "Welcome to the Observer Portal. Clicking 'Next' will take you to the event selection."
+            step1:
+                title:
+                    en: Initial event selection
+                intro:
+                    en: "Select the event that you would like to investigate further."
+                noevent:
+                    en: No event selected
+                selected:
+                    en: "Selected event:"
+                date:
+                    en: "Time/date:"
+            step2:
+                title:
+                    en: Localisation
+                    en-US: Localization
+                intro:
+                    en: "Use the detector counts to identify the possible locations."
+            step3:
+                title:
+                    en: Inclination
+                intro:
+                    en: "If you have more information about your event, you may be able to refine your estimates of the inclination of the event."
+            notification:
+                title:
+                    en: Event notification
+                intro:
+                    en: Below is all the information you have determined so far. You may wish to circulate this to the other teams. You can do so at any time - you do not need to know all the information.
+                text:
+                    en: "Name: {{ name }}\nTime/date: {{ date }}\nPossible locations: {{ locations }}\nMass estimate (M☉): {{ mass }}\nDistance estimate (Mpc): {{ distance }}\nMass ratio: {{ massratio }}\n\nAdditional notes:\n==========\n"
+                copy:
+                    en: Copy to clipboard
+        xr:
+            title:
+                en: X-ray & Radio Observatory
+    cosmocalc:
+        title:
+            en: Cosmological Calculator
+        intro:
+            en: "Placeholder text."
+        result:
+            en: "Result"
+        redshift:
+            en: Redshift
+        distance:
+            en: "Distance (Mpc)"
+        yourvalue:
+            en: Your value
+        age:
+            en: Age of the Universe (billion years)

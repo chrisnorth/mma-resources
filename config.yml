@@ -1,0 +1,9 @@
+src: "src/"
+build: "build/"
+language:
+    file: "languages.yml"
+    default: en
+translations:
+    main: "translations.yml"
+    waveform: "gw/waveform-fitter/data/translations.yml"
+    

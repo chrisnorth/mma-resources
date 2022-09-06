@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>{{ site.translations.main.observatory.gw.title }}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href='../../resources/icon.svg' rel='icon' type='image/svg'>
+	<link rel="stylesheet" href="../../../resources/style.css">
+	<link rel="stylesheet" href="../../resources/style.css">
+	<script type="text/javascript" src="../../waveform-fitter/resources/graph.js"></script>
+</head>
+<body class="gw-bg">
+	<div id="main" class="page">
+		<header class="b1-bg">
+			<div class="padded">
+				<div class="holder">
+					<svg width="2em" height="2em" version="1.1" viewBox="0 0 33.867 33.867" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"><g transform="translate(0 -263.13)"><path transform="matrix(.26458 0 0 .26458 0 263.13)" d="m0 0v128h128v-128h-128zm29.121 6.0605h10.176a40 40 0 0 1-33.488 33.105v-10.133a30 30 0 0 0 23.313-22.973zm20.248 0h10.049a60 60 0 0 1-53.609 53.307v-10.123a50 50 0 0 0 43.561-43.184zm20.141 0h10.029a80 80 0 0 1-73.73 73.307v-10.002a70 70 0 0 0 63.701-63.305zm20 0h10.094a100 100 0 0 1-93.795 93.307v-9.9121a90 90 0 0 0 83.701-83.395zm20 0h10.094a120 120 0 0 1-113.79 113.31v-9.9121a110 110 0 0 0 103.7-103.39z" fill="white" /></g></svg>
+					<a href="../../index.html" class="login-link button gw-highlight">{{ site.translations.main.login.signout }}</a>
+					<h1>{{ site.translations.main.observatory.gw.title }}</h1>
+				</div>
+			</div>
+			<div class="gw padded">
+				<div class="holder">
+					<h2>{{ site.translations.main.observatory.gw.steps.title }}</h2>
+				</div>
+			</div>
+		</header>
+		<div class="tallpadded">
+			<div class="holder b6-bg doublepadded">
+				<ol class="breadcrumb gw-breadcrumb">
+					<li class="step visited"><a href="../1/index.html">{{ site.translations.main.observatory.gw.step1.title }}</a></li>
+					<li class="step visited"><a href="../2/index.html">{{ site.translations.main.observatory.gw.step2.title }}</a></li>
+					<li class="step visited"><a href="../3/index.html">{{ site.translations.main.observatory.gw.step3.title }}</a></li>
+					<li class="step"><strong aria-current="page">{{ site.translations.main.observatory.gw.step4.title }}</strong></li>
+				</ol>
+				<section id="step" class="doublepadded">
+					<h2>{{ site.translations.main.observatory.gw.step4.title }}</h2>
+					<p>{{ site.translations.main.observatory.gw.step4.intro }}</p>
+					<div class="iframe-holder">
+						<iframe id="waveform" loading="lazy"></iframe>
+					</div>
+					<div class="padded output gw">
+						<p><strong class="prop">{{ site.translations.main.observatory.gw.step4.massratio }}</strong> <input type="number" class="selection" id="massratio-lo" min="0.1" max="1" step="0.1" /> &rarr; <input type="number" class="selection" id="massratio-hi" min="0.1" max="1" step="0.1" /></p>
+						<p><strong class="prop">{{ site.translations.main.observatory.gw.step4.inclination }}</strong> <input type="number" class="selection" id="inc-lo" min="0" max="90" step="1" /> &rarr; <input type="number" class="selection" id="inc-hi" min="0" max="90" step="1" /></p>
+					</div>
+				</section>
+				<section id="event-notification" class="doublepadded">
+					<h2>{{ site.translations.main.observatory.gw.notification.title }}</h2>
+					<p>{{ site.translations.main.observatory.gw.notification.intro }}</p>
+					<textarea class="padded b6-bg">{{ site.translations.main.observatory.gw.notification.text }}</textarea>
+					<div class="nav-right">
+						<div class="nav-inner">
+							<div class="nav-flex">
+								<button id="show-steps" class="button gw-highlight">{{ site.translations.main.observatory.gw.back }}</button>
+								<button class="button gw-highlight" id="event-copy">{{ site.translations.main.observatory.gw.notification.copy }}</button>
+								<a href="../../../cosmological-calculator/index.html" class="cc-highlight button" id="cosmocalc">{{ site.translations.main.cosmocalc.title }}</a>
+							</div>
+						</div>
+					</div>
+				</section>
+				<nav class="holder">
+					<div class="nav-right">
+						<div class="nav-inner">
+							<div class="nav-flex">
+								<a href="../3/index.html" id="prev" class="button gw-highlight">{{ site.translations.main.observatory.gw.prev }}</a>
+								<button id="show-notification" class="button gw-highlight">{{ site.translations.main.observatory.gw.notification.title }}</button>
+							</div>
+						</div>
+					</div>
+				</nav>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="../../../resources/common.js"></script>
+	<script type="text/javascript" src="../scenario.js"></script>
+	<script type="text/javascript" src="4.js"></script>
+	<script>
+	var scenario;
+	ready(function(){
+		scenario = new Scenario('../scenario-1.json');
+	});
+	</script>
+</body>
+</html>

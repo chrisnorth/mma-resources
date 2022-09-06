@@ -1,0 +1,9 @@
+#calculator {
+	animation-duration: 0.3s;
+}
+.graph, .output { margin-top: 2em; }
+.graph line { vector-effect: non-scaling-stroke; stroke-width: 4px; }
+.graph line.user { stroke: red; }
+.graph text.user { fill: red; }
+.row { display: grid; grid-template-columns: 20% 1fr; margin-bottom: 1em; line-height: 2em; }
+.value { font-weight: bold; }

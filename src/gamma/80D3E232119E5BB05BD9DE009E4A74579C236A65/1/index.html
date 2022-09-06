@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>{{ site.translations.main.observatory.gamma.title }}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="../../../resources/style.css" />
+	<link rel="stylesheet" href="../../resources/style.css" />
+</head>
+</head>
+<body class="ga">
+	<div id="main" class="ga-bg">
+		<div class="holder">
+			<header class="b2-bg padded">
+				<h1>{{ site.translations.main.observatory.gamma.title }}</h1>
+			</header>
+			<div id="content-wrapper" class="padded">
+				<div class="padded">
+
+					<div class="panel span2">
+						<div class="padded">
+							<h2>{{ site.translations.main.observatory.gamma.steps.title }}</h2>
+
+
+							<ol class="breadcrumb ga-breadcrumb">
+								<li class="step current"><strong aria-current="page">{{ site.translations.main.observatory.gamma.step1.title }}</strong></li>
+								<li class="step"><strong>{{ site.translations.main.observatory.gamma.step2.title }}</strong></li>
+								<li class="step"><strong>{{ site.translations.main.observatory.gamma.step3.title }}</strong></li>
+							</ol>
+							<section id="step">
+								<h2>{{ site.translations.main.observatory.gamma.step1.title }}</h2>
+								<div class="widescreen">
+									<div id="no-event">{{ site.translations.main.observatory.gamma.step1.intro }}</div>
+									<div id="waveform" class="waveform"></div>
+								</div>
+								<div class="padded output ga">
+									<label class="prop" for="select-event">{{ site.translations.main.observatory.gamma.step1.selected }}</label>
+									<select id="select-event">
+										<option value="">{{ site.translations.main.observatory.gamma.step1.noevent }}</option>
+										<!-- EVENT START --><!-- EVENT END -->
+									</select>
+									<span class="prop">{{ site.translations.main.observatory.gamma.step1.date }}</span> <span class="value event-date">?</span>
+								</div>
+							</section>
+							<section id="event-notification">
+								<h2>{{ site.translations.main.observatory.gamma.notification.title }}</h2>
+								<p>{{ site.translations.main.observatory.gamma.notification.intro }}</p>
+								<textarea class="padded b6-bg">{{ site.translations.main.observatory.gamma.notification.text }}</textarea>
+								<div class="nav-right">
+									<div class="nav-inner">
+										<div class="nav-flex">
+											<button id="show-steps" class="button gw-highlight">{{ site.translations.main.observatory.gamma.back }}</button>
+											<button class="button gw-highlight" id="event-copy">{{ site.translations.main.observatory.gamma.notification.copy }}</button>
+											<a href="../../../cosmological-calculator/index.html" class="cc-highlight button" id="cosmocalc">{{ site.translations.main.cosmocalc.title }}</a>
+										</div>
+									</div>
+								</div>
+							</section>
+							<nav class="holder">
+								<div class="nav-right">
+									<div class="nav-inner">
+										<div class="nav-flex">
+											<button id="show-notification" class="button ga-highlight">{{ site.translations.main.observatory.gamma.notification.title }}</button>
+											<a href="../2/index.html" id="next" class="button ga-highlight">{{ site.translations.main.observatory.gamma.next }}</a>
+										</div>
+									</div>
+								</div>
+							</nav>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="../../../resources/common.js"></script>
+	<script type="text/javascript" src="../scenario.js"></script>
+	<script type="text/javascript" src="1.js"></script>
+	<script>
+	var scenario;
+	ready(function(){
+		scenario = new Scenario('../scenario.json');
+		console.log(scenario);
+	});
+	</script>
+</body>
+</html>
