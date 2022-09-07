@@ -32,7 +32,7 @@
 		this.debug = (this.urlVars.debug) ? this.urlVars.debug : false;
 		this.sliders = opts.sliders || null;
 		var _obj = this;
-		this.graph = new Graph(opts.graphholder,{'ns':this.ns,'getText':function(txt){ return _obj.getTl(txt); }});
+		this.graph = new Graph(opts.graphholder,{'ns':this.ns});
 		this.scales = {};
 		if(this.urlVars.simulation) opts.simulation = this.urlVars.simulation;
 		if(this.urlVars.data) opts.data = this.urlVars.data;
@@ -140,15 +140,6 @@
 		return this;
 	};
 
-	WaveFitter.prototype.setLanguage = function(lang){
-
-		console.info('WaveFitter.setLangage',lang);
-		this.lang = lang;
-		this.langdict = lang.translations;
-
-		return this;
-	};
-
 	WaveFitter.prototype.getUrlVars = function(){
 		var vars = {},hash;
 		var url = window.location.href;
@@ -164,52 +155,18 @@
 		this.url = url;
 	};
 
-	WaveFitter.prototype.makeUrl = function(newKeys,full){
-		var newUrlVars = this.urlVars;
-		var allKeys = {"lang":[this.lang.lang]};
-		var key,newUrl;
-		for(key in allKeys){
-			if(this.debug){console.log(key,allKeys[key]);}
-			if((allKeys[key][0]!=allKeys[key][1])) newUrlVars[key]=allKeys[key][0];
-			else delete newUrlVars[(key)];
-		}
-		if(this.debug){console.log('new urlvars',newUrlVars);}
-		for(key in newKeys){
-			if(!newKeys[key]) delete newUrlVars[key];
-			else newUrlVars[key]=newKeys[key];
-		}
-		newUrl = this.url+'?';
-		for(key in newUrlVars) newUrl=newUrl + key+'='+newUrlVars[key]+'&';
-		newUrl = newUrl.slice(0,newUrl.length-1);
-		return newUrl;
-	};
-
-	WaveFitter.prototype.getTl = function(code){
-		var _wf = this;
-		if(_wf.lang){
-			var lang = _wf.lang.lang;
-			var o = clone(_wf.langdict);
-			// Step through the bits of our code e.g. text.about.heading
-			var bits = code.split(/\./);
-			for(var i = 0; i < bits.length; i++) o = o[bits[i]];
-			return o[lang]||"";
-		}else{
-			return "";
-		}
-	};
-
 	WaveFitter.prototype.updateData = function(){
 
 		// Set the data series
 		if(this.wavedata.dataH!==null && !this.graph.series[0]){
-			this.graph.setSeries(0,this.wavedata.dataH,{'id':'line-data','text':'text.legend.data','class':'data','stroke':'rgba(0,150,200,1)'});
+			this.graph.setSeries(0,this.wavedata.dataH,{'id':'line-data','text':'{{ site.translations.waveform.legend.data }}','class':'data','stroke':'rgba(0,150,200,1)'});
 			// Update the ranges
 			this.graph.axes.x.setRange(this.graph.series[0]);
 		}
 		if(this.wavedata.simNR!==null){
 			this.graph.setSeries(1,this.wavedata.simNR,{
 				'id':'line-sim',
-				'text':'text.legend.simulation',
+				'text':'{{ site.translations.waveform.legend.simulation }}',
 				'class':'sim',
 				'range':true,
 				'stroke':'rgba(200,150,0,1)',

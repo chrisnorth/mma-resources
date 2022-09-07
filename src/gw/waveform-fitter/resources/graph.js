@@ -115,7 +115,7 @@
 		if(!this.svg.xaxis){
 			// Make x-axis
 			this.svg.xaxis = svgEl('g').appendTo(this.svg.el).addClass("x-axis axis").attr({'id':'x-axis-g'});
-			this.axes.x = new Axis(this.svg.xaxis,xprops,svgEl('text').addClass("x-axis axis-label translate").attr({'dominant-baseline':'hanging','text-anchor':'middle','data-translate':'site.translations.'+this.ns+'[text.axis.time][site.lang]'}).html(this.opt.getText('text.axis.time')));
+			this.axes.x = new Axis(this.svg.xaxis,xprops,svgEl('text').addClass("x-axis axis-label translate").attr({'dominant-baseline':'hanging','text-anchor':'middle'}).html('{{ site.translations.waveform.axis.time }}'));
 		}else{
 			this.axes.x.setDomain(0,this.scales.graphWidth).setProps(xprops).updateSize();
 		}
@@ -132,7 +132,7 @@
 		if(!this.svg.yaxis){
 			// Make y-axis
 			this.svg.yaxis = svgEl('g').appendTo(this.svg.el).addClass("y-axis axis").attr({'id':'y-axis-g'});
-			this.axes.y = new Axis(this.svg.yaxis,yprops,svgEl('text').addClass("y-axis axis-label translate").attr({'dominant-baseline':'hanging','transform':'rotate(-90)','text-anchor':'middle','data-translate':'site.translations.'+this.ns+'[text.axis.strain][site.lang]'}).html(this.opt.getText('text.axis.strain')));
+			this.axes.y = new Axis(this.svg.yaxis,yprops,svgEl('text').addClass("y-axis axis-label translate").attr({'dominant-baseline':'hanging','transform':'rotate(-90)','text-anchor':'middle'}).html('{{ site.translations.waveform.axis.strain }}'));
 		}else{
 			this.axes.y.setDomain(this.scales.graphHeight,0).setProps(yprops).updateSize();
 		}
@@ -168,9 +168,10 @@
 			if(this.series[s]){
 				cls = (this.series[s].opt.class ? ' '+this.series[s].opt.class : '');
 				txt = this.series[s].opt.text||'text.legend.data';
+				var language = {{ site.translations.waveform }};
 				this.svg.legenditems[s] = {
 					'line':svgEl('line').appendTo(this.svg.legend).addClass('line'+cls).attr({'x1':0,'x2':(fs*1.5).toFixed(1),'y1':y,'y2':y}),
-					'text':svgEl('text').appendTo(this.svg.legend).addClass('leg-text translate'+cls).attr({'x':(fs*1.5 + fs*0.5).toFixed(1),'y':y,'dominant-baseline':'middle','data-translate':'site.translations.'+this.ns+'['+txt+'][site.lang]'}).html(this.opt.getText(txt))
+					'text':svgEl('text').appendTo(this.svg.legend).addClass('leg-text translate'+cls).attr({'x':(fs*1.5 + fs*0.5).toFixed(1),'y':y,'dominant-baseline':'middle'}).html(txt||"?")
 				};
 				if(this.series[s].opt.fill){
 					this.svg.legenditems[s].line.attr({'fill':this.series[s].opt.fill});

@@ -31,7 +31,7 @@
 		this.getUrlVars();
 		this.debug = (this.urlVars.debug) ? this.urlVars.debug : false;
 		var _obj = this;
-		this.graph = new Graph(opts.graphholder,{'ns':this.ns,'getText':function(txt){ return _obj.getTl(txt); }});
+		this.graph = new Graph(opts.graphholder,{'ns':this.ns});
 
 		this.scales = {};
 		if(this.urlVars.simulation) opts.simulation = this.urlVars.simulation;
@@ -69,15 +69,6 @@
 		return this;
 	};
 
-	BasicWaveFitter.prototype.setLanguage = function(lang){
-
-		console.info(this.title+' setLangage',lang);
-		this.lang = lang;
-		this.langdict = lang.translations;
-
-		return this;
-	};
-
 	BasicWaveFitter.prototype.getUrlVars = function(){
 		var vars = {},hash;
 		var url = window.location.href;
@@ -91,20 +82,6 @@
 		}
 		this.urlVars = vars;
 		this.url = url;
-	};
-
-	BasicWaveFitter.prototype.getTl = function(code){
-		var _wf = this;
-		if(_wf.lang){
-			var lang = _wf.lang.lang;
-			var o = clone(_wf.langdict);
-			// Step through the bits of our code e.g. text.about.heading
-			var bits = code.split(/\./);
-			for(var i = 0; i < bits.length; i++) o = o[bits[i]];
-			return o[lang]||"";
-		}else{
-			return "";
-		}
 	};
 
 	BasicWaveFitter.prototype.updateData = function(){

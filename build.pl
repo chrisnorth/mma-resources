@@ -39,10 +39,10 @@ sub loadLanguages {
 	my $config = shift;
 	my $tran;
 
-	$config->{'language'}{'languages'} = LoadFile($config->{'src'}.$config->{'language'}{'file'});
+	$config->{'language'}{'languages'} = LoadFile($config->{'language'}{'file'});
 
 	foreach $a (keys(%{$config->{'translations'}})){
-		$file = $config->{'src'}.$config->{'translations'}{$a};
+		$file = $config->{'translations'}{$a};
 		if(-e $file){
 			print "Loading translation $colours{'cyan'}$a$colours{'none'} from $colours{'green'}$file$colours{'none'}\n";
 			$tran = LoadFile($file);
@@ -188,6 +188,8 @@ sub fileCopyLanguage {
 						}
 					}
 				}
+			}elsif($key =~ /^site\.lang/){
+				$value = $lang;
 			}else{
 				print "Don't know how to deal with $key\n";
 			}

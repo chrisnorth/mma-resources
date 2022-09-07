@@ -5,5 +5,5 @@ language:
     default: en
 translations:
     main: "translations.yml"
-    waveform: "gw/waveform-fitter/data/translations.yml"
+    waveform: "src/gw/waveform-fitter/data/translations.yml"
     

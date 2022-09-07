@@ -68,22 +68,22 @@ text:
             en: "Strain x10^{21}"
             cy: "Straen x10^{21}"
 
-data:
+    data:
 
-    totalmass:
-        en: "Total Mass (M<sub>☉</sub>)"
-        cy: "Cyfanswm Màs (M<sub>☉</sub>)"
+        totalmass:
+            en: "Total Mass (M<sub>☉</sub>)"
+            cy: "Cyfanswm Màs (M<sub>☉</sub>)"
 
-    distance:
-        en: Distance (Mpc)
-        cy: Pellter (Mpc)
+        distance:
+            en: Distance (Mpc)
+            cy: Pellter (Mpc)
 
-    inclination:
-        en: "Inclination (&deg;)"
-        cy: "Inclination (&deg;)"
+        inclination:
+            en: "Inclination (&deg;)"
+            cy: "Inclination (&deg;)"
 
-    massratio:
-        en: Mass ratio
-        cy: Mass ratio
+        massratio:
+            en: Mass ratio
+            cy: Mass ratio
 
 
