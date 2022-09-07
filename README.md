@@ -32,3 +32,22 @@ Plots localisation plots for grav waves detector timings
 
 #### Scripts
 * python/GW/plot-locmaps.py: plot localisation timing maps for grav wave detectors, and output data files
+
+
+## Front-end
+
+The source for the website is the `src/` directory. The structure of this directory will be copied to the `dist/` directory by the build process using the default language. The build process will also create sub-directories with the same structure for each language code that has been enabled. Within the `src/` directory, HTML and JS files can contain ``{{ site.translations.main.welcome.title }}`` style language replacement string. These reference the structure of language YAML files	that are included under `translations` in `config.yml`. For example:
+
+```
+translations:
+    main: "translations.yml"
+    waveform: "src/gw/waveform-fitter/data/translations.yml"
+```
+
+references two different translation files and gives each one a namespace. So ``{{ site.translations.main.welcome.title }}`` extracts the `welcome>title` from `translations.yml`.
+
+The site can be built using:
+
+```perl build.pl```
+
+This process will be run automatically on push via a Github Action.
