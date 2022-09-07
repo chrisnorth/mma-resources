@@ -72,9 +72,10 @@ sub siteCopy {
 
 	# Create each translation
 	foreach $lang (sort(keys(%{$config->{'language'}{'languages'}}))){
-
-		# Create a copy in the language sub-directory
-#		siteCopyLanguage($lang,$config->{'build'}.$lang."/",$config);
+		if($config->{'language'}{'languages'}{$lang}{'enabled'}){
+			# Create a copy in the language sub-directory
+			siteCopyLanguage($lang,$config->{'build'}.$lang."/",$config);
+		}
 	}
 	return;
 }
@@ -138,7 +139,7 @@ sub fileCopyLanguage {
 
 	my ($fh,@lines,$str,$nstr,$key,@parts,$p,$o,@bits);
 	print "\t$colours{'green'}$inp$colours{'none'} -> $colours{'green'}$out$colours{'none'}\n";
-	my $coder = JSON::XS->new->utf8->allow_nonref;
+	my $coder = JSON::XS->new->utf8->allow_nonref->canonical(1);
 
 
 	if($inp =~ /\.html$/ || $inp =~ /\.js$/){
@@ -188,8 +189,10 @@ sub fileCopyLanguage {
 						}
 					}
 				}
-			}elsif($key =~ /^site\.lang/){
+			}elsif($key =~ /^site\.lang$/){
 				$value = $lang;
+			}elsif($key =~ /^site\.language$/){
+				$value = $coder->encode($config->{'language'});
 			}else{
 				print "Don't know how to deal with $key\n";
 			}

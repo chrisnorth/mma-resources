@@ -157,6 +157,14 @@ button[disabled]:hover, button[disabled]:focus { background: #dfdfdf; color: bla
 	width: 100%;
 }
 
+.language-picker { line-height: 2em; }
+.language-picker:hover, .language-picker:focus { background: #dfdfdf; outline: 2px solid #c89600; }
+.language-picker__form { display: block; grid-template-columns: auto auto; grid-gap: 0.25em; position: relative; height: 100%; }
+.language-picker select { display: inline-block; height: 100%; font: inherit; color: inherit; background: transparent; border: 0; cursor:inherit; }
+.language-picker label svg { position: absolute; left: 0.5em; top: 50%; transform: translate3d(0,-50%,0); height: 1.5em; width: 1.5em; }
+.language-picker select { padding-left: 2em; }
+.language-picker select option { color: inherit; }
+
 
 @media only screen and (max-width: 800px) {
 	ol.grid { grid-template-columns: 100%; }

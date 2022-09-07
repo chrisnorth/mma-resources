@@ -1,8 +1,11 @@
 en:
     label:  English
+    enabled: false
 en-US:
     label:  English (US)
     inherit: en
+    enabled: false
 cy:
     label:  Cymraeg
     inherit: en
+    enabled: false
