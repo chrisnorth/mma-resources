@@ -1,5 +1,3 @@
-@import url('../../resources/fonts/play.css');
-
 body {
 	background: #000 url("star_bkgd.jpg") repeat left top!important;	
 }
@@ -71,13 +69,24 @@ h3 { font-size: 1.25em; }
 .slide-details h3 { margin-top: 0; }
 
 ol.breadcrumb { list-style: none; display: grid; grid-template-columns: repeat(3,1fr); padding-left: 0; }
-ol.breadcrumb .step { font-weight: bold; font-family: 'Play', sans-serif; }
+ol.breadcrumb .step { font-weight: bold; font-family: sans-serif; }
 
 iframe { background: black; }
 iframe:not([src^=http]){ background: rgba(0,0,0,0); }
 .iframe-holder { position: relative; line-height: 0; }
 .iframe-holder > iframe { position: relative; z-index: 2; }
 .text-center { position: absolute; z-index: 0; left: 50%; top: 50%; transform: translate3d(-50%,-50%,0); line-height: 1.5em; text-align:center; }
+
+.nav-flex {
+	display: flex;
+}
+.widescreen {
+	border: 0px;
+	width: 100%;
+	aspect-ratio: 16 / 9;
+	position: relative;
+}
+#waveform .linechart-tooltip { line-height: 1.5em; box-shadow: 2px 2px 3px rgba(0,0,0,0.3); padding: 0.5em 1em; }
 
 .grid-pair { text-align: center; }
 .grid-pair p { text-align: left; }

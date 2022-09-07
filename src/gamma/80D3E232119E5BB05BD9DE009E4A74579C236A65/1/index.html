@@ -18,9 +18,6 @@
 
 					<div class="panel span2">
 						<div class="padded">
-							<h2>{{ site.translations.main.observatory.gamma.steps.title }}</h2>
-
-
 							<ol class="breadcrumb ga-breadcrumb">
 								<li class="step current"><strong aria-current="page">{{ site.translations.main.observatory.gamma.step1.title }}</strong></li>
 								<li class="step"><strong>{{ site.translations.main.observatory.gamma.step2.title }}</strong></li>
@@ -48,14 +45,14 @@
 								<div class="nav-right">
 									<div class="nav-inner">
 										<div class="nav-flex">
-											<button id="show-steps" class="button gw-highlight">{{ site.translations.main.observatory.gamma.back }}</button>
-											<button class="button gw-highlight" id="event-copy">{{ site.translations.main.observatory.gamma.notification.copy }}</button>
+											<button id="show-steps" class="button ga-highlight">{{ site.translations.main.observatory.gamma.back }}</button>
+											<button class="button ga-highlight" id="event-copy">{{ site.translations.main.observatory.gamma.notification.copy }}</button>
 											<a href="../../../cosmological-calculator/index.html" class="cc-highlight button" id="cosmocalc">{{ site.translations.main.cosmocalc.title }}</a>
 										</div>
 									</div>
 								</div>
 							</section>
-							<nav class="holder">
+							<nav>
 								<div class="nav-right">
 									<div class="nav-inner">
 										<div class="nav-flex">
@@ -73,14 +70,8 @@
 		</div>
 	</div>
 	<script type="text/javascript" src="../../../resources/common.js"></script>
+	<script type="text/javascript" src="../../resources/oi.linechart.js"></script>
 	<script type="text/javascript" src="../scenario.js"></script>
 	<script type="text/javascript" src="1.js"></script>
-	<script>
-	var scenario;
-	ready(function(){
-		scenario = new Scenario('../scenario.json');
-		console.log(scenario);
-	});
-	</script>
 </body>
 </html>

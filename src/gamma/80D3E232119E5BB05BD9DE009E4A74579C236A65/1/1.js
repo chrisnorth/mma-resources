@@ -21,6 +21,16 @@ function Step(data,opt){
 
 	var _obj = this;
 
+	// Add events to drop down box
+	for(var e in data.events){
+		selopt = document.createElement('option');
+		selopt.setAttribute('value',e);
+		if(e==vals.event) selopt.setAttribute('selected','selected');
+		selopt.innerHTML = e;
+		el.event.appendChild(selopt);
+	}
+	
+
 	el.event.addEventListener('change',function(e){
 		_obj.setEvent(e.target.value);
 	});
@@ -42,56 +52,82 @@ function Step(data,opt){
 
 		if(e){
 			if(data.events[e]){
+				ev = data.events[e];
+
 				vals.ev = data.events[e];
 				el.next.removeAttribute('disabled');
 				el.none.style.display = 'none';
 				el.waveform.style.display = '';
 				if(!this.graph){
-					this.graph = new Graph(el.waveform,{
-						'axes':{
-							'x':{}
+					var series = [];
+					// A function to create the contents of a tooltip
+					function label(d){
+						return updateFromTemplate("{{ site.translations.main.observatory.gamma.step1.tooltip }}",{'x':d.data.x,'y':d.data.y.toFixed(1),'title':d.series.title});
+					}
+					var axes = {
+						'x':{ 'min':1e100,'max':-1e100, 'title': { 'label': '{{ site.translations.main.observatory.gamma.step1.time }}' }, 'labels':{} },
+						'y':{ 'min':1e100,'max':-1e100, 'title': { 'label':'{{ site.translations.main.observatory.gamma.step1.counts }}' }, 'labels':{}, 'grid': {'show':true,'stroke':'#dfdfdf'} }
+					};
+					for(var i = 0; i < ev.lightcurve.length; i++){
+						series.push({'x':ev.lightcurve[i][0],'y':ev.lightcurve[i][1]});
+						if(i < ev.lightcurve.length-1){
+							series.push({'x':ev.lightcurve[i+1][0],'y':ev.lightcurve[i][1]});
+						}
+						axes.x.min = Math.min(axes.x.min,ev.lightcurve[i][0]);
+						axes.x.max = Math.max(axes.x.max,ev.lightcurve[i][0]);
+						axes.y.min = Math.min(axes.y.min,ev.lightcurve[i][1]);
+						axes.y.max = Math.max(axes.y.max,ev.lightcurve[i][1]);
+					}
+					// Expand y-axis range
+					var dy = (axes.y.max-axes.y.min)*0.05;
+					axes.y.min -= dy;
+					axes.y.max += dy;
+					var dy = 250;
+					for(var x = Math.ceil(axes.x.min); x <= Math.floor(axes.x.max); x++) axes.x.labels[x] = {'label':x+''};
+					for(var y = roundTo(axes.y.min,dy); y <= roundTo(axes.y.max,dy); y += dy) axes.y.labels[y] = {'label':y.toLocaleString() };
+
+					this.graph = OI.linechart(el.waveform,{
+						'left':80,
+						'right':0,
+						'top':8,
+						'bottom':50,
+						'axis':{
+							'x':{
+								'min': -3,
+								'max': 3,
+								'title': { 'label': '{{ site.translations.main.observatory.gamma.step1.time }}' },
+								'labels':{
+									"-3": {'label':-3},
+									"-2": {'label':-2},
+									"-1": {'label':-1},
+									"0": {'label':0},
+									"1": {'label':1},
+									"2": {'label':2},
+									"3": {'label':3}
+								}
+							},
+							'y':{
+								'min': 0,
+								'max': 2,
+								'title':{ 'label':'{{ site.translations.main.observatory.gamma.step1.counts }}' },
+								'labels':{
+									"0": {'label':0},
+									"0.5": {'label':0.5},
+									"1": {'label':1}
+								}
+							}
 						}
 					});
-					this.graph.update();
-					this.graph.on('mousemove',{this:this},function(e,d){
-						// If the mouse montoring is active we update the value
-						//if(this.mouseactive) p.innerHTML = updateFromTemplate(language.getKey('site.translations.mma[text.observatory.gw.step2.timediff][site.lang]'),{'dt':(d.x*1000).toFixed(2)});
-					}).on('click',{this:this},function(e,d){
-						// Toggle montioring of mouse position
-						this.mouseactive = !this.mouseactive;
+					this.graph.addSeries(series,{
+						'title': '{{ site.translations.main.observatory.gamma.step1.series }}',
+						'points':{'color':'transparent','size':4},
+						'line':{'color':'#2254F4','stroke-width':2},
+						'tooltip':{ 'label': label }
 					});
-
+					this.graph.setProperties({'axis':axes});
+					this.graph.draw();
 				}
-				ev = data.events[e];
 				dt = ev.datetime;
-				file = (ev) ? (ev.GW.files.waveform_csv ? '../../waveform-fitter/waveforms/'+ev.GW.files.waveform_csv : "") : '';
-				
-				// Get waveform data
-				fetch(file).then(response => {
-					if(!response.ok) throw new Error('Network response was not OK');
-					return response.text();
-				}).then(txt => {
-					var wfdata,t0,lbl;
-
-					wfdata = parseCSV(txt);
-					t0 = ev.GW.t0_ms;
-					lbl = '{{ site.translations.waveform.legend.data }}';
-
-					this.graph.setSeries(0,wfdata,{'id':'line-data','text':lbl,'class':'data','stroke':'rgba(0,150,200,1)'});
-
-					// Update the ranges
-					this.graph.axes.x.setRange(wfdata[0][0],wfdata[wfdata.length-1][0]);
-
-					this.graph.axes.y.setRange(-1.5,1.5);
-
-					// Update the scales and domains
-					this.graph.updateData();
-
-					this.graph.update();
-
-				}).catch(error => {
-					errorMessage('Unable to load the data "'+file+'"',error);
-				});
 				
 			}else{
 				errorMessage('Invalid event '+ev,data);
@@ -114,3 +150,8 @@ function Step(data,opt){
 	this.setEvent(el.event.value);
 	return this;
 }
+
+var scenario;
+ready(function(){
+	scenario = new Scenario('../scenario.json');
+});

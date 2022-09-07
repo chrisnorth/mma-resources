@@ -194,7 +194,7 @@ sub fileCopyLanguage {
 			}elsif($key =~ /^site\.language$/){
 				$value = $coder->encode($config->{'language'});
 			}else{
-				print "Don't know how to deal with $key\n";
+				print "Don't know how to deal with \"$key\" in $inp\n";
 			}
 			$str =~ s/\{\{ ?$key ?\}\}//g;
 			$nstr =~ s/\{\{ ?$key ?\}\}/$value/g;

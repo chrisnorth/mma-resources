@@ -158,6 +158,14 @@ text:
                     en: "Selected event:"
                 date:
                     en: "Time/date:"
+                time:
+                    en: "Time (sec)"
+                counts:
+                    en: "Count rate (counts/s)"
+                series:
+                    en: "Lightcurve"
+                tooltip:
+                    en: "{{ title }}<br />Time: {{ x }} s<br />Value: {{ y }} counts/s"
             step2:
                 title:
                     en: Localisation
@@ -175,7 +183,7 @@ text:
                 intro:
                     en: Below is all the information you have determined so far. You may wish to circulate this to the other teams. You can do so at any time - you do not need to know all the information.
                 text:
-                    en: "Name: {{ name }}\nTime/date: {{ date }}\nPossible locations: {{ locations }}\nMass estimate (M☉): {{ mass }}\nDistance estimate (Mpc): {{ distance }}\nMass ratio: {{ massratio }}\n\nAdditional notes:\n==========\n"
+                    en: "GAMMA RAY EVENT NOTIFCATION\n\nName: {{ name }}\nTime/date: {{ date }}\nPossible locations: {{ locations }}\nMass estimate (M☉): {{ mass }}\nDistance estimate (Mpc): {{ distance }}\nMass ratio: {{ massratio }}\n\nAdditional notes:\n==========\n"
                 copy:
                     en: Copy to clipboard
         xr:
