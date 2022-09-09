@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>{{ site.translations.main.observatory.gamma.title }}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="../../../resources/style.css" />
+	<link rel="stylesheet" href="../../resources/style.css" />
+	<style>
+		#content {
+			display: grid;
+			grid-template-columns: auto 1fr;
+			grid-gap: 1em;
+			align-items: top;
+			margin-bottom: 1em;
+		}
+		#detector-counts {
+			text-align: center;
+			margin: auto;
+			border-collapse: collapse;
+			padding: 0;
+			height: 100%;
+		}
+		#detector-counts td, #detector-counts th {
+			border: 1px solid #999;
+			margin: 0;
+			padding: 0.25em 0.5em;
+		}
+		#detector-locations {
+			display: grid;
+			grid-gap: 1em;
+			grid-template-rows: auto 1fr;
+		}
+		#detector-locations .map {
+			height: 100%;
+			max-width: 100%;
+			aspect-ratio: 2 / 1;
+		}
+		.grid-cell:hover {
+			fill: rgba(183, 216, 241,0.8);
+		}
+	</style>
+</head>
+</head>
+<body class="ga">
+	<div id="main" class="ga-bg">
+		<div class="holder">
+			<header class="b2-bg padded">
+				<h1>{{ site.translations.main.observatory.gamma.title }}</h1>
+			</header>
+			<div id="content-wrapper" class="padded">
+				<div class="padded">
+
+					<div class="panel span2">
+						<div class="padded">
+							<ol class="breadcrumb ga-breadcrumb">
+								<li class="step visited"><strong>{{ site.translations.main.observatory.gamma.step1.title }}</strong></li>
+								<li class="step current"><strong aria-current="page">{{ site.translations.main.observatory.gamma.step2.title }}</strong></li>
+								<li class="step"><strong>{{ site.translations.main.observatory.gamma.step3.title }}</strong></li>
+							</ol>
+							<section id="step">
+								<h2>{{ site.translations.main.observatory.gamma.step2.title }}</h2>
+								<p>{{ site.translations.main.observatory.gamma.step2.intro }}</p>
+								<div id="content">
+								
+									<div id="detector-counts">
+										<h3>{{ site.translations.main.observatory.gamma.step2.counts }}</h3>
+									</div>
+									<div id="detector-locations">
+										<h3>{{ site.translations.main.observatory.gamma.step2.locations }}</h3>
+									</div>
+
+								</div>
+								<div class="padded output ga">
+									<label class="prop" for="select-location">{{ site.translations.main.observatory.gamma.step2.selected }}</label>
+									<input id="select-location" />
+								</div>
+							</section>
+							<section id="event-notification">
+								<h2>{{ site.translations.main.observatory.gamma.notification.title }}</h2>
+								<p>{{ site.translations.main.observatory.gamma.notification.intro }}</p>
+								<textarea class="padded b6-bg">{{ site.translations.main.observatory.gamma.notification.text }}</textarea>
+								<div class="nav-right">
+									<div class="nav-inner">
+										<div class="nav-flex">
+											<button id="show-steps" class="button ga-highlight">{{ site.translations.main.observatory.gamma.back }}</button>
+											<button class="button ga-highlight" id="event-copy">{{ site.translations.main.observatory.gamma.notification.copy }}</button>
+											<a href="../../../cosmological-calculator/index.html" class="cc-highlight button" id="cosmocalc">{{ site.translations.main.cosmocalc.title }}</a>
+										</div>
+									</div>
+								</div>
+							</section>
+							<nav>
+								<div class="nav-right">
+									<div class="nav-inner">
+										<div class="nav-flex">
+											<a href="../1/index.html" id="prev" class="button ga-highlight">{{ site.translations.main.observatory.gamma.prev }}</a>
+											<button id="show-notification" class="button ga-highlight">{{ site.translations.main.observatory.gamma.notification.title }}</button>
+											<a href="../3/index.html" id="next" class="button ga-highlight">{{ site.translations.main.observatory.gamma.next }}</a>
+										</div>
+									</div>
+								</div>
+							</nav>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="../../../resources/common.js"></script>
+	<script type="text/javascript" src="../scenario.js"></script>
+	<script type="text/javascript" src="2.js"></script>
+</body>
+</html>

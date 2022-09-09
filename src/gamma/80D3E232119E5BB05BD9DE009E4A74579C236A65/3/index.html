@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>{{ site.translations.main.observatory.gamma.title }}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="../../../resources/style.css" />
+	<link rel="stylesheet" href="../../resources/style.css" />
+</head>
+</head>
+<body class="ga">
+	<div id="main" class="ga-bg">
+		<div class="holder">
+			<header class="b2-bg padded">
+				<h1>{{ site.translations.main.observatory.gamma.title }}</h1>
+			</header>
+			<div id="content-wrapper" class="padded">
+				<div class="padded">
+
+					<div class="panel span2">
+						<div class="padded">
+							<ol class="breadcrumb ga-breadcrumb">
+								<li class="step visited"><strong>{{ site.translations.main.observatory.gamma.step1.title }}</strong></li>
+								<li class="step visited"><strong>{{ site.translations.main.observatory.gamma.step2.title }}</strong></li>
+								<li class="step current"><strong aria-current="page">{{ site.translations.main.observatory.gamma.step3.title }}</strong></li>
+							</ol>
+							<section id="step">
+								<h2>{{ site.translations.main.observatory.gamma.step3.title }}</h2>
+								<div class="widescreen">
+									<p>{{ site.translations.main.observatory.gamma.step3.intro }}</p>
+									<div id="content">
+									?
+									
+									</div>
+								</div>
+								<div class="padded output ga">
+									<label class="prop" for="select-inc">{{ site.translations.main.observatory.gamma.step3.inclination }}</label>
+									<input id="select-inc" /><span>{{ site.translations.main.observatory.gamma.step3.units }}</span>
+								</div>
+							</section>
+							<section id="event-notification">
+								<h2>{{ site.translations.main.observatory.gamma.notification.title }}</h2>
+								<p>{{ site.translations.main.observatory.gamma.notification.intro }}</p>
+								<textarea class="padded b6-bg">{{ site.translations.main.observatory.gamma.notification.text }}</textarea>
+								<div class="nav-right">
+									<div class="nav-inner">
+										<div class="nav-flex">
+											<button id="show-steps" class="button ga-highlight">{{ site.translations.main.observatory.gamma.back }}</button>
+											<button class="button ga-highlight" id="event-copy">{{ site.translations.main.observatory.gamma.notification.copy }}</button>
+											<a href="../../../cosmological-calculator/index.html" class="cc-highlight button" id="cosmocalc">{{ site.translations.main.cosmocalc.title }}</a>
+										</div>
+									</div>
+								</div>
+							</section>
+							<nav>
+								<div class="nav-right">
+									<div class="nav-inner">
+										<div class="nav-flex">
+											<a href="../2/index.html" id="prev" class="button ga-highlight">{{ site.translations.main.observatory.gamma.prev }}</a>
+											<button id="show-notification" class="button ga-highlight">{{ site.translations.main.observatory.gamma.notification.title }}</button>
+										</div>
+									</div>
+								</div>
+							</nav>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="../../../resources/common.js"></script>
+	<script type="text/javascript" src="../scenario.js"></script>
+	<script type="text/javascript" src="3.js"></script>
+</body>
+</html>

@@ -172,11 +172,21 @@ text:
                     en-US: Localization
                 intro:
                     en: "Use the detector counts to identify the possible locations."
+                selected:
+                    en: "Selected location:"
+                counts:
+                    en: Detector counts
+                locations:
+                    en: Detector locations
             step3:
                 title:
                     en: Inclination
                 intro:
                     en: "If you have more information about your event, you may be able to refine your estimates of the inclination of the event."
+                inclination:
+                    en: "Inclination:"
+                units:
+                    en: degrees
             notification:
                 title:
                     en: Event notification

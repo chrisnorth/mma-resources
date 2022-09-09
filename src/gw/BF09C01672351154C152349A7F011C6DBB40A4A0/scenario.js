@@ -1,4 +1,3 @@
-
 function Scenario(file,opt,cb){
 	if(!opt) opt = {};
 	//this.title = "Scenario";

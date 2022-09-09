@@ -7,17 +7,6 @@ function Step(data,opt){
 		'prev': document.getElementById('prev'),
 		'next': document.getElementById('next'),
 	};
-	var vals = {
-		'ev': data.events[query.event],
-		'event': query.event,
-		'toffset': query.toffset,
-		'gridsquares': query.gridsquares,
-		'mass': (query.mass||";").split(/;/),
-		'dist': (query.dist||";").split(/;/),
-		'massratio': (query.massratio||";").split(/;/),
-		'inc': (query.inc||";").split(/;/),
-		'extra': query.extra
-	};
 
 	var _obj = this;
 
@@ -25,7 +14,7 @@ function Step(data,opt){
 	for(var e in data.events){
 		selopt = document.createElement('option');
 		selopt.setAttribute('value',e);
-		if(e==vals.event) selopt.setAttribute('selected','selected');
+		if(e==opt.values.event) selopt.setAttribute('selected','selected');
 		selopt.innerHTML = e;
 		el.event.appendChild(selopt);
 	}
@@ -42,19 +31,19 @@ function Step(data,opt){
 	this.setEvent = function(e){
 		var file,ev,dt;
 		dt = '';
-		vals.event = e;
-		vals.ev = {};
-		vals.gridsquares = '';
-		vals.mass = '';
-		vals.dist = '';
-		vals.massratio = '';
-		vals.inc = '';
+		opt.values.event = e;
+		opt.values.ev = {};
+		opt.values.gridsquares = '';
+		opt.values.mass = '';
+		opt.values.dist = '';
+		opt.values.massratio = '';
+		opt.values.inc = '';
 
 		if(e){
 			if(data.events[e]){
 				ev = data.events[e];
 
-				vals.ev = data.events[e];
+				opt.values.ev = data.events[e];
 				el.next.removeAttribute('disabled');
 				el.none.style.display = 'none';
 				el.waveform.style.display = '';
@@ -62,7 +51,9 @@ function Step(data,opt){
 					var series = [];
 					// A function to create the contents of a tooltip
 					function label(d){
-						return updateFromTemplate("{{ site.translations.main.observatory.gamma.step1.tooltip }}",{'x':d.data.x,'y':d.data.y.toFixed(1),'title':d.series.title});
+						var txt = "{{ site.translations.main.observatory.gamma.step1.tooltip }}";
+						if(txt.indexOf('site.translations.main.observatory') > 0) txt = "?";
+						return updateFromTemplate(txt,{'x':d.data.x,'y':d.data.y.toFixed(1),'title':d.series.title});
 					}
 					var axes = {
 						'x':{ 'min':1e100,'max':-1e100, 'title': { 'label': '{{ site.translations.main.observatory.gamma.step1.time }}' }, 'labels':{} },
@@ -142,7 +133,7 @@ function Step(data,opt){
 		document.querySelectorAll('.event-name').forEach(function(el){ el.innerHTML = e||'?'; });
 		document.querySelectorAll('.event-date').forEach(function(el){ el.innerHTML = dt||'?'; });
 
-		if(opt.notification) opt.notification.set(vals);
+		if(opt.notification) opt.notification.set(opt.values);
 
 	};
 
