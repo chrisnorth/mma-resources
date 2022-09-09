@@ -196,13 +196,17 @@ text:
                     en: "Inclination:"
                 units:
                     en: degrees
+                distance:
+                    en: "Distance:"
+                brightness:
+                    en: "Observed brightness (Joules):"
             notification:
                 title:
                     en: Event notification
                 intro:
                     en: Below is all the information you have determined so far. You may wish to circulate this to the other teams. You can do so at any time - you do not need to know all the information.
                 text:
-                    en: "GAMMA RAY EVENT NOTIFCATION\n\nName: {{ name }}\nTime/date: {{ date }}\nPossible locations: {{ locations }}\nMass estimate (M☉): {{ mass }}\nDistance estimate (Mpc): {{ distance }}\nMass ratio: {{ massratio }}\n\nAdditional notes:\n==========\n"
+                    en: "GAMMA RAY EVENT NOTIFCATION\n\nName: {{ name }}\nTime/date: {{ date }}\nPossible locations: {{ locations }}\nInclination range: (&deg;): {{ inclination }}\n\nAdditional notes:\n==========\n"
                 copy:
                     en: Copy to clipboard
         xr:

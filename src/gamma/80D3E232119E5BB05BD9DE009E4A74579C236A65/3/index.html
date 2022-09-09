@@ -3,9 +3,55 @@
 <head>
 	<title>{{ site.translations.main.observatory.gamma.title }}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="../../../gw/waveform-fitter/resources/lib/nouislider.min.css" />
 	<link rel="stylesheet" href="../../../resources/style.css" />
 	<link rel="stylesheet" href="../../resources/style.css" />
-</head>
+	<style>
+	#slider { margin: 1em 0 2.5em 0; }
+	.noUi-marker-horizontal.noUi-marker-large { height: 0.5em; }
+	.noUi-pips-horizontal { height: 2em; }
+	.noUi-value-horizontal { -webkit-transform: translate(-50%,50%); translate(-50%,50%); }
+	#slider-range-value { font-weight: bold; }
+	#brightness {
+		height: 6em;
+		width: 100%;
+		background: #efefef;
+		position: relative;	
+		margin-bottom: 3em;
+	}
+	.indicator {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		width: 4px;
+	}
+	.reference {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+	}
+	.axis-label {
+		position: absolute;
+		top: calc(100% + 0.5em);
+		text-align:center;
+		transform: translate3d(-50%,0,0);
+		color: #999;
+	}
+	.axis-label > div {
+		position: relative;
+	}
+	.axis-label .tick {
+		position: absolute;
+		top: -0.5em;
+		left: 50%;
+		height: 0.5em;
+		width: 2px;
+		background: #999;
+	}
+	.axis-label .label sup { font-size: 0.7em; }
+	</style>
 </head>
 <body class="ga">
 	<div id="main" class="ga-bg">
@@ -25,16 +71,22 @@
 							</ol>
 							<section id="step">
 								<h2>{{ site.translations.main.observatory.gamma.step3.title }}</h2>
-								<div class="widescreen">
+								<div class="">
 									<p>{{ site.translations.main.observatory.gamma.step3.intro }}</p>
 									<div id="content">
-									?
-									
+										<label class="prop" for="dist-lo">{{ site.translations.main.observatory.gamma.step3.distance }}</label> <input type="number" class="selection" id="dist-lo" min="0" max="1000" step="1" /> &rarr; <input type="number" class="selection" id="dist-hi" min="0" max="1000" step="1" />
+										<h3>{{ site.translations.main.observatory.gamma.step3.inclination }}</h3>
+										<div id="slider"></div>
+										<div id="slider-range-value"></div>
+										<h3>{{ site.translations.main.observatory.gamma.step3.brightness }}</h3>
+										<div id="brightness">
+											
+										</div>
 									</div>
 								</div>
 								<div class="padded output ga">
-									<label class="prop" for="select-inc">{{ site.translations.main.observatory.gamma.step3.inclination }}</label>
-									<input id="select-inc" /><span>{{ site.translations.main.observatory.gamma.step3.units }}</span>
+									<label class="prop" for="inc-lo">{{ site.translations.main.observatory.gamma.step3.inclination }}</label> <input type="number" class="selection" id="inc-lo" min="0" max="90" step="0.01" /> &rarr; <input type="number" class="selection" id="inc-hi" min="0" max="90" step="0.01" />
+									<span>{{ site.translations.main.observatory.gamma.step3.units }}</span>
 								</div>
 							</section>
 							<section id="event-notification">
@@ -68,6 +120,7 @@
 			</div>
 		</div>
 	</div>
+	<script type="text/javascript" src="../../../gw/waveform-fitter/resources/lib/nouislider.min.js"></script>
 	<script type="text/javascript" src="../../../resources/common.js"></script>
 	<script type="text/javascript" src="../scenario.js"></script>
 	<script type="text/javascript" src="3.js"></script>
