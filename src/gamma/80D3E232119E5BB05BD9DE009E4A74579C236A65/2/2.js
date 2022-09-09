@@ -25,9 +25,9 @@ function Step(data,opt){
 
 		// Make detector counts table
 		var table = document.createElement('table');
-		var str = '<thead><th>Detector</th><th>Counts</th></thead><tbody>';
+		var str = '<thead><th>{{ site.translations.main.observatory.gamma.step2.table.detector }}</th><th>{{ site.translations.main.observatory.gamma.step2.table.counts }}</th><th>{{ site.translations.main.observatory.gamma.step2.table.ra }}</th><th>{{ site.translations.main.observatory.gamma.step2.table.dec }}</th></thead><tbody>';
 		for(var n in opt.values.ev.peaks){
-			str += '<tr><td>'+n+'</td><td>'+opt.values.ev.peaks[n]+'</td></tr>';
+			str += '<tr><td>'+n+'</td><td>'+opt.values.ev.peaks[n]+'</td><td>'+data.metadata.detector.locations[n].RA.value+'&deg;</td><td>'+data.metadata.detector.locations[n].Dec.value+'&deg;</td></tr>';
 		}
 		str += '</tbody>';
 		table.innerHTML = str;
@@ -319,7 +319,7 @@ function Mollweide(el,opt){
 	};
 
 	this.svg = svgEl('svg');
-	var svgopt = {'xmlns':'http://www.w3.org/2000/svg','version':'1.1','viewBox':'0 0 '+this.wide+' '+this.tall,'overflow':'visible','style':'max-width:100%;','preserveAspectRatio':'none'};
+	var svgopt = {'xmlns':'http://www.w3.org/2000/svg','version':'1.1','viewBox':'0 0 '+this.wide+' '+this.tall,'overflow':'visible','style':'max-width:100%;','preserveAspectRatio':'xMidYMid meet','style':'aspect-ratio:2 / 1'};
 	setAttr(this.svg,svgopt);
 	holder.appendChild(this.svg);
 	

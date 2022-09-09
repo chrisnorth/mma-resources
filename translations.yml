@@ -178,6 +178,15 @@ text:
                     en: Detector counts
                 locations:
                     en: Detector locations
+                table:
+                    detector:
+                        en: Detector
+                    counts:
+                        en: Counts
+                    ra:
+                        en: RA
+                    dec:
+                        en: Dec
             step3:
                 title:
                     en: Inclination
