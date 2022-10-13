@@ -269,19 +269,19 @@ function Grid(opt){
 		// Round the value (this can cause range issues)
 		delta = Math.round(delta*1e6)/1e6;
 
-		this.graph.setSeries(0,data,{'id':'line-data','text':det_a,'class':'detector-'+opt.id[0],'stroke':'rgba(0,150,200,1)','toffset':(opt.GW.dtmerger_s[opt.id[0]])||0});
-		this.graph.setSeries(1,data,{'id':'line-data','text':det_b,'class':'detector-'+opt.id[1],'stroke':'rgba(200,150,100,1)','toffset':(opt.GW.dtmerger_s[opt.id[1]])||0});
+		this.graph.setSeriesNew(0,data,{'id':'line-data','text':det_a,'class':'detector-'+opt.id[0],'stroke':'rgba(0,150,200,1)','toffset':(opt.GW.dtmerger_s[opt.id[0]])||0});
+		this.graph.setSeriesNew(1,data,{'id':'line-data','text':det_b,'class':'detector-'+opt.id[1],'stroke':'rgba(200,150,100,1)','toffset':(opt.GW.dtmerger_s[opt.id[1]])||0});
 
 		var toff = ((t0/1000)||0) + opt.GW.dtmerger_s[opt.id[0]];
 
 		// Update the ranges
 		if(delta > 1e-3){
-			this.graph.axes.x.setRange(toff-delta,toff+delta);
+			this.graph.axes.x.setDataRange(toff-delta,toff+delta);
 		}else{
 			// If the range is effectively zero we manually set it
-			this.graph.axes.x.setRange(toff-0.01,toff+0.01);
+			this.graph.axes.x.setDataRange(toff-0.01,toff+0.01);
 		}
-		this.graph.axes.y.setRange(-1.5,1.5);
+		this.graph.axes.y.setDataRange(-1.5,1.5);
 
 		// Update the scales and domains
 		this.graph.updateData();

@@ -41,6 +41,9 @@ text:
             en: About
             cy: Ynghylch
 
+        sourcecode:
+            en: Source code
+
     language:
         heading:
             en: Change Language

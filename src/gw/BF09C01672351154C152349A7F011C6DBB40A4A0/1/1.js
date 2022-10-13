@@ -77,12 +77,10 @@ function Step(data,opt){
 					t0 = ev.GW.t0_ms;
 					lbl = "{{ site.translations.waveform.legend.data }}";
 
-					this.graph.setSeries(0,wfdata,{'id':'line-data','text':lbl,'class':'data','stroke':'rgba(0,150,200,1)'});
+					this.graph.setSeriesNew(0,wfdata,{'id':'line-data','text':lbl,'class':'data','stroke':'rgba(0,150,200,1)'});
 
 					// Update the ranges
-					this.graph.axes.x.setRange(wfdata[0][0],wfdata[wfdata.length-1][0]);
-
-					this.graph.axes.y.setRange(-1.5,1.5);
+					this.graph.setDataRanges({'x':[wfdata[0][0],wfdata[wfdata.length-1][0]],'y':[-1.5,1.5]});
 
 					// Update the scales and domains
 					this.graph.updateData();

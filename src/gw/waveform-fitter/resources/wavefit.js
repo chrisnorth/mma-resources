@@ -156,15 +156,17 @@
 	};
 
 	WaveFitter.prototype.updateData = function(){
-
+		var s;
 		// Set the data series
 		if(this.wavedata.dataH!==null && !this.graph.series[0]){
-			this.graph.setSeries(0,this.wavedata.dataH,{'id':'line-data','text':'{{ site.translations.waveform.legend.data }}','class':'data','stroke':'rgba(0,150,200,1)'});
+			s = new Series(this.wavedata.dataH,{'id':'line-data','text':'{{ site.translations.waveform.legend.data }}','class':'data','stroke':'rgba(0,150,200,1)'});
+			this.graph.setSeries(0,s);
 			// Update the ranges
-			this.graph.axes.x.setRange(this.graph.series[0]);
+			this.graph.axes.x.setDataRange(this.graph.series[0]);
 		}
 		if(this.wavedata.simNR!==null){
-			this.graph.setSeries(1,this.wavedata.simNR,{
+			
+			s = new Series(this.wavedata.simNR,{
 				'id':'line-sim',
 				'text':'{{ site.translations.waveform.legend.simulation }}',
 				'class':'sim',
@@ -187,9 +189,10 @@
 					return;
 				}
 			});
+			this.graph.setSeries(1,s);
 		}
 
-		this.graph.axes.y.setRange(-2,2);
+		this.graph.axes.y.setDataRange(-2,2);
 
 		// Update the scales and domains
 		this.graph.updateData();
@@ -281,6 +284,105 @@
 
 		return this;
 	};
+	
+	
+	class WaveData {
+		constructor(datain,mass=65,dist=420){
+			this.t0 = 0.423;
+			this.M0 = (mass) ? mass : 65;
+			this.D0 = (dist) ? dist : 420;
+			this.mass = this.M0;
+			this.dist = this.D0;
+
+			if(Array.isArray(datain)){
+				if((datain.length>0) && (datain[0].length>=2)){
+					this.t=datain.map(function(value,index){return value[0];});
+					this.h=datain.map(function(value,index){return value[1];});
+				}else{
+					console.error("datain needs to be 2D array with dimension Nx2 for N datapoints",datain);
+					return(null);
+				}
+			}else{
+				if(datain.hasOwnProperty('t') && datain.hasOwnProperty('t')){
+					this.t = datain.t;
+					this.h = datain.h;
+				}else{
+					console.error("datain needs to be 2D array or object with data in properties t and h");
+					return(null);
+				}
+			}
+			this.linedata();
+		}
+		scale(){ return 1; }
+		scaleLine(){ return; }
+		linedata(){
+			this.lineData = [];
+			for(var i = 0 ; i < this.t.length ; i++) this.lineData.push({'t':this.t[i],'h':this.h[i]});
+			// Set the range of the data
+			this.data = new Range(this.t[0], this.t[this.t.length-1]);
+			this.data.domain(0,this.t.length);
+			// Set the range of the indices
+		}
+		getH(t){
+			var h0,i,i0,i1,di;
+			if(Array.isArray(t)){
+				h0 = [];
+				for(i = 0 ; i < t.length ; i++) h0.push(this.getH(t[i]));
+			}else{
+				var idx = this.data.value(t);
+				if(idx < 0){
+					h0 = NaN;
+				}else if(idx > this.t.length-1){
+					h0 = 0;
+				}else{
+					i0 = Math.floor(idx);
+					i1 = Math.ceil(idx);
+					di = idx%1;
+					h0 = (1-di)*this.h[i0] + di*this.h[i1];
+				}
+			}
+			return h0;
+		}
+		shiftt(t0){
+			for(var i = 0 ; i < this.t.length; i++) this.t[i] += t0;
+			this.linedata();
+		}
+	}
+	
+	function Series(d,opt){
+		this.original = d;
+		this.data = [];
+		this.opt = opt||{};
+		
+		this.data.push(new WaveData(d));
+
+		// Is the data a range?
+		if(this.opt.range) this.data.push(new WaveData(d));
+		
+		for(var i = 0; i < this.data.length; i++){
+			if(typeof this.opt.scale==="function") this.data[i].scale = this.opt.scale;
+			if(typeof this.opt.scaleLine==="function") this.data[i].scaleLine = this.opt.scaleLine;
+			if(typeof this.opt.toffset==="number") this.data[i].shiftt(this.opt.toffset);
+		}
+		return this;
+	}
+	function Range(min,max){
+		if(typeof min==="object" && min.length==2){
+			max = min[1];
+			min = min[0];
+		}
+		this.min = min;
+		this.max = max;
+		this.range = max-min;
+		this.frac = function(t){ return (t-this.min)/this.range; };
+		this.valueFromFrac = function(f){ return this.min + f*this.range; };
+		this.domain = function(mn,mx){ this._domain = new Range(mn,mx); return this; };
+		this.value = function(v){
+//			console.log(v,this.min,this.max,this.range,(this._domain||this).valueFromFrac(this.frac(v)));
+			return (this._domain||this).valueFromFrac(this.frac(v));
+		};
+		return this;
+	}
 
 	function parseCSV(str) {
 		var lines = str.split(/\n/g);
@@ -311,7 +413,7 @@
 		if(typeof el==="undefined") return {};
 		return JSON.parse(JSON.stringify(el));
 	}
-
+	root.Range = Range;
 	root.WaveFitter = WaveFitter;
 
 })(window || this);

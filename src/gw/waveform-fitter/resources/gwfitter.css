@@ -21,7 +21,7 @@ body{
 	grid-template-rows: 4.5em 7.5em calc(100vh - 12em);
 }
 h1 { font-size: 1.6em; font-weight: bold; line-height: 2.5em; }
-h2 { font-size: 1.3em; font-weight: bold; margin: 0.5em 0; line-height: 2em;}
+h2 { font-size: 1.25em; font-weight: bold; margin: 0.5em 0; line-height: 2em;}
 h3 { font-size: 1.2em; font-weight: bold; margin: 0.5em 0; line-height: 2em;}
 sub { position: relative; }
 a { color:#c89600; }
