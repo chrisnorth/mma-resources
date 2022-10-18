@@ -1,5 +1,5 @@
 src: "src/"
-build: "dist/"
+build: "_site/"
 language:
     file: "languages.yml"
     default: en
