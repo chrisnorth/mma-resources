@@ -2,10 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>{{ site.translations.main.observatory.gamma.title }}</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link href='resources/icon.svg' rel='icon' type='image/svg'>
-	<link rel="stylesheet" href="../resources/style.css">
-	<link rel="stylesheet" href="resources/style.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="../../resources/style.css" />
+	<link rel="stylesheet" href="../resources/style.css" />
 </head>
 <body class="ga">
 	<div>
@@ -13,8 +12,8 @@
 			<div>
 				<nav id="main-nav" class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
 					<div class="container">
-						<a href="../gamma/index.html" class="navbar-brand">
-							<img class="nasa-image" alt="NASA Partner" src="resources/gamma.svg" />
+						<a href="../index.html" class="navbar-brand">
+							<img class="nasa-image" alt="NASA Partner" src="../resources/gamma.svg" />
 							<div>
 								<div class="mma">{{ site.translations.main.title }}</div>
 								<div class="obs">{{ site.translations.main.observatory.gamma.title }}</div>
@@ -22,23 +21,26 @@
 						</a>
 						<div class="navbar-collapse collapse" id="basic-navbar-nav">
 							<div class="me-auto navbar-nav">
-								<a aria-current="page" class="nav-item nav-link" href="../gamma/index.html">{{ site.translations.main.observatory.gamma.home }}</a>
-								<a class="nav-item nav-link" href="../cosmological-calculator/index.html">{{ site.translations.main.cosmocalc.title }}</a>
-								<a class="nav-item nav-link" href="login/index.html">{{ site.translations.main.login.signin }}</a>
+								<a aria-current="page" class="nav-item nav-link" href="../index.html">{{ site.translations.main.observatory.gamma.home }}</a>
+								<a class="nav-item nav-link" href="../../cosmological-calculator/index.html">{{ site.translations.main.cosmocalc.title }}</a>
+								<a class="nav-item nav-link" href="../login/index.html">{{ site.translations.main.login.signout }}</a>
 							</div>
 						</div>
 					</div>
 				</nav>
+
+
 				<main class="main-container">
 					<main>
 						<div class="index-text-container">
-							<h1>{{ site.translations.main.observatory.gamma.title }}</h1>
+							<h1>{{ site.translations.main.observatory.gamma.steps.title }}</h1>
 							<div style="display:flex;justify-content:center;margin:1rem">
 								<hr class="star-dash">
 								<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" style="width:36px;height:32px" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M256 38.013c-22.458 0-66.472 110.3-84.64 123.502-18.17 13.2-136.674 20.975-143.614 42.334-6.94 21.358 84.362 97.303 91.302 118.662 6.94 21.36-22.286 136.465-4.116 149.665 18.17 13.2 118.61-50.164 141.068-50.164 22.458 0 122.9 63.365 141.068 50.164 18.17-13.2-11.056-128.306-4.116-149.665 6.94-21.36 98.242-97.304 91.302-118.663-6.94-21.36-125.444-29.134-143.613-42.335-18.168-13.2-62.182-123.502-84.64-123.502z"></path></svg>
 								<hr class="star-dash">
 							</div>
-							<p class="index-blurb">{{ site.translations.main.observatory.gamma.front.intro }}</p>
+							<p>{{ site.translations.main.observatory.gamma.steps.intro }}</p>
+							<a href="1/index.html" id="next" class="button ga-highlight">{{ site.translations.main.observatory.gamma.next }}<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M256 8c137 0 248 111 248 248S393 504 256 504 8 393 8 256 119 8 256 8zM140 300h116v70.9c0 10.7 13 16.1 20.5 8.5l114.3-114.9c4.7-4.7 4.7-12.2 0-16.9l-114.3-115c-7.6-7.6-20.5-2.2-20.5 8.5V212H140c-6.6 0-12 5.4-12 12v64c0 6.6 5.4 12 12 12z"></path></svg></a>
 						</div>
 					</main>
 				</main>

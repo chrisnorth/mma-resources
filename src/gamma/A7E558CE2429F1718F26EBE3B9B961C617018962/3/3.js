@@ -22,7 +22,6 @@ function Step(data,opt){
 	el.incLo.addEventListener('change',function(e){ _obj.updateValues(); });
 	el.incHi.addEventListener('change',function(e){ _obj.updateValues(); });
 
-
 	this.init = function(e){
 
 		if(opt.values.inc[0]) el.incLo.value = parseFloat(opt.values.inc[0]);
@@ -30,7 +29,6 @@ function Step(data,opt){
 
 		// Build brightness indicator
 		var brightness = new BrightnessIndicator(el.brightness,{'event':opt.values.ev,'dist':[el.distLo,el.distHi],'inclination':el.slider});
-
 
 		// Build Inclination slider
 		var rangeSlider = noUiSlider.create(el.slider, {
@@ -48,15 +46,16 @@ function Step(data,opt){
 		});
 
 		var rangeSliderValueElement = document.getElementById('slider-range-value');
-
+/*
 		el.slider.noUiSlider.on('update', function (values, handle) {
 			rangeSliderValueElement.innerHTML = values[handle]+'&deg;';
 			brightness.updateValues();
 		});
 
+*/
 
 		this.updateValues();
-		
+
 		return this;
 	};
 
@@ -87,8 +86,9 @@ function BrightnessIndicator(el,opt){
 	var dist = opt.dist;
 	var _obj = this;
 
-	this.getE = function(theta){
+	this.getE = function(theta,dist){
 		return Math.pow(10,(9.2 * Math.exp(-0.458*theta) + 37.5));
+		return Math.pow(10,(9.2 * Math.exp(-0.458*theta) + 37.5))/Math.pow((dist/ev.distance),2);
 	};
 
 	var reference = document.createElement('div');
@@ -102,10 +102,16 @@ function BrightnessIndicator(el,opt){
 	dist[0].addEventListener('change',function(e){ _obj.updateValues(); });
 	dist[1].addEventListener('change',function(e){ _obj.updateValues(); });
 
-	E_a = this.getE(90);
-	E_b = this.getE(0);
+
+
+	E = Math.log10(4.17e39);
+	d1 = parseFloat(dist[0].value)||0;
+	d2 = parseFloat(dist[1].value)||d1;
+	E_a = this.getE(90,d1);
+	E_b = this.getE(0,d2);
 	l = Math.floor(Math.log10(E_a));
 	r = Math.ceil(Math.log10(E_b));
+
 
 	// Update the values
 	this.updateValues = function(){
@@ -113,20 +119,31 @@ function BrightnessIndicator(el,opt){
 		d1 = parseFloat(dist[0].value)||0;
 		d2 = parseFloat(dist[1].value)||d1;
 		inc = parseFloat(opt.inclination.noUiSlider.get());
-		E = this.getE(inc);
 
-		indicator.setAttribute('style','left:'+this.getPC(E).toFixed(2)+'%;');
+		E_a = this.getE(inc,d1);
+		E_b = this.getE(inc,d2);
+		l = Math.floor(Math.log10(E_a));
+		r = Math.ceil(Math.log10(E_b));
+		console.log('updateValues',d1,d2,l,r);
 
-		reference.setAttribute('style','left:'+this.getPC(4.17e39*Math.pow(d1/ev.distance,2))+'%;right:'+(100-this.getPC(4.17e39*Math.pow(d2/ev.distance,2)))+'%')
+		indicator.setAttribute('style','left:'+E.toFixed(2)+'%;');
+
+		reference.setAttribute('style','left:'+l+'%;right:'+r+'%')
 
 		return this;
 	};
+
 
 	this.getPC = function(E){
 		var v = Math.log10(E);
 		var pc = ((v-l)/(r-l))*100;
 		return pc;
 	};
+
+	if(E_a==Infinity || E_b==Infinity){
+		console.error('Range is infinite',E_a,E_b);
+		return this;
+	}
 
 	// Add labels
 	for(i = Math.floor(l); i <= Math.ceil(r); i++){

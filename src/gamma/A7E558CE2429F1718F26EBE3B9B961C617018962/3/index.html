@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>{{ site.translations.main.observatory.gamma.title }}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="../../../gw/waveform-fitter/resources/lib/nouislider.min.css" />
+	<link rel="stylesheet" href="../../../resources/style.css" />
+	<link rel="stylesheet" href="../../resources/style.css" />
+	<style>
+	#slider { margin: 1em 0 2.5em 0; }
+	.noUi-marker-horizontal.noUi-marker-large { height: 0.5em; }
+	.noUi-pips-horizontal { height: 2em; }
+	.noUi-value-horizontal { -webkit-transform: translate(-50%,50%); translate(-50%,50%); }
+	#slider-range-value { font-weight: bold; }
+	#brightness {
+		height: 6em;
+		width: 100%;
+		background: #efefef;
+		position: relative;	
+		margin-bottom: 3em;
+	}
+	.indicator {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		width: 4px;
+	}
+	.reference {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+	}
+	.axis-label {
+		position: absolute;
+		top: calc(100% + 0.5em);
+		text-align:center;
+		transform: translate3d(-50%,0,0);
+		color: #999;
+	}
+	.axis-label > div {
+		position: relative;
+	}
+	.axis-label .tick {
+		position: absolute;
+		top: -0.5em;
+		left: 50%;
+		height: 0.5em;
+		width: 2px;
+		background: #999;
+	}
+	.axis-label .label sup { font-size: 0.7em; }
+	</style>
+</head>
+<body class="ga">
+	<div>
+		<div style="outline:none">
+			<div>
+				<nav id="main-nav" class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+					<div class="container">
+						<a href="../../index.html" class="navbar-brand">
+							<img class="nasa-image" alt="NASA Partner" src="../../resources/gamma.svg" />
+							<div>
+								<div class="mma">{{ site.translations.main.title }}</div>
+								<div class="obs">{{ site.translations.main.observatory.gamma.title }}</div>
+							</div>
+						</a>
+						<div class="navbar-collapse collapse" id="basic-navbar-nav">
+							<div class="me-auto navbar-nav">
+								<a aria-current="page" class="nav-item nav-link" href="../../index.html">{{ site.translations.main.observatory.gamma.home }}</a>
+								<a class="nav-item nav-link" href="../../../cosmological-calculator/index.html">{{ site.translations.main.cosmocalc.title }}</a>
+								<a class="nav-item nav-link" href="../../login/index.html">{{ site.translations.main.login.signout }}</a>
+							</div>
+						</div>
+					</div>
+				</nav>
+				
+				
+				<main class="main-container">
+					<main>
+						<div class="index-text-container">
+							<ol class="breadcrumb ga-breadcrumb">
+								<li class="step visited"><strong>{{ site.translations.main.observatory.gamma.step1.title }}</strong></li>
+								<li class="step visited"><strong>{{ site.translations.main.observatory.gamma.step2.title }}</strong></li>
+								<li class="step current"><strong aria-current="page">{{ site.translations.main.observatory.gamma.step3.title }}</strong></li>
+							</ol>
+
+							<h1>{{ site.translations.main.observatory.gamma.step3.title }}</h1>
+							<div style="display:flex;justify-content:center;margin:1rem">
+								<hr class="star-dash">
+								<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" style="width:36px;height:32px" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M256 38.013c-22.458 0-66.472 110.3-84.64 123.502-18.17 13.2-136.674 20.975-143.614 42.334-6.94 21.358 84.362 97.303 91.302 118.662 6.94 21.36-22.286 136.465-4.116 149.665 18.17 13.2 118.61-50.164 141.068-50.164 22.458 0 122.9 63.365 141.068 50.164 18.17-13.2-11.056-128.306-4.116-149.665 6.94-21.36 98.242-97.304 91.302-118.663-6.94-21.36-125.444-29.134-143.613-42.335-18.168-13.2-62.182-123.502-84.64-123.502z"></path></svg>
+								<hr class="star-dash">
+							</div>
+
+							<div id="content-wrapper" class="padded">
+								<div class="padded">
+									<div class="panel span2">
+										<div class="padded">
+											<section id="step">
+												<div class="">
+													<p>{{ site.translations.main.observatory.gamma.step3.intro }}</p>
+													<div id="content">
+														<label class="prop" for="dist-lo">{{ site.translations.main.observatory.gamma.step3.distance }}</label> <input type="number" class="selection" id="dist-lo" min="0" max="1000" step="1" /> &rarr; <input type="number" class="selection" id="dist-hi" min="0" max="1000" step="1" />
+														<h3>{{ site.translations.main.observatory.gamma.step3.inclination }}</h3>
+														<div id="slider"></div>
+														<div id="slider-range-value"></div>
+														<h3>{{ site.translations.main.observatory.gamma.step3.brightness }}</h3>
+														<div id="brightness">
+															
+														</div>
+													</div>
+												</div>
+												<div class="padded output ga">
+													<label class="prop" for="inc-lo">{{ site.translations.main.observatory.gamma.step3.inclination }}</label> <input type="number" class="selection" id="inc-lo" min="0" max="90" step="0.01" /> &rarr; <input type="number" class="selection" id="inc-hi" min="0" max="90" step="0.01" />
+													<span>{{ site.translations.main.observatory.gamma.step3.units }}</span>
+												</div>
+											</section>
+											<section id="event-notification">
+												<h2>{{ site.translations.main.observatory.gamma.notification.title }}</h2>
+												<p>{{ site.translations.main.observatory.gamma.notification.intro }}</p>
+												<textarea class="padded b6-bg">{{ site.translations.main.observatory.gamma.notification.text }}</textarea>
+												<div class="nav-right">
+													<div class="nav-inner">
+														<div class="nav-flex">
+															<button id="show-steps" class="button ga-highlight">{{ site.translations.main.observatory.gamma.back }}</button>
+															<button class="button ga-highlight" id="event-copy">{{ site.translations.main.observatory.gamma.notification.copy }}</button>
+															<a href="../../../cosmological-calculator/index.html" class="cc-highlight button" id="cosmocalc">{{ site.translations.main.cosmocalc.title }}</a>
+														</div>
+													</div>
+												</div>
+											</section>
+											<nav>
+												<div class="nav-right">
+													<div class="nav-inner">
+														<div class="nav-flex">
+															<a href="../2/index.html" id="prev" class="button ga-highlight">{{ site.translations.main.observatory.gamma.prev }}</a>
+															<button id="show-notification" class="button ga-highlight">{{ site.translations.main.observatory.gamma.notification.title }}</button>
+														</div>
+													</div>
+												</div>
+											</nav>
+
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</main>
+				</main>
+			</div>
+		</div>
+	</div>
+	<footer class="footer-container">
+		<p>{{ site.translations.main.observatory.gamma.front.footer }}</p>
+	</footer>
+	<script type="text/javascript" src="../../../gw/waveform-fitter/resources/lib/nouislider.min.js"></script>
+	<script type="text/javascript" src="../../../resources/common.js"></script>
+	<script type="text/javascript" src="../scenario.js"></script>
+	<script type="text/javascript" src="3.js"></script>
+</body>
+</html>

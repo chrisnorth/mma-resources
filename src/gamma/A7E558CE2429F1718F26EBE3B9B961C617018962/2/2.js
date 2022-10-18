@@ -34,7 +34,7 @@ function Step(data,opt){
 		el.counts.appendChild(table);
 
 
-		if(query.location) el.input.value = decodeURI(query.location);
+		if(query.locations) el.input.value = decodeURI(query.locations);
 
 		// Make location map
 		var _obj = this;
@@ -52,7 +52,7 @@ function Step(data,opt){
 	this.setLocations = function(v){
 		if(v) el.next.removeAttribute('disabled');
 		else el.next.setAttribute('disabled','disabled');
-		opt.values.location = v;
+		opt.values.locations = v;
 		el.input.value = v;
 
 		if(opt.notification) opt.notification.set(opt.values);

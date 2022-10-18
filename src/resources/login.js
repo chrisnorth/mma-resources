@@ -16,7 +16,7 @@ function login(secret) {
 		if(request.status >= 200 && request.status < 400) {
 			window.location = url;
 		}else{
-			parent.location.hash = hash;
+			parent.location.hash = hash.toUpperCase();
 			alert.style.display = 'block';
 			password.value = '';
 		}

@@ -1,4 +1,6 @@
 text:
+    title:
+        en: Multi-messenger Observatory
     welcome:
         title:
             en: Welcome to the Multi-messenger Observatory
@@ -128,6 +130,8 @@ text:
         gamma:
             title:
                 en: Gamma-ray Observatory
+            home:
+                en: Home
             front:
                 intro:
                     en: Welcome to the Gamma Ray Observatory. We're bursting to get started...
@@ -137,9 +141,9 @@ text:
                 footer:
                     en: "&copy; Some footer text"
             prev:
-                en: "&laquo; Previous"
+                en: "Previous"
             next:
-                en: "Next &raquo;"
+                en: "Next"
             back:
                 en: Back
             steps:

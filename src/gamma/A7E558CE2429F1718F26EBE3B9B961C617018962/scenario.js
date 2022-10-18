@@ -4,11 +4,15 @@ function Scenario(file,opt,cb){
 
 	this.notification = new EventNotification({
 		'queryString': function(extra){
-			q = '?event='+this.vals.event;
-			if(this.vals.locations) q += '&locations='+this.vals.location;
-			if(this.vals.inc && !isNaN(this.vals.inc[0])) q += '&inc='+this.vals.inc.join(';');
-			if(extra) q += '&extra='+extra;
-			return q;
+			if(this.vals){
+				q = '?event='+this.vals.event;
+				if(this.vals.locations) q += '&locations='+this.vals.locations;
+				if(this.vals.inc && !isNaN(this.vals.inc[0]) && this.vals.inc[0] != "") q += '&inc='+this.vals.inc.join(';');
+				if(extra) q += '&extra='+extra;
+				return q;
+			}else{
+				return '';
+			}
 		},
 		'setAttr': function(selection,extra){
 			//console.log('setAttr',selection,extra);

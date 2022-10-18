@@ -8,35 +8,58 @@
 	<link rel="stylesheet" href="../resources/style.css">
 </head>
 <body class="ga">
-	<div id="main" class="ga-bg">
-		<div class="holder">
-			<header class="b2-bg padded">
-				<h1>{{ site.translations.main.observatory.gamma.title }}</h1>
-			</header>
-
-			<div id="content-wrapper" class="padded">
-				<div class="doublepadded">
-					<h2>{{ site.translations.main.login.title }}</h2>
-				</div>
-				<div class="login">
-					<div class="login__alert" id="alert">{{ site.translations.main.login.wrong }}</div>
-					<div class="login__content">
-						<p>{{ site.translations.main.login.intro }}</p>
-						<form>
-							<label for="username" >{{ site.translations.main.login.username }}</label>
-							<input class="login__content__input" type="text" id="username" name="username" />
-							<label for="password" >{{ site.translations.main.login.password }}</label>
-							<input class="login__content__input" id="password" type="password" />
-							<button id="submit" type="button" class="login__content__btn gw-highlight">{{ site.translations.main.login.signin }}</button>
-						</form>
+	<div>
+		<div style="outline:none">
+			<div>
+				<nav id="main-nav" class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+					<div class="container">
+						<a href="../index.html" class="navbar-brand">
+							<img class="nasa-image" alt="NASA Partner" src="../resources/gamma.svg" />
+							<div>
+								<div class="mma">{{ site.translations.main.title }}</div>
+								<div class="obs">{{ site.translations.main.observatory.gamma.title }}</div>
+							</div>
+						</a>
+						<div class="navbar-collapse collapse" id="basic-navbar-nav">
+							<div class="me-auto navbar-nav">
+								<a aria-current="page" class="nav-item nav-link" href="../index.html">{{ site.translations.main.observatory.gamma.home }}</a>
+								<a class="nav-item nav-link" href="../../cosmological-calculator/index.html">{{ site.translations.main.cosmocalc.title }}</a>
+								<a class="nav-item nav-link" href="../login/index.html">{{ site.translations.main.login.signin }}</a>
+							</div>
+						</div>
 					</div>
-				</div>
+				</nav>
+				<main class="main-container">
+					<main>
+						<div class="index-text-container">
+							<h1>{{ site.translations.main.login.title }}</h1>
+							<div style="display:flex;justify-content:center;margin:1rem">
+								<hr class="star-dash">
+								<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" style="width:36px;height:32px" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M256 38.013c-22.458 0-66.472 110.3-84.64 123.502-18.17 13.2-136.674 20.975-143.614 42.334-6.94 21.358 84.362 97.303 91.302 118.662 6.94 21.36-22.286 136.465-4.116 149.665 18.17 13.2 118.61-50.164 141.068-50.164 22.458 0 122.9 63.365 141.068 50.164 18.17-13.2-11.056-128.306-4.116-149.665 6.94-21.36 98.242-97.304 91.302-118.663-6.94-21.36-125.444-29.134-143.613-42.335-18.168-13.2-62.182-123.502-84.64-123.502z"></path></svg>
+								<hr class="star-dash">
+							</div>
+							<div class="login">
+								<div class="login__alert" id="alert">{{ site.translations.main.login.wrong }}</div>
+								<div class="login__content">
+									<p>{{ site.translations.main.login.intro }}</p>
+									<form>
+										<label for="username" >{{ site.translations.main.login.username }}</label>
+										<input class="login__content__input" type="text" id="username" name="username" />
+										<label for="password" >{{ site.translations.main.login.password }}</label>
+										<input class="login__content__input" id="password" type="password" />
+										<button id="submit" type="button" class="login__content__btn gw-highlight">{{ site.translations.main.login.signin }}</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</main>
+				</main>
 			</div>
-			<footer class="b2-bg doublepadded">
-				<p>{{ site.translations.main.observatory.gamma.front.footer }}</p>
-			</footer>
 		</div>
 	</div>
+	<footer class="footer-container">
+		<p>{{ site.translations.main.observatory.gamma.front.footer }}</p>
+	</footer>
 	<script type="text/javascript" src="../../resources/sha1.min.js"></script>
 	<script type="text/javascript" src="../../resources/login.js"></script>
 </body>
