@@ -278,13 +278,13 @@
 		return this;
 	};
 	Graph.prototype.setSeriesNew = function(i,data,opt){
+		log.msg('setSeriesNew',i,data,opt);
 		if(!opt) opt = {};
 		// opt.id
 		// opt.class
 		// opt.fill
 		// opt.stroke
 		// opt.text
-		// data[].lineData -> dataToGraph(lineData)
 		if(!opt.text) opt.text = "?";
 		if(!this.series) this.series = [];
 		if(data[0].length==2){
@@ -295,12 +295,13 @@
 				ndata[j][this.axes.y.key] = data[j][1];
 			}
 		}else ndata = data;
+
+		// Add any toffset
 		if(typeof opt.toffset==="number"){
-			// Add any toffset now
 			for(var j = 0; j < ndata.length; j++) ndata[j][this.axes.x.key] += opt.toffset;
 		}
+
 		this.series[i] = {'original':data,'data':[{'lineData':ndata}],'opt':opt};
-		log.info('setSeriesNew',i,this.series);
 		return this;
 	};
 	Graph.prototype.setSeries = function(i,s){

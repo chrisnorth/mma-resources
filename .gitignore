@@ -5,3 +5,4 @@ data/GW/waveforms/*.csv
 TODO.md
 dist/
 _site/
+_old/

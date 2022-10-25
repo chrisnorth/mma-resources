@@ -1,2 +1,0 @@
-# waveform-fitter
-Waveform fitting
