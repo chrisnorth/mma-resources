@@ -112,17 +112,18 @@ function Step(data,opt){
 				opt.values.F90 += data[i].y - av;
 			}
 		}
-
 		// Complete the fill shape
-		shaded.push({'x':opt.values.t100,'y':shaded[shaded.length-1].y});
-		shaded.push({'x':opt.values.t100,'y':-Infinity});
-		shaded.push({'x':shaded[0].x,'y':-Infinity});
+		for(var i = data.length-1; i >= 0; i--){
+			if(data[i].x >= opt.values.t0 && data[i].x <= opt.values.t100){
+				shaded.push({'x':data[i].x,'y':Math.min(av,data[i].y)});
+			}
+		}
 		
 		// Update baseline
 		this.graph.updateSeries("baseline",[{x:-Infinity,y:av},{x:Infinity,y:av}]); 
 
 		// Update shaded area
-		console.log(shaded);
+		console.log(shaded,av);
 		this.graph.updateSeries("shaded",shaded);
 
 		var ratio = opt.values.F90/opt.values.F100;
