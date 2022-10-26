@@ -69,7 +69,7 @@ function Step(data,opt){
 
 			// Update the x-position of the line
 			//console.log(pos.x,_obj.graph.series.data);
-			var x = pos.x; //0.25*Math.round(pos.x/0.25);
+			var x = snapToGrid(pos.x,_obj.graph.series.data.original);
 			var d = [{x:x,y:-Infinity},{x:x,y:Infinity}];
 			series.updateData(d);
 
@@ -81,6 +81,20 @@ function Step(data,opt){
 			_obj.updateGraph();
 		});
 	};
+	
+	function snapToGrid(x,data){
+		var idx = -1;
+		var min = Infinity;
+		var diff;
+		for(var i = 0; i < data.length; i++){
+			diff = Math.abs(data[i].x-x);
+			if(diff < min){
+				idx = i;
+				min = diff;
+			}
+		}
+		return data[idx].x;
+	}
 	
 	this.updateGraph = function(){
 		var t0,t90,t100,baseline,data,F100,F90;
@@ -207,7 +221,7 @@ function Step(data,opt){
 						}
 					});
 
-					var x0 = 0;
+					var x0 = snapToGrid(0,series);
 					var x90 = axes.x.min + 0.9*(axes.x.max-axes.x.min);
 					var x100 = axes.x.min + 0.95*(axes.x.max-axes.x.min);
 
