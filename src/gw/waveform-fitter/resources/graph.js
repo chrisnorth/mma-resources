@@ -446,7 +446,7 @@
 			'ticks': {
 				'spacing': 1,
 				'opacity': 1,
-				'line': {'stroke':'#000'},
+				'line': {'stroke':'#ddd'},
 				'text': {'fill':'#000'}
 			},
 			'title': {
