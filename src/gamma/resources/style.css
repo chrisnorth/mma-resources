@@ -270,7 +270,6 @@ ol.breadcrumb .step { font-weight: bold; font-family: sans-serif; }
 .nav-inner { display: inline-block; }
 .nav-flex { display: flex; grid-gap: 0.25em; padding: 0.25em; }
 .nav-flex .button { margin-top: 0; }
-#waveform { height: 100%; background: white; }
 .widescreen {
 	border: 0px;
 	width: 100%;

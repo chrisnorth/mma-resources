@@ -56,8 +56,17 @@ function Step(data,opt){
 						return updateFromTemplate(txt,{'x':d.data.x,'y':d.data.y.toFixed(1),'title':d.series.title});
 					}
 					var axes = {
-						'x':{ 'min':1e100,'max':-1e100, 'title': { 'label': '{{ site.translations.main.observatory.gamma.step1.time }}' }, 'labels':{} },
-						'y':{ 'min':1e100,'max':-1e100, 'title': { 'label':'{{ site.translations.main.observatory.gamma.step1.counts }}' }, 'labels':{}, 'grid': {'show':true,'stroke':'#dfdfdf'} }
+						'x':{
+							'min': Infinity,
+							'max': -Infinity,
+							'title': { 'label': '{{ site.translations.main.observatory.gamma.step1.time }}', 'attr': { 'fill': 'black' } }
+						},
+						'y':{
+							'min': Infinity,
+							'max': -Infinity,
+							'title': { 'label':'{{ site.translations.main.observatory.gamma.step1.counts }}', 'attr': { 'fill': 'black' } },
+							'grid': {'show':true,'stroke':'#dfdfdf'}
+						}
 					};
 					for(var i = 0; i < ev.lightcurve.length; i++){
 						series.push({'x':ev.lightcurve[i][0],'y':ev.lightcurve[i][1]});
@@ -73,50 +82,19 @@ function Step(data,opt){
 					var dy = (axes.y.max-axes.y.min)*0.05;
 					axes.y.min -= dy;
 					axes.y.max += dy;
-					var dy = 250;
-					for(var x = Math.ceil(axes.x.min); x <= Math.floor(axes.x.max); x++) axes.x.labels[x] = {'label':x+''};
-					for(var y = roundTo(axes.y.min,dy); y <= roundTo(axes.y.max,dy); y += dy) axes.y.labels[y] = {'label':y.toLocaleString() };
 
-					this.graph = OI.linechart(el.waveform,{
-						'left':80,
-						'right':0,
-						'top':8,
-						'bottom':50,
-						'axis':{
-							'x':{
-								'min': -3,
-								'max': 3,
-								'title': { 'label': '{{ site.translations.main.observatory.gamma.step1.time }}' },
-								'labels':{
-									"-3": {'label':-3},
-									"-2": {'label':-2},
-									"-1": {'label':-1},
-									"0": {'label':0},
-									"1": {'label':1},
-									"2": {'label':2},
-									"3": {'label':3}
-								}
-							},
-							'y':{
-								'min': 0,
-								'max': 2,
-								'title':{ 'label':'{{ site.translations.main.observatory.gamma.step1.counts }}' },
-								'labels':{
-									"0": {'label':0},
-									"0.5": {'label':0.5},
-									"1": {'label':1}
-								}
-							}
-						}
+					this.graph = new Graph(el.waveform,{
+						'axes':axes
 					});
-					this.graph.addSeries(series,{
+					this.graph.setSeries(0,series,{
 						'title': '{{ site.translations.main.observatory.gamma.step1.series }}',
-						'points':{'color':'transparent','size':4},
-						'line':{'color':'#2254F4','stroke-width':2},
+						'points':{'stroke':'transparent','size':4},
+						'line':{'stroke':'#2254F4','stroke-width':3},
 						'tooltip':{ 'label': label }
 					});
-					this.graph.setProperties({'axis':axes});
-					this.graph.draw();
+					this.graph.axes.x.setDataRange(axes.x.min,axes.x.max);
+					this.graph.axes.y.setDataRange(axes.y.min,axes.y.max);
+					this.graph.update();
 				}
 				dt = ev.datetime;
 				

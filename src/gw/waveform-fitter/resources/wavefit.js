@@ -23,7 +23,7 @@
 
 	function WaveFitter(opts){
 
-		this.version = "2.1.1";
+		this.version = "2.2.0";
 		this.title = "WaveFitter";
 		console.info(this.title+' '+this.version);
 		this._opts = opts||{};
@@ -31,9 +31,24 @@
 		this.getUrlVars();
 		this.debug = (this.urlVars.debug) ? this.urlVars.debug : false;
 		this.sliders = opts.sliders || null;
-		var _obj = this;
-		this.graph = new Graph(opts.graphholder,{'ns':this.ns});
-		this.scales = {};
+		this.graph = new Graph(opts.graphholder,{
+			'axes': {
+				'x': {
+					'title': {
+						'label': '{{ site.translations.waveform.axis.time }}'
+					}
+				},
+				'y': {
+					'title': {
+						'label': '{{ site.translations.waveform.axis.strain }}'
+					}
+				}
+			}
+		});
+
+		// Pass in M0, D0 and t0 as query string parameters
+		if(!this.scaler) this.scaler = new Scaler(this.urlVars.M0,this.urlVars.D0,this.urlVars.t0);
+
 		if(this.urlVars.simulation) opts.simulation = this.urlVars.simulation;
 		if(this.urlVars.data) opts.data = this.urlVars.data;
 
@@ -47,12 +62,11 @@
 			},
 			'inclination':{
 				'range':[0,90],
-				'values':[0,90],
+				'values':[0],
 				'options':{
-					'start': [0,90],
-					'connect':[false,true,false],
+					'start': [0],
 					'range': { 'min': 0, 'max': 90 },
-					'tooltips':[{to:function(v){ return Math.round(v)+'&deg;'; }},{to:function(v){ return Math.round(v)+'&deg;'; }}],
+					'tooltips':[{to:function(v){ return Math.round(v)+'&deg;'; }}],
 					'step': 1,
 					'pips': {mode: 'values', values: [0,90], density:100}
 				}
@@ -76,10 +90,7 @@
 		this.addSliders();
 		this.graph.update();
 
-		if(this.urlVars.level!="advanced"){
-			if(this.sliders.inclination) this.sliders.inclination.style.display = "none";
-			if(this.sliders.massratio) this.sliders.massratio.style.display = "none";
-		}
+		if(this.urlVars.level!="advanced" && this.sliders.massratio) this.sliders.massratio.style.display = "none";
 
 		// Attach the window event
 		var _wf = this;
@@ -148,7 +159,9 @@
 			url = window.location.href.slice(0,window.location.href.indexOf('?'));
 			for(var i = 0; i < hashes.length; i++){
 				hash = hashes[i].split('=');
-				vars[hash[0]] = hash[1];
+				v = hash[1];
+				if(v==parseFloat(v)+'') v = parseFloat(v);
+				vars[hash[0]] = v;
 			}
 		}
 		this.urlVars = vars;
@@ -156,40 +169,29 @@
 	};
 
 	WaveFitter.prototype.updateData = function(){
-		var s;
+
 		// Set the data series
 		if(this.wavedata.dataH!==null && !this.graph.series[0]){
-			s = new Series(this.wavedata.dataH,{'id':'line-data','text':'{{ site.translations.waveform.legend.data }}','class':'data','stroke':'rgba(0,150,200,1)'});
-			this.graph.setSeries(0,s);
+			this.graph.setSeries(0,this.wavedata.dataH,{
+				'id':'line-data',
+				'text':'{{ site.translations.waveform.legend.data }}',
+				'class':'data',
+				'line':{
+					'stroke':'rgba(0,150,200,1)'
+				}
+			});
 			// Update the ranges
 			this.graph.axes.x.setDataRange(this.graph.series[0]);
 		}
-		if(this.wavedata.simNR!==null){
-			
-			s = new Series(this.wavedata.simNR,{
+		if(this.wavedata.simNR!==null && !this.graph.series[1]){
+			this.graph.setSeries(1,this.applyScaling(this.wavedata.simNR),{
 				'id':'line-sim',
 				'text':'{{ site.translations.waveform.legend.simulation }}',
 				'class':'sim',
-				'range':true,
-				'stroke':'rgba(200,150,0,1)',
-				'fill':'rgba(200,150,0,1)',
-				'scale': function(t,m,d){
-					var tScale = (t-this.t0)*this.M0/m + this.t0;
-					return this.getH(tScale)*(m/this.M0)*(this.D0/d);
-				},
-				'scaleLine': function(m,d,tout){
-					if(typeof m==="string") m = parseFloat(m);
-					if(typeof m==="string") d = parseFloat(d);
-					this.mass=m;
-					this.dist=d;
-					if(!tout) tout = this.t;
-					// Create a new lineData array using the times provided
-					this.lineData = [];
-					for(var i = 0 ; i < tout.length ; i++) this.lineData[i] = {'t':tout[i],'h':this.scale(tout[i],m,d)};
-					return;
+				'line': {
+					'stroke':'rgba(200,150,0,1)'
 				}
 			});
-			this.graph.setSeries(1,s);
 		}
 
 		this.graph.axes.y.setDataRange(-2,2);
@@ -205,25 +207,26 @@
 		return this;
 	};
 
+	WaveFitter.prototype.applyScaling = function(d){
+		var data = clone(d);
+		
+		var inc,mass,dist;
+		inc = parseFloat(this.props.inclination.slider.noUiSlider.get());
+		mass = parseFloat(this.props.mass.value);
+		dist = parseFloat(this.props.dist.value);
+
+		return this.scaler.scale(data,mass,dist,inc);
+	};
+
 	WaveFitter.prototype.updateCurves = function(dur=0){
 
 		if(!this.graph.series[0]){
 			console.warn('No data loaded yet');
 			return this;
 		}
+		
+		if(this.wavedata.simNR!==null) this.graph.updateSeries(1,this.applyScaling(this.wavedata.simNR));
 
-		if(this.graph.series[1]){
-			var thetamax,thetamin,inc;
-			inc = this.props.inclination.slider.noUiSlider.get();
-			inc[0] = parseFloat(inc[0]);
-			inc[1] = parseFloat(inc[1]);
-			thetamin = inc[1]*Math.PI/180;
-			thetamax = inc[0]*Math.PI/180;
-
-			this.graph.series[1].data[0].scaleLine(this.props.mass.value,this.props.dist.value*(0.5*(1 + Math.pow(Math.cos(thetamin),2))),this.graph.series[0].data[0].t);
-			this.graph.series[1].data[1].scaleLine(this.props.mass.value,this.props.dist.value*(0.5*(1 + Math.pow(Math.cos(thetamax),2))),this.graph.series[0].data[0].t);
-			this.graph.drawData();
-		}
 		return this;
 	};
 
@@ -279,107 +282,39 @@
 	};
 
 	WaveFitter.prototype.addSliders = function(){
-		
 		for(var s in this.props) this.addSlider(s);
-
 		return this;
 	};
-	
-	
-	class WaveData {
-		constructor(datain,mass=65,dist=420){
-			this.t0 = 0.423;
-			this.M0 = (mass) ? mass : 65;
-			this.D0 = (dist) ? dist : 420;
-			this.mass = this.M0;
-			this.dist = this.D0;
 
-			if(Array.isArray(datain)){
-				if((datain.length>0) && (datain[0].length>=2)){
-					this.t=datain.map(function(value,index){return value[0];});
-					this.h=datain.map(function(value,index){return value[1];});
-				}else{
-					console.error("datain needs to be 2D array with dimension Nx2 for N datapoints",datain);
-					return(null);
-				}
-			}else{
-				if(datain.hasOwnProperty('t') && datain.hasOwnProperty('t')){
-					this.t = datain.t;
-					this.h = datain.h;
-				}else{
-					console.error("datain needs to be 2D array or object with data in properties t and h");
-					return(null);
-				}
-			}
-			this.linedata();
-		}
-		scale(){ return 1; }
-		scaleLine(){ return; }
-		linedata(){
-			this.lineData = [];
-			for(var i = 0 ; i < this.t.length ; i++) this.lineData.push({'t':this.t[i],'h':this.h[i]});
-			// Set the range of the data
-			this.data = new Range(this.t[0], this.t[this.t.length-1]);
-			this.data.domain(0,this.t.length);
-			// Set the range of the indices
-		}
-		getH(t){
-			var h0,i,i0,i1,di;
-			if(Array.isArray(t)){
-				h0 = [];
-				for(i = 0 ; i < t.length ; i++) h0.push(this.getH(t[i]));
-			}else{
-				var idx = this.data.value(t);
-				if(idx < 0){
-					h0 = NaN;
-				}else if(idx > this.t.length-1){
-					h0 = 0;
-				}else{
-					i0 = Math.floor(idx);
-					i1 = Math.ceil(idx);
-					di = idx%1;
-					h0 = (1-di)*this.h[i0] + di*this.h[i1];
-				}
-			}
-			return h0;
-		}
-		shiftt(t0){
-			for(var i = 0 ; i < this.t.length; i++) this.t[i] += t0;
-			this.linedata();
-		}
-	}
-	
-	function Series(d,opt){
-		this.original = d;
-		this.data = [];
-		this.opt = opt||{};
-		
-		this.data.push(new WaveData(d));
+	function Scaler(M0=65,D0=420,t0=0.423){
+		this.M0 = M0;
+		this.D0 = D0;
+		this.t0 = t0;
 
-		// Is the data a range?
-		if(this.opt.range) this.data.push(new WaveData(d));
-		
-		for(var i = 0; i < this.data.length; i++){
-			if(typeof this.opt.scale==="function") this.data[i].scale = this.opt.scale;
-			if(typeof this.opt.scaleLine==="function") this.data[i].scaleLine = this.opt.scaleLine;
-			if(typeof this.opt.toffset==="number") this.data[i].shiftt(this.opt.toffset);
-		}
-		return this;
-	}
-	function Range(min,max){
-		if(typeof min==="object" && min.length==2){
-			max = min[1];
-			min = min[0];
-		}
-		this.min = min;
-		this.max = max;
-		this.range = max-min;
-		this.frac = function(t){ return (t-this.min)/this.range; };
-		this.valueFromFrac = function(f){ return this.min + f*this.range; };
-		this.domain = function(mn,mx){ this._domain = new Range(mn,mx); return this; };
-		this.value = function(v){
-//			console.log(v,this.min,this.max,this.range,(this._domain||this).valueFromFrac(this.frac(v)));
-			return (this._domain||this).valueFromFrac(this.frac(v));
+		this.scale = function(data,mass,dist,inc){
+			var i,t,h,d;
+			
+			// Convert to radians
+			inc *= Math.PI/180;
+
+			d = dist * 0.5 * (1 + Math.pow(Math.cos(inc),2));
+
+			// Need to update the time and strain for each point
+			for(i = 0 ; i < data.length ; i++){
+
+				// Get time and strain
+				t = data[i][0];
+				h = data[i][1];
+
+				// Scale the time - CHECK THIS
+				t = (t-this.t0)*this.M0/mass + this.t0;
+
+				// Scale the strain - CHECK THIS
+				h *= (mass/this.M0)*(this.D0/d);
+
+				data[i] = [t, h];
+			}
+			return data;
 		};
 		return this;
 	}
@@ -413,7 +348,6 @@
 		if(typeof el==="undefined") return {};
 		return JSON.parse(JSON.stringify(el));
 	}
-	root.Range = Range;
 	root.WaveFitter = WaveFitter;
 
 })(window || this);

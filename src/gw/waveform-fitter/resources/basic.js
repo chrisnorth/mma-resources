@@ -31,7 +31,7 @@
 		this.getUrlVars();
 		this.debug = (this.urlVars.debug) ? this.urlVars.debug : false;
 		var _obj = this;
-		this.graph = new Graph(opts.graphholder,{'ns':this.ns});
+		this.graph = new Graph(opts.graphholder);
 
 		this.scales = {};
 		if(this.urlVars.simulation) opts.simulation = this.urlVars.simulation;
@@ -88,12 +88,20 @@
 
 		// Set the data series
 		if(this.wavedata.dataH!==null && !this.graph.series[0]){
-			this.graph.setSeries(0,this.wavedata.dataH,{'id':'line-data','text':'text.legend.data','class':'','stroke':this.urlVars.color||'rgba(0,150,200,1)','toffset':parseFloat(this.urlVars.toffset)||0});
+			this.graph.setSeries(0,this.wavedata.dataH,{
+				'id':'line-data',
+				'text':'text.legend.data',
+				'class':'',
+				'line': {
+					'stroke':this.urlVars.color||'rgba(0,150,200,1)'
+				},
+				'offset':parseFloat(this.urlVars.toffset)||0
+			});
 			// Update the ranges
-			this.graph.axes.x.setRange(this.graph.series[0]);
+			this.graph.axes.x.setDataRange(this.graph.series[0]);
 		}
 
-		this.graph.axes.y.setRange(-2,2);
+		this.graph.axes.y.setDataRange(-2,2);
 
 		// Update the scales and domains
 		this.graph.updateData();

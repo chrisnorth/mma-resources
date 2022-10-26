@@ -21,18 +21,19 @@
 	
 	// Functions
 	graph.init();
-	graph.getValueAt(x,y) => {'x':x,'y':y};
+	graph.getValueAt(x,y) => {'x':x,'y':y}
 	graph.on(type,data,fn)
 	graph.trigger(t,e,d)
 	graph.update()
 	graph.updateLegend()
-	graph.updateData
-	graph.setSeriesNew(i,data,opt)
-	graph.setSeries(i,s)
+	graph.updateData()	// doesn't do much
+	graph.getSeries(i)
+	graph.setSeries(i,data,opt)
+	graph.updateSeries(i,data)
 	graph.drawSeries()
 	graph.dataTograph(d)
 	graph.drawData()
-	graph.setDataRanges({'x':[a,b],'y':[a,b]});
+	graph.setDataRanges({'x':[a,b],'y':[a,b]})
 	
 	graph.axes.x.updateDP()
 	graph.axes.x.setDataMinRange(a)
@@ -41,8 +42,9 @@
 	graph.axes.x.setPixelRange(a,b)
 	graph.axes.x.reset()
 	graph.axes.x.getDataRange() => [a,b]
+	graph.axes.x.getTickSpacing()
 	graph.axes.x.setTickSpacing(s)
-	graph.axes.x.setProps({})
+	graph.axes.x.updateProps({})
 	graph.axes.x.updateTicks()
 	graph.axes.x.updateSize(w,h)
 
@@ -63,23 +65,30 @@
 		this.opt = {
 			'axes': {
 				'x': {
-					'key': 't',
+					'key': 'x',
 					'dir': 'bottom',
 					'ticks': {'spacing':0.02},
 					'range': [0.2,1],
-					'font-size': 14
+					'font-size': 14,
+					'title':{
+						'label': 'x',
+						'attr': { 'fill' :'#000','dominant-baseline':'hanging','text-anchor':'middle' }
+					}
 				},
 				'y': {
-					'key': 'h',
+					'key': 'y',
 					'dir': 'left',
 					'ticks': {'spacing':0.5},
 					'range': [-3,3],
-					'font-size': 14
+					'font-size': 14,
+					'title':{
+						'label': 'y',
+						'attr': { 'fill' :'#000', 'dominant-baseline':'hanging','transform':'rotate(-90)','text-anchor':'middle' }
+					}
 				}
 			}
 		};
-		mergeDeep(this.opt,opt||{});
-
+		merge(this.opt,opt||{});
 		this.scales = {};
 		this.axes = {};
 		this.series = [];
@@ -102,8 +111,23 @@
 		}else{
 			// Create a new <svg> element and add it
 			this.svg.el = document.createElementNS('http://www.w3.org/2000/svg','svg');
+			this.svg.el.setAttribute('xmlns','http://www.w3.org/2000/svg');
 			this.el.appendChild(this.svg.el);
 		}
+
+		// Create axes
+		if(!this.axes) this.axes = {};
+		if(!this.svg.xaxis){
+			// Make x-axis
+			this.svg.xaxis = svgEl('g').appendTo(this.svg.el).addClass("x-axis axis").attr({'id':'x-axis-g'});
+			this.axes.x = new Axis(this.svg.xaxis,this.opt.axes.x,svgEl('text').addClass("x-axis axis-title translate"));
+		}
+		if(!this.svg.yaxis){
+			// Make y-axis
+			this.svg.yaxis = svgEl('g').appendTo(this.svg.el).addClass("y-axis axis").attr({'id':'y-axis-g'});
+			this.axes.y = new Axis(this.svg.yaxis,this.opt.axes.y,svgEl('text').addClass("y-axis axis-title translate"));
+		}
+		
 		// Set the class for the <svg> element
 		this.svg.el.classList.add('graph');
 
@@ -129,7 +153,7 @@
 		dy = y - bb.top - s.svgMargin.top;
 		x = ax.min + (ax.range)*Math.min(1,Math.max(0,dx/s.graphWidth));
 		y = ay.max - (ay.range)*Math.min(1,Math.max(0,dy/s.graphHeight));
-		log.info('getValueAt',x,y);
+		//log.info('getValueAt',x,y);
 		return {'x':x,'y':y};
 	};
 	// Attach events
@@ -191,28 +215,15 @@
 		// Get font size
 		var fs = (this.scales.svgMargin.left/4);
 
-		// Create axes
-		if(!this.axes) this.axes = {};
-		var xprops = mergeDeep(this.opt.axes.x,{'ticks':{'length':-this.scales.graphHeight},'width':this.scales.graphWidth,'height':this.scales.graphHeight});
-		if(!this.svg.xaxis){
-			// Make x-axis
-			this.svg.xaxis = svgEl('g').appendTo(this.svg.el).addClass("x-axis axis").attr({'id':'x-axis-g'});
-			this.axes.x = new Axis(this.svg.xaxis,xprops,svgEl('text').addClass("x-axis axis-label translate").attr({'dominant-baseline':'hanging','text-anchor':'middle'}).html('{{ site.translations.waveform.axis.time }}'));
-		}else{
-			this.axes.x.setPixelRange(0,this.scales.graphWidth).setProps(xprops).updateSize();
-		}
+		// Update axes
+		var xprops = merge(this.axes.x.getProps(),{'ticks':{'length':-this.scales.graphHeight},'width':this.scales.graphWidth,'height':this.scales.graphHeight});
+		this.axes.x.setPixelRange(0,this.scales.graphWidth).updateProps(xprops).updateSize();
 		this.svg.xaxis.attr({'transform': "translate("+this.scales.svgMargin.left+"," + (this.scales.graphHeight + this.scales.svgMargin.top) + ")"});
-		if(this.axes.x.label) this.axes.x.label.attr({'x':this.scales.graphWidth/2,'y':(this.scales.svgMargin.bottom-(this.scales.svgMargin.left/4)-5)+"px","font-size":fs+"px"});
-		var yprops = mergeDeep(this.opt.axes.y,{'ticks':{'length':-this.scales.graphWidth},'width':this.scales.graphWidth,'height':this.scales.graphHeight});
-		if(!this.svg.yaxis){
-			// Make y-axis
-			this.svg.yaxis = svgEl('g').appendTo(this.svg.el).addClass("y-axis axis").attr({'id':'y-axis-g'});
-			this.axes.y = new Axis(this.svg.yaxis,yprops,svgEl('text').addClass("y-axis axis-label translate").attr({'dominant-baseline':'hanging','transform':'rotate(-90)','text-anchor':'middle'}).html('{{ site.translations.waveform.axis.strain }}'));
-		}else{
-			this.axes.y.setPixelRange(this.scales.graphHeight,0).setProps(yprops).updateSize();
-		}
+		if(this.axes.x.title) this.axes.x.title.attr(merge({'x':(this.scales.graphWidth/2),'y':(this.scales.svgMargin.bottom-(this.scales.svgMargin.left/4)-5),"font-size":fs+"px"},this.axes.x.getProps().title.attr||{}));
+		var yprops = merge(this.axes.y.getProps(),{'ticks':{'length':-this.scales.graphWidth},'width':this.scales.graphWidth,'height':this.scales.graphHeight});
+		this.axes.y.setPixelRange(this.scales.graphHeight,0).updateProps(yprops).updateSize();
 		this.svg.yaxis.attr({'transform': "translate("+this.scales.svgMargin.left+"," + this.scales.svgMargin.top + ")"});
-		if(this.axes.y.label) this.axes.y.label.attr({'x':-this.scales.graphHeight/2,'y':(-this.scales.svgMargin.left*0.95 + 5)+'px',"font-size":fs+"px"});
+		if(this.axes.y.title) this.axes.y.title.attr(merge({'x':-this.scales.graphHeight/2,'y':(-this.scales.svgMargin.left*0.95 + 5)+'px',"font-size":fs+"px"},this.axes.y.getProps().title.attr||{}));
 
 		// Make data
 		if(!this.svg.data) this.svg.data = svgEl("g").appendTo(this.svg.el).attr({"id":"data-g",'clip-path':'url(#clip)'});
@@ -232,10 +243,12 @@
 		var fs = opt.fontSize;
 
 		// Make legend
-		if(!this.svg.legend){
+		if(!this.svg.legend && this.opt.legend){
 			this.svg.legend = svgEl('g').appendTo(this.svg.el).addClass('legend');
 			this.svg.legenditems = [];
 		}
+		
+		if(!this.opt.legend && typeof this.opt.legend!=="object") return this;
 
 		// Update legend position
 		this.svg.legend.attr('transform',"translate("+(this.scales.svgMargin.left + fs*0.5)+"," + (this.scales.svgMargin.top+fs) + ")");
@@ -255,18 +268,13 @@
 		for(s = 0; s < this.series.length; s++, y+=fs){
 			if(this.series[s]){
 				cls = (this.series[s].opt.class ? ' '+this.series[s].opt.class : '');
-				txt = this.series[s].opt.text||'text.legend.data';
+				txt = this.series[s].opt.label||'text.legend.data';
 				this.svg.legenditems[s] = {
 					'line':svgEl('line').appendTo(this.svg.legend).addClass('line'+cls).attr({'x1':0,'x2':(fs*1.5).toFixed(1),'y1':y,'y2':y}),
 					'text':svgEl('text').appendTo(this.svg.legend).addClass('leg-text translate'+cls).attr({'x':(fs*1.5 + fs*0.5).toFixed(1),'y':y,'dominant-baseline':'middle'}).html(txt||"?")
 				};
-				if(this.series[s].opt.fill){
-					this.svg.legenditems[s].line.attr({'fill':this.series[s].opt.fill});
-				}
-				if(this.series[s].opt.stroke){
-					this.svg.legenditems[s].line.attr({'stroke':this.series[s].opt.stroke});
-					this.svg.legenditems[s].text.attr({'fill':this.series[s].opt.stroke});
-				}
+				this.svg.legenditems[s].line.attr(this.series[s].opt.line);
+				this.svg.legenditems[s].text.attr(this.series[s].opt.text);
 			}
 		}
 		return this;
@@ -277,36 +285,20 @@
 		if(this.axes.y) this.axes.y.setPixelRange(this.scales.graphHeight, 0);
 		return this;
 	};
-	Graph.prototype.setSeriesNew = function(i,data,opt){
-		log.msg('setSeriesNew',i,data,opt);
-		if(!opt) opt = {};
-		// opt.id
-		// opt.class
-		// opt.fill
-		// opt.stroke
-		// opt.text
-		if(!opt.text) opt.text = "?";
-		if(!this.series) this.series = [];
-		if(data[0].length==2){
-			var ndata = new Array(data.length);
-			for(var j = 0; j < data.length; j++){
-				ndata[j] = {};
-				ndata[j][this.axes.x.key] = data[j][0];
-				ndata[j][this.axes.y.key] = data[j][1];
-			}
-		}else ndata = data;
-
-		// Add any toffset
-		if(typeof opt.toffset==="number"){
-			for(var j = 0; j < ndata.length; j++) ndata[j][this.axes.x.key] += opt.toffset;
-		}
-
-		this.series[i] = {'original':data,'data':[{'lineData':ndata}],'opt':opt};
-		return this;
+	Graph.prototype.getSeries = function(s){
+		return this.series[s];
 	};
-	Graph.prototype.setSeries = function(i,s){
-		log.msg('setSeries',s);
-		this.series[i] = s;
+	Graph.prototype.setSeries = function(s,data,opt){
+		log.msg('setSeries',s,data,opt);
+		if(!this.series) this.series = [];
+		this.series[s] = new Series(data,opt,{'x':this.axes.x.key,'y':this.axes.y.key});
+		return this.getSeries(s);
+	};
+	Graph.prototype.updateSeries = function(s,data){
+		if(this.series[s]){
+			this.series[s].updateData(data)
+			this.update();
+		}
 		return this;
 	};
 	Graph.prototype.setDataRanges = function(o){
@@ -318,7 +310,6 @@
 	}
 	Graph.prototype.drawSeries = function(s){
 		var cls,id,d;
-		if(!this.svg.series) this.svg.series = [];
 		if(this.series[s]){
 			
 			// Work out the class
@@ -327,50 +318,53 @@
 			// Work out an ID
 			id = (this.series[s].opt.id ? this.series[s].opt.id : 'line-'+s);
 
-			// If we haven't got the series object for the SVG, make that now
-			if(typeof this.svg.series[s]!=="object") this.svg.series[s] = {};
-
-			// If we don't have the line object for this series, make that now
-			if(typeof this.svg.series[s].line==="undefined"){
-				this.svg.series[s].line = svgEl('path').appendTo(this.svg.data).addClass('line'+cls).attr({'id':id,'stroke-width':2,'fill':'none'});
-			}
 			// Update the line colours
-			if(this.series[s].opt.fill) this.svg.series[s].line.attr({'fill':this.series[s].opt.fill});
-			if(this.series[s].opt.stroke) this.svg.series[s].line.attr({'stroke':this.series[s].opt.stroke});
+			this.series[s].svg.line.appendTo(this.svg.data).addClass('line'+cls).attr({'id':id,'stroke-width':2,'fill':'none'});
+			this.series[s].svg.line.attr(this.series[s].opt.line);
+
+			if(this.series[s].opt.title && this.series[s].opt.title.label) this.series[s].svg.title.html(this.series[s].opt.title.label);
 
 			if(this.series[s].data.length==1){
 				// Draw a line
-				d = makePath(this.dataToGraph(this.series[s].data[0].lineData));
+				d = makePath(this.dataToGraph(this.series[s].getData(0)));
 			}else if(this.series[s].data.length==2){
 				// Make a filled shape
-				d = makePath(this.dataToGraph(this.series[s].data[0].lineData));
-				d += 'L'+makePath(this.dataToGraph(this.series[s].data[1].lineData),true).substr(1);
+				d = makePath(this.dataToGraph(this.series[s].getData(0)));
+				d += 'L'+makePath(this.dataToGraph(this.series[s].getData(1)),true).substr(1);
 			}
-			this.svg.series[s].line.attr({'d':d});			
+			this.series[s].svg.line.attr({'d':d});			
 		}
 	};
 	
 	Graph.prototype.dataToGraph = function(d){
 		var data = new Array(d.length);
-		for(var i = 0; i < d.length; i++) data[i] = {'x':this.axes.x.scale.value(d[i][this.axes.x.key]),'y':this.axes.y.scale.value(d[i][this.axes.y.key])};
+		for(var i = 0; i < d.length; i++){
+			data[i] = {'x':this.axes.x.scale.value(d[i][this.axes.x.key]),'y':this.axes.y.scale.value(d[i][this.axes.y.key])};
+			// If the value is set to +/- Infinity we limit to the graph
+			if(d[i][this.axes.x.key]==Infinity) data[i].x = 0;
+			if(d[i][this.axes.x.key]==-Infinity) data[i].x = this.scales.graphWidth;
+			if(d[i][this.axes.y.key]==Infinity) data[i].y = 0;
+			if(d[i][this.axes.y.key]==-Infinity) data[i].y = this.scales.graphHeight;
+		}
 		return data;
 	};
 
 	Graph.prototype.drawData = function(){
 		log.msg('Graph.drawData');
 
-		if(!this.svg.series) this.svg.series = [];
 		for(var s = 0; s < this.series.length; s++) this.drawSeries(s);
 
 		var xr = this.axes.x.getDataRange();
 		if(typeof xr==="object" && xr.length == 2) this.axes.x.setTickSpacing(defaultSpacing(xr[0],xr[1],8));
+		var yr = this.axes.y.getDataRange();
+		if(typeof yr==="object" && yr.length == 2) this.axes.y.setTickSpacing(defaultSpacing(yr[0],yr[1],5));
 
 		return this;
 	};
 
-
 	function defaultSpacing(mn,mx,n){
 
+		if(mx==mn) return 1;
 		var dv,log10_dv,base,frac,options,distance,imin,tmin,i;
 
 		// Start off by finding the exact spacing
@@ -416,7 +410,14 @@
 			}
 			return this;
 		};
-		this.html = function(t){ this._el.textContent = t; return this; };
+		this.html = function(t){
+			// Add reset <tspan> after each sub/superscript
+			t = t.replace(/\^\{([^\}]*)\}/g,function(m,p1){ return '<tspan dy="-0.4em" font-size="0.65em">'+p1+'</tspan><tspan dy="0.6em">&#13;</tspan>'; });
+			t = t.replace(/\_\{([^\}]*)\}/g,function(m,p1){ return '<tspan dy="0.4em" font-size="0.65em">'+p1+'</tspan><tspan dy="-0.6em">&#13;</tspan>'; });
+			//this._el.textContent = t;
+			this._el.innerHTML = t;
+			return this;
+		};
 		this.addClass = function(cls){ addMany(this._el,cls); return this; };
 		this.removeClass = function(){ removeMany(this._el,arguments); return this; };
 		this.data = function(d){ this._data = d; return this; };
@@ -435,33 +436,77 @@
 		return d;
 	}
 
-	function Axis(el,props,label){
+	function Axis(el,props,title){
+		var defaultopts = {
+			'range': [null,null],
+			'font-size': 10,
+			'font-family': 'sans-serif',
+			'dir': 'left',
+			'ticks': {
+				'spacing': 1,
+				'opacity': 1,
+				'line': {'stroke':'#000'},
+				'text': {'fill':'#000'}
+			},
+			'title': {
+				'label': '',
+				'options': {
+					'fill': '#000'
+				}
+			},
+			'key': '',
+			'width': null,
+			'height': null,
+			'domain': {
+				'stroke': '#000'
+			}
+		};
+		
+		var opts = clone(defaultopts);
 
 		var tick,translate,attrline,attrtext,extent,minrange=1e-10;
-		el.attr({'fill':'none','font-size':(props['font-size']||'10'),'font-family':(props['font-family']||'sans-serif'),'text-anchor':(props.dir=="left") ? 'end' : 'middle'});
-		
-		if(!props) props = {};
-		if(!props.range) props.range = [null,null];
-		this.scale = new Scale(0,0);
-		this.key = props.key||"";
-
 		var dp = 0;
+		this.scale = new Scale(0,0);
+		this.key = "";
 
-		this.path = svgEl('path').appendTo(el).addClass('domain').attr({'stroke':'#000'});
-
-		if(label){
-			this.label = label;
-			this.label.appendTo(el);
-		}
 		this.updateDP = function(){
 			dp = 0;
-			if(typeof props.ticks.spacing==="number"){
-				var str = ((props.ticks.spacing||"")+"");
+			if(typeof opts.ticks.spacing==="number" && !isNaN(opts.ticks.spacing)){
+				var str = ((opts.ticks.spacing||"")+"");
 				// Count decimal places
 				if(str.indexOf(".") > 0) dp = str.split(".")[1].length;
+			}else{
+				console.warn('Tick spacing is not a number',opts,opts.ticks);
 			}
 			return this;
 		};
+		this.updateProps = function(opt){
+			// Merge the new options into the existing ones
+			merge(opts,opt||{});
+
+			// Set main element properties
+			el.attr({'fill':'none','font-size':(opts['font-size']),'font-family':(opts['font-family']),'text-anchor':(opts.dir=="left") ? 'end' : 'middle'});
+
+			// Make a copy of the key available
+			this.key = opts.key||"";
+			// Set the number of decimal places
+			return this.updateDP();
+		};
+		this.getProps = function(){
+			return opts;
+		};
+
+		this.init = function(){
+			this.updateProps(props);
+			this.domain = svgEl('path').appendTo(el).addClass('domain').attr(opts.domain);
+			if(title){
+				this.title = title;
+				this.title.html(opts.title.label);
+				this.title.appendTo(el);
+			}
+			return this.updateDP().updateSize();
+		};
+
 		// Set the minimum range we will allow
 		this.setDataMinRange = function(a){
 			if(typeof a==="number") minrange = a;
@@ -474,28 +519,30 @@
 		};
 		this.setDataRange = function(a,b){
 			if(!extent) this.setDataExtent(-Infinity,Infinity);
-			var min,max,i;
+			var min,max,i,data;
+			if(typeof a==="string") a = parseFloat(a);
+			if(typeof b==="string") b = parseFloat(b);
 			if(typeof a==="number" && typeof b==="number"){
 				if(Math.abs(b-a) < minrange) return this;
 				min = a;
 				max = b;
 			}else{
-				min = 1e100;
-				max = -1e100;
-				for(i = 0; i < a.data.length; i++){
-					if(a.data[i][props.key]){
-						min = Math.min(a.data[i][props.key][0],min);
-						max = Math.max(a.data[i][props.key][a.data[i][props.key].length - 1],max);
+				min = Infinity;
+				max = -Infinity;
+				data = a.getData(0);
+				for(i = 0; i < data.length; i++){
+					if(typeof data[i][opts.key]==="number"){
+						min = Math.min(data[i][opts.key],min);
+						max = Math.max(data[i][opts.key],max);
 					}
 				}
 			}
-
 			min = Math.max(min,extent[0]);
 			max = Math.min(max,extent[1]);
 
 			// Store initial range
-			if(typeof props.range[0]===null) props.range[0] = min;
-			if(typeof props.range[1]===null) props.range[1] = max;
+			if(typeof opts.range[0]===null) opts.range[0] = min;
+			if(typeof opts.range[1]===null) opts.range[1] = max;
 
 			this.scale.update(min,max);
 
@@ -509,66 +556,85 @@
 			return this;
 		};
 		this.reset = function(){
-			//range = JSON.parse(JSON.stringify(props.range));
+			// Reset options to defaults
+			console.log('reset');
+			opts = clone(defaultopts);
 			return this;
 		};
 		this.getDataRange = function(){
-			return [this.scale.min,this.scale.max]||props.range;
+			return [this.scale.min,this.scale.max]||opts.range;
 		};
 		this.setTickSpacing = function(s){
+			if(typeof s!=="number" || isNaN(s)){
+				console.warn('setTickSpacing - bad spacing',s,opts);
+				return this;
+			}
 			// If we've changed the spacing update it and the ticks
-			if(props.ticks.spacing!=s){
-				props.ticks.spacing = s;
+			if(opts.ticks.spacing!=s){
+				opts.ticks.spacing = s;
 				return this.updateDP().updateTicks();
 			}else return this;
 		};
-		this.setProps = function(p){
-			if(typeof p==="object") props = p;
-			else props = {};
-			this.key = props.key||"";
-			return this.updateDP();
-		};
 		this.updateTicks = function(){
-			var t,v,p2,ticks,attr;
+			var t,v,p2,ticks,attr,min,n,vals,i;
+			vals = [];
 			ticks = el._el.querySelectorAll('.tick');
 			for(t = 0; t < ticks.length; t++) ticks[t].parentNode.removeChild(ticks[t]);
 			if(this.scale){
-				for(v = this.scale.min ; v <= this.scale.max; v += props.ticks.spacing){
-					attr = {'opacity':1};
-					attrline = {'stroke':'#000'};
-					attrtext = {'fill':'#000'};
+				if(opts.labels){
+					if(typeof opts.labels==="object"){
+						vals = opts.labels;
+					}else if(typeof opts.labels==="function"){
+						vals = opts.labels.call(this,this.scale.min,this.scale.max);
+					}
+				}else{
+					n = Math.ceil(this.scale.min/opts.ticks.spacing);
+					// Find the smallest tick value
+					min = (n < 0 ? -1 : 1)*Math.floor(Math.abs(n))*opts.ticks.spacing;
+					for(v = min ; v <= this.scale.max; v += opts.ticks.spacing){
+						vals.push({'value':v,'label':v.toFixed(dp)});
+					}
+				}
+				for(i = 0; i < vals.length; i++){
+					v = vals[i].value;
+					attr = {'opacity':opts.ticks.opacity};
+					attrline = clone(opts.ticks.line);
+					attrtext = clone(opts.ticks.text);
 					translate = "";
 					p2 = "";
-					if(props.dir=="left"){
+					if(opts.dir=="left"){
 						attr.transform = 'translate(0,'+this.scale.value(v).toFixed(1)+')';
-						attrline.x2 = -props.ticks.length;
+						attrline.x2 = -opts.ticks.length;
 						attrtext.x = -6;
 						attrtext.dy = "0.32em";
-					}else if(props.dir=="bottom"){
+					}else if(opts.dir=="bottom"){
 						attr.transform = 'translate('+this.scale.value(v).toFixed(1)+',0)';
-						attrline.y2 = props.ticks.length;
+						attrline.y2 = opts.ticks.length;
 						attrtext.y = 8;
 						attrtext.dy = "0.71em";
 					}
 					tick = svgEl('g').appendTo(el).addClass('tick').attr(attr);
 					svgEl('line').appendTo(tick).attr(attrline);
-					svgEl('text').appendTo(tick).attr(attrtext).html(v.toFixed(dp));
+					svgEl('text').appendTo(tick).attr(attrtext).html(vals[i].label);
 				}
+
 			}
 			return this;
 		};
 		this.updateSize = function(w,h){
-			if(!w) w = props.width;
-			if(!h) h = props.height;
-			this.path.attr({'d':(props.dir=="left") ? 'M'+w+','+h+'H0.5V0.5H'+w : 'M0.5,-'+h+'V0.5H'+w+'.5V-'+h});
+			if(!w) w = opts.width;
+			if(!h) h = opts.height;
+			this.domain.attr({'d':(opts.dir=="left") ? 'M'+w+','+h+'H0.5V0.5H'+w : 'M0.5,-'+h+'V0.5H'+w+'.5V-'+h});
+			this.domain.appendTo(el);
 			if(this.scale) this.updateTicks();
 			return this;
 		};
 
-		this.setProps(props).updateSize();
-		
+		this.init();
+
 		return this;
 	}
+
 	function Scale(min,max){
 		this.minpx = "";
 		this.maxpx = "";
@@ -590,6 +656,71 @@
 		this.update(min,max);
 		return this;
 	}
+
+	function Series(data,opt,keys){
+		// Set some defaults
+		this.opt = {
+			'id': '',
+			'class':'',
+			'line': {
+				'fill':'',
+				'stroke': 'black',
+				'stroke-width': 2
+			},
+			'text':{
+				'fill': 'black'
+			},
+			'label': '?'
+		};
+
+		merge(this.opt,opt||{});
+		
+		this.updateData = function(data){
+			if(data[0].length==2){
+				ndata = new Array(data.length);
+				for(var j = 0; j < data.length; j++){
+					ndata[j] = {};
+					ndata[j][keys.x] = data[j][0];
+					ndata[j][keys.y] = data[j][1];
+				}
+			}else ndata = data;
+
+			// Add any xoffset to the x-axis
+			if(typeof opt.offset==="number"){
+				for(var j = 0; j < ndata.length; j++) ndata[j][keys.x] += opt.offset;
+			}
+
+			// Keep a copy of the original data
+			this.original = data;
+			this.data = [{'lineData':ndata}];
+
+			return this;
+		};
+		
+		this.updateProps = function(opt){
+			merge(this.opt,opt||{});
+			return this;
+		};
+		
+		this.getLine = function(){
+			return this.svg.line._el;
+		};
+		this.getData = function(i){
+			return this.data[i].lineData;
+		};
+
+		this.updateProps(opt);
+		this.updateData(data);
+
+		// Make the SVG object
+		this.svg = {};
+		// Make the line object for this series
+		this.svg.line = svgEl('path');
+		this.svg.title = svgEl('title').html('').appendTo(this.svg.line);
+
+		return this;
+	}
+
 	function addMany(el,classes){
 		var a = classes.split(' ');
 		for(var i = 0; i < a.length; i++) el.classList.add(a[i]);
@@ -600,10 +731,10 @@
 	}
 	function clone(a){ return JSON.parse(JSON.stringify(a)); }
 	// Recursively merge properties of two objects 
-	function mergeDeep(obj1, obj2){
+	function merge(obj1, obj2){
 		for(var p in obj2){
 			try{
-				if(obj2[p].constructor==Object) obj1[p] = mergeDeep(obj1[p], obj2[p]);
+				if(obj2[p].constructor==Object) obj1[p] = merge(obj1[p], obj2[p]);
 				else obj1[p] = obj2[p];
 			}catch(e){ obj1[p] = obj2[p]; }
 		}
