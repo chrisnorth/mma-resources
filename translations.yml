@@ -171,7 +171,17 @@ text:
                 tooltip:
                     en: "{{ title }}<br />Time: {{ x }} s<br />Value: {{ y }} counts/s"
                 output:
-                    en: "t<sub>90</sub> = {{ t90 }} seconds, t<sub>100</sub> = {{ t100 }} seconds, F<sub>baseline</sub> = {{ baseline }} counts, F<sub>90</sub> = {{ F90 }} counts, F<sub>100</sub> = {{ F100 }} counts, ratio = {{ ratio }} {{ indicator }}"
+                    en: "t<sub>90</sub> = {{ t90 }} seconds, t<sub>100</sub> = {{ t100 }} seconds, baseline = {{ baseline }} counts/s, F<sub>90</sub> = {{ F90 }} counts, F<sub>100</sub> = {{ F100 }} counts, ratio = {{ ratio }} {{ indicator }}"
+                t0:
+                    en: "t<sub>0</sub>"
+                t90:
+                    en: "t<sub>90</sub>"
+                t100:
+                    en: "t<sub>100</sub>"
+                baseline:
+                    en: "Baseline"
+                shaded:
+                    en: "F100 - total counts above the baseline."
                 ratio:
                     high:
                         en: "Too high"
