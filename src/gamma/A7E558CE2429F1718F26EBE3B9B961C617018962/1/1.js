@@ -233,7 +233,7 @@ function Step(data,opt){
 							'label': '{{ site.translations.main.observatory.gamma.step1.t0 }}'
 						},
 						'line': {
-							'stroke-width': 6
+							'stroke-width': 4
 						}
 					});
 
