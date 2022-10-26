@@ -131,7 +131,7 @@ function Step(data,opt){
 		var msg = "";
 		if(ratio > 0.95) msg = "{{ site.translations.main.observatory.gamma.step1.ratio.high }}";
 		if(ratio < 0.85) msg = "{{ site.translations.main.observatory.gamma.step1.ratio.low }}";
-		output = output.replace(/\{\{ baseline \}\}/g,('<span class="baseline">'+av.toFixed(2)+'</span>')).replace(/\{\{ t90 \}\}/g,('<span class="t90">'+opt.values.t90.toFixed(2)+'</span>')).replace(/\{\{ t100 \}\}/g,('<span class="t100">'+opt.values.t100.toFixed(2)+'</span>')).replace(/\{\{ F90 \}\}/g,('<span class="F90">'+Math.round(opt.values.F90)+'</span>')).replace(/\{\{ F100 \}\}/g,('<span class="F100">'+Math.round(opt.values.F100)+'</span>')).replace(/\{\{ ratio \}\}/g,('<span class="ratio">'+(ratio).toFixed(2)+'</span>')).replace(/\{\{ indicator \}\}/g,msg);
+		output = output.replace(/\{\{ baseline \}\}/g,('<span class="baseline number">'+av.toFixed(2)+'</span>')).replace(/\{\{ t90 \}\}/g,('<span class="t90 number">'+opt.values.t90.toFixed(2)+'</span>')).replace(/\{\{ t100 \}\}/g,('<span class="t100 number">'+opt.values.t100.toFixed(2)+'</span>')).replace(/\{\{ F90 \}\}/g,('<span class="F90 number">'+Math.round(opt.values.F90)+'</span>')).replace(/\{\{ F100 \}\}/g,('<span class="F100 number">'+Math.round(opt.values.F100)+'</span>')).replace(/\{\{ ratio \}\}/g,('<span class="ratio number">'+(ratio).toFixed(2)+'</span>')).replace(/\{\{ indicator \}\}/g,msg);
 		document.getElementById('output').innerHTML = output;
 
 		return this;
