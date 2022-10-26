@@ -91,7 +91,7 @@
 		merge(this.opt,opt||{});
 		this.scales = {};
 		this.axes = {};
-		this.series = [];
+		this.series = {};
 		this.events = {};
 		this.init();
 		return this;
@@ -265,7 +265,7 @@
 		}
 		y = 0;
 		// Add each series item to the legend
-		for(s = 0; s < this.series.length; s++, y+=fs){
+		for(s in this.series){
 			if(this.series[s]){
 				cls = (this.series[s].opt.class ? ' '+this.series[s].opt.class : '');
 				txt = this.series[s].opt.label||'text.legend.data';
@@ -276,6 +276,7 @@
 				this.svg.legenditems[s].line.attr(this.series[s].opt.line);
 				this.svg.legenditems[s].text.attr(this.series[s].opt.text);
 			}
+			y += fs;
 		}
 		return this;
 	};
@@ -290,7 +291,7 @@
 	};
 	Graph.prototype.setSeries = function(s,data,opt){
 		log.msg('setSeries',s,data,opt);
-		if(!this.series) this.series = [];
+		if(!this.series) this.series = {};
 		this.series[s] = new Series(data,opt,{'x':this.axes.x.key,'y':this.axes.y.key});
 		return this.getSeries(s);
 	};
@@ -352,7 +353,7 @@
 	Graph.prototype.drawData = function(){
 		log.msg('Graph.drawData');
 
-		for(var s = 0; s < this.series.length; s++) this.drawSeries(s);
+		for(var s in this.series) this.drawSeries(s);
 
 		var xr = this.axes.x.getDataRange();
 		if(typeof xr==="object" && xr.length == 2) this.axes.x.setTickSpacing(defaultSpacing(xr[0],xr[1],8));

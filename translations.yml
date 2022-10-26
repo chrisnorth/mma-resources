@@ -163,13 +163,20 @@ text:
                 date:
                     en: "Time/date:"
                 time:
-                    en: "Time (sec)"
+                    en: "Time (seconds)"
                 counts:
                     en: "Count rate (counts/s)"
                 series:
                     en: "Lightcurve"
                 tooltip:
                     en: "{{ title }}<br />Time: {{ x }} s<br />Value: {{ y }} counts/s"
+                output:
+                    en: "t<sub>90</sub> = {{ t90 }} seconds, t<sub>100</sub> = {{ t100 }} seconds, F<sub>baseline</sub> = {{ baseline }} counts/s, F<sub>90</sub> = {{ F90 }} counts/s, F<sub>100</sub> = {{ F100 }} counts/s, ratio = {{ ratio }} {{ indicator }}"
+                ratio:
+                    high:
+                        en: "Too high"
+                    low:
+                        en: "Too low"
             step2:
                 title:
                     en: Localisation
