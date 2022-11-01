@@ -247,10 +247,29 @@ function Grid(opt){
 	this.mouseactive = true;
 
 	this.showGraph = function(data){
+		var offset = 0.8;
 		if(!this.graph){
 			this.graph = new Graph(graphinner,{
+				'left': 24,
+				'right': 1,
 				'axes':{
-					'x':{}
+					'x':{
+						'title': {
+							'label':'{{ site.translations.waveform.axis.time }}'
+						}
+					},
+					'y':{
+						'title': {
+							'label':'{{ site.translations.waveform.axis.strain }}'
+						},
+						'labels': [
+							{'value':offset,'label':''},
+							{'value':-offset,'label':''}
+						],
+						'ticks': {
+							'show': true
+						}
+					}
 				}
 			});
 			this.graph.update();
@@ -276,7 +295,8 @@ function Grid(opt){
 			'line':{
 				'stroke':'rgba(0,150,200,1)'
 			},
-			'xoffset':(opt.GW.dtmerger_s[opt.id[0]])||0
+			'xoffset':(opt.GW.dtmerger_s[opt.id[0]])||0,
+			'yoffset':offset
 		});
 		this.graph.setSeries(1,data,{
 			'id':'line-data',
@@ -285,7 +305,8 @@ function Grid(opt){
 			'line':{
 				'stroke':'rgba(200,150,100,1)'
 			},
-			'xoffset':(opt.GW.dtmerger_s[opt.id[1]])||0
+			'xoffset':(opt.GW.dtmerger_s[opt.id[1]])||0,
+			'yoffset':-offset
 		});
 
 		var toff = ((t0/1000)||0) + opt.GW.dtmerger_s[opt.id[0]];

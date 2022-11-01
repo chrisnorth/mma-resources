@@ -66,6 +66,10 @@
 		log.info();
 		this.el = el;
 		this.opt = {
+			'left': 75,
+			'top': 0,
+			'right': 0,
+			'bottom': 50,
 			'axes': {
 				'x': {
 					'key': 'x',
@@ -115,6 +119,7 @@
 			// Create a new <svg> element and add it
 			this.svg.el = document.createElementNS('http://www.w3.org/2000/svg','svg');
 			this.svg.el.setAttribute('xmlns','http://www.w3.org/2000/svg');
+			this.svg.el.setAttribute('overflow','visible');
 			this.el.appendChild(this.svg.el);
 		}
 
@@ -191,7 +196,7 @@
 		// Set the size from the container (which is currently missing its content)
 		this.scales.svgWidth = Math.floor(this.el.offsetWidth);
 		this.scales.svgHeight = this.el.offsetHeight||Math.floor(this.scales.svgWidth/2);
-		this.scales.svgMargin = {'left':75,'right':18,'top':10,'bottom':60};
+		this.scales.svgMargin = {'left':this.opt.left,'right':this.opt.right,'top':this.opt.top,'bottom':this.opt.bottom};
 		this.scales.graphWidth = this.scales.svgWidth-this.scales.svgMargin.left-this.scales.svgMargin.right;
 		this.scales.graphHeight = this.scales.svgHeight-this.scales.svgMargin.top-this.scales.svgMargin.bottom;
 
@@ -451,6 +456,7 @@
 			'ticks': {
 				'spacing': 1,
 				'opacity': 1,
+				'show': true,
 				'line': {'stroke':'#ddd'},
 				'text': {'fill':'#000'}
 			},
@@ -489,7 +495,7 @@
 		this.updateProps = function(opt){
 			// Merge the new options into the existing ones
 			merge(opts,opt||{});
-
+console.log(opts);
 			// Set main element properties
 			el.attr({'fill':'none','font-size':(opts['font-size']),'font-family':(opts['font-family']),'text-anchor':(opts.dir=="left") ? 'end' : 'middle'});
 
@@ -586,7 +592,7 @@
 			vals = [];
 			ticks = el._el.querySelectorAll('.tick');
 			for(t = 0; t < ticks.length; t++) ticks[t].parentNode.removeChild(ticks[t]);
-			if(this.scale){
+			if(this.scale && opts.ticks.show){
 				if(opts.labels){
 					if(typeof opts.labels==="object"){
 						vals = opts.labels;
@@ -601,6 +607,7 @@
 						vals.push({'value':v,'label':v.toFixed(dp)});
 					}
 				}
+				console.log(opts,vals,opts.labels);
 				for(i = 0; i < vals.length; i++){
 					v = vals[i].value;
 					attr = {'opacity':opts.ticks.opacity};
@@ -632,7 +639,7 @@
 			if(!h) h = opts.height;
 			this.domain.attr({'d':(opts.dir=="left") ? 'M'+w+','+h+'H0.5V0.5H'+w : 'M0.5,-'+h+'V0.5H'+w+'.5V-'+h});
 			this.domain.appendTo(el);
-			if(this.scale) this.updateTicks();
+			this.updateTicks();
 			return this;
 		};
 
@@ -700,6 +707,10 @@
 			// Add any xoffset to the x-axis
 			if(typeof opt.xoffset==="number"){
 				for(var j = 0; j < ndata.length; j++) ndata[j][keys.x] += opt.xoffset;
+			}
+			// Add any yoffset to the y-axis
+			if(typeof opt.yoffset==="number"){
+				for(var j = 0; j < ndata.length; j++) ndata[j][keys.y] += opt.yoffset;
 			}
 
 			// Keep a copy of the original data

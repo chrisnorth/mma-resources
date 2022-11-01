@@ -51,3 +51,9 @@ The site can be built using:
 ```perl build.pl```
 
 This process will be run automatically on push via a Github Action.
+
+To create a simple server, navigate into the `dist/` directory and run:
+
+```python3 -m http.server -b 192.168.0.1 8000```
+
+where `192.168.0.1` is your local IP address.
