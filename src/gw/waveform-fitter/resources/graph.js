@@ -698,8 +698,8 @@
 			}else ndata = data;
 
 			// Add any xoffset to the x-axis
-			if(typeof opt.offset==="number"){
-				for(var j = 0; j < ndata.length; j++) ndata[j][keys.x] += opt.offset;
+			if(typeof opt.xoffset==="number"){
+				for(var j = 0; j < ndata.length; j++) ndata[j][keys.x] += opt.xoffset;
 			}
 
 			// Keep a copy of the original data

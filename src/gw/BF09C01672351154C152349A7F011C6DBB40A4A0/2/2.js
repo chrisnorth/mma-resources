@@ -269,8 +269,24 @@ function Grid(opt){
 		// Round the value (this can cause range issues)
 		delta = Math.round(delta*1e6)/1e6;
 
-		this.graph.setSeriesNew(0,data,{'id':'line-data','text':det_a,'class':'detector-'+opt.id[0],'stroke':'rgba(0,150,200,1)','toffset':(opt.GW.dtmerger_s[opt.id[0]])||0});
-		this.graph.setSeriesNew(1,data,{'id':'line-data','text':det_b,'class':'detector-'+opt.id[1],'stroke':'rgba(200,150,100,1)','toffset':(opt.GW.dtmerger_s[opt.id[1]])||0});
+		this.graph.setSeries(0,data,{
+			'id':'line-data',
+			'text':det_a,
+			'class':'detector-'+opt.id[0],
+			'line':{
+				'stroke':'rgba(0,150,200,1)'
+			},
+			'xoffset':(opt.GW.dtmerger_s[opt.id[0]])||0
+		});
+		this.graph.setSeries(1,data,{
+			'id':'line-data',
+			'text':det_b,
+			'class':'detector-'+opt.id[1],
+			'line':{
+				'stroke':'rgba(200,150,100,1)'
+			},
+			'xoffset':(opt.GW.dtmerger_s[opt.id[1]])||0
+		});
 
 		var toff = ((t0/1000)||0) + opt.GW.dtmerger_s[opt.id[0]];
 
