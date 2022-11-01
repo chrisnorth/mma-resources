@@ -51,7 +51,12 @@ function Step(data,opt){
 						'axes':{
 							'x':{
 								'title': {
-									'label':'{{ site.translations.main.observatory.gw.step1.date }}'
+									'label':'{{ site.translations.waveform.axis.time }}'
+								}
+							},
+							'y':{
+								'title': {
+									'label':'{{ site.translations.waveform.axis.strain }}'
 								}
 							}
 						}

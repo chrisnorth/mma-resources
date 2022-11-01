@@ -177,7 +177,7 @@ sub fileCopyLanguage {
 					if($f->{$parts[$p]}){
 						$f = $f->{$parts[$p]};
 					}else{
-						print "No translation for $key ($p $parts[$p])\n";
+						print "\t$colours{'yellow'}WARNING:$colours{'none'} No translation for $key ($p $parts[$p])\n";
 						$f = "";
 						$p = @parts;
 					}
