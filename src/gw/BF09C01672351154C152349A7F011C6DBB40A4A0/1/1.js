@@ -49,7 +49,11 @@ function Step(data,opt){
 				if(!this.graph){
 					this.graph = new Graph(el.waveform,{
 						'axes':{
-							'x':{}
+							'x':{
+								'title': {
+									'label':'{{ site.translations.main.observatory.gw.step1.date }}'
+								}
+							}
 						}
 					});
 					this.graph.update();
@@ -77,7 +81,14 @@ function Step(data,opt){
 					t0 = ev.GW.t0_ms;
 					lbl = "{{ site.translations.waveform.legend.data }}";
 
-					this.graph.setSeriesNew(0,wfdata,{'id':'line-data','text':lbl,'class':'data','stroke':'rgba(0,150,200,1)'});
+					this.graph.setSeries(0,wfdata,{
+						'id':'line-data',
+						'text':lbl,
+						'class':'data',
+						'line':{
+							'stroke':'rgba(0,150,200,1)'
+						}
+					});
 
 					// Update the ranges
 					this.graph.setDataRanges({'x':[wfdata[0][0],wfdata[wfdata.length-1][0]],'y':[-1.5,1.5]});

@@ -1,6 +1,8 @@
 #!/usr/bin/perl
 
+use lib "lib/";
 use YAML::XS 'LoadFile';
+use Hash::Flatten qw(:all);
 use JSON::XS;
 use open qw( :std :encoding(UTF-8) );
 use Data::Dumper;
@@ -84,6 +86,12 @@ sub siteCopyLanguage {
 	my $lang = shift;
 	my $dir = shift;
 	my $config = shift;
+	my $flat = flatten($config);
+	my ($mkey);
+	# Set number of calls for each flattened key to zero
+	foreach $mkey (keys(%{$flat})){
+		$flat->{$mkey} = 0;
+	}
 
 	print "Create $colours{'cyan'}$config->{'language'}{'languages'}{$lang}{'label'}$colours{'none'} version in $dir\n";
 
@@ -91,8 +99,15 @@ sub siteCopyLanguage {
 		`mkdir $dir`;
 	}
 
-	siteCopyDirectory($lang,"",$dir,$config);
+	siteCopyDirectory($lang,"",$dir,$config,$flat);
 
+
+	foreach $mkey (sort(keys(%{$flat}))){
+		if($flat->{$mkey}==0 && $mkey =~ /^translations/ && $mkey =~ /\.$lang$/){
+			$mkey =~ s/^translations\.//;
+			print "\t$colours{'yellow'}WARNING:$colours{'none'} Unused translation key - $mkey\n";
+		}
+	}
 	return;
 }
 
@@ -101,6 +116,7 @@ sub siteCopyDirectory {
 	my $sdir = shift;
 	my $ddir = shift;
 	my $config = shift;
+	my $flat = shift;
 	
 	my ($dir,$path,$dh,$filename);
 	$dir = $config->{'src'}.$sdir;
@@ -118,11 +134,11 @@ sub siteCopyDirectory {
 					`mkdir $path`;
 				}
 
-				siteCopyDirectory($lang,$sdir.$filename."/",$ddir,$config);
+				siteCopyDirectory($lang,$sdir.$filename."/",$ddir,$config,$flat);
 
 			}else{
 
-				fileCopyLanguage($lang,$dir.$filename,$path,$config);
+				fileCopyLanguage($lang,$dir.$filename,$path,$config,$flat);
 
 			}
 		}
@@ -136,13 +152,13 @@ sub fileCopyLanguage {
 	my $inp = shift;
 	my $out = shift;
 	my $config = shift;
+	my $flat = shift;
 
-	my ($fh,@lines,$str,$nstr,$key,@parts,$p,$o,@bits);
+	my ($fh,@lines,$str,$nstr,$key,@parts,$p,$o,@bits,$mkey);
 	print "\t$colours{'green'}$inp$colours{'none'} -> $colours{'green'}$out$colours{'none'}\n";
 	my $coder = JSON::XS->new->utf8->allow_nonref->canonical(1);
-
-
-	if($inp =~ /\.html$/ || $inp =~ /\.js$/){
+	
+	if($inp =~ /\.html$/ || $inp =~ /\.js$/ || $inp =~ /\.svg$/){
 		# Process
 		#print "\tProcess $inp\n";
 		open($fh,$inp);
@@ -196,8 +212,15 @@ sub fileCopyLanguage {
 			}else{
 				print "Don't know how to deal with \"$key\" in $inp\n";
 			}
+			
 			$str =~ s/\{\{ ?$key ?\}\}//g;
 			$nstr =~ s/\{\{ ?$key ?\}\}/$value/g;
+
+			# Update the flattened keys
+			$mkey = $key;
+			$mkey =~ s/^site\.//;
+			$flat->{$mkey.".$lang"}++;
+
 		}
 
 		open($fh,">",$out);

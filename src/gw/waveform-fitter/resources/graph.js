@@ -13,6 +13,9 @@
 				'ticks': {
 					'spacing': 0.02	// The tick spacing as a data value
 				},
+				'title': {
+					'label': 'x-axis label'
+				},
 				'range': [0.2,1],	// The data range of the axis
 				'font-size': 14		// The font size in <svg> units
 			}
@@ -292,7 +295,9 @@
 	Graph.prototype.setSeries = function(s,data,opt){
 		log.msg('setSeries',s,data,opt);
 		if(!this.series) this.series = {};
-		this.series[s] = new Series(data,opt,{'x':this.axes.x.key,'y':this.axes.y.key});
+		// Either create a new series or update an existing one
+		if(!this.series[s]) this.series[s] = new Series(data,opt,{'x':this.axes.x.key,'y':this.axes.y.key});
+		else this.series[s].update(data,opt,{'x':this.axes.x.key,'y':this.axes.y.key});
 		return this.getSeries(s);
 	};
 	Graph.prototype.updateSeries = function(s,data){
@@ -676,6 +681,12 @@
 
 		merge(this.opt,opt||{});
 		
+		this.update = function(data,opts,k){
+			this.updateProps(opt);
+			this.updateData(data);
+			keys = k;
+			return this;
+		};
 		this.updateData = function(data){
 			if(data[0].length==2){
 				ndata = new Array(data.length);
@@ -709,15 +720,21 @@
 		this.getData = function(i){
 			return this.data[i].lineData;
 		};
+		this.clear = function(){
+			console.log('clear',this);
+			if(this.svg.line) this.svg.line._el.setAttribute('path','');;
+			if(this.svg.title) this.svg.title._el.innerHTML = "";
+			return this;
+		};
 
-		this.updateProps(opt);
-		this.updateData(data);
+		this.update(data,opt,keys);
 
 		// Make the SVG object
-		this.svg = {};
+		if(!this.svg) this.svg = {};
 		// Make the line object for this series
-		this.svg.line = svgEl('path');
-		this.svg.title = svgEl('title').html('').appendTo(this.svg.line);
+		if(!this.svg.line) this.svg.line = svgEl('path');
+		if(!this.svg.title) this.svg.title = svgEl('title').appendTo(this.svg.line);
+		this.svg.title.html('');
 
 		return this;
 	}

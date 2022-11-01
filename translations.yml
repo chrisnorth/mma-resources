@@ -67,20 +67,10 @@ text:
                     en: "Select the event that you would like to investigate further below."
                 noevent:
                     en: No event selected
-                view:
-                    en: View
-                details:
-                    en: Event details
-                name:
-                    en: Name
                 date:
                     en: "Time/date:"
-                waveform:
-                    en: Waveform
                 selected:
                     en: "Selected event:"
-                noiframe:
-                    en: No event selected yet
             step2:
                 title:
                     en: Localisation
@@ -132,6 +122,8 @@ text:
                 en: Gamma-ray Observatory
             home:
                 en: Home
+            logo:
+                en: GAMMA
             front:
                 intro:
                     en: Welcome to the Gamma Ray Observatory. We're bursting to get started...
