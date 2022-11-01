@@ -137,7 +137,6 @@ function Step(data,opt){
 		this.graph.updateSeries("baseline",[{x:-Infinity,y:av},{x:Infinity,y:av}]); 
 
 		// Update shaded area
-		console.log(shaded,av);
 		this.graph.updateSeries("shaded",shaded);
 
 		var ratio = opt.values.F90/opt.values.F100;
@@ -247,9 +246,11 @@ function Step(data,opt){
 							'label': '{{ site.translations.main.observatory.gamma.step1.t0 }}'
 						},
 						'line': {
-							'stroke-width': 4
+							'stroke-width': 4,
+							'cursor': 'col-resize'
 						}
 					});
+					this.makeDraggable(this.graph.series.t0);
 
 					// Make the t_90 line
 					this.graph.setSeries("t90",[{x:x90,y:-Infinity},{x:x90,y:Infinity}],{
