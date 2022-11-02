@@ -67,6 +67,31 @@ h3 { font-size: 1.25em; }
 		max-width: 1320px;
 	}
 }
+.breadcrumb > :after { background: rgb(165,158,150)!important; }
+.breadcrumb > .visited:after { background: #facb65!important; }
+.breadcrumb > * > :after {
+	background-color: transparent!important;
+	width: 2em;
+	height: 2em;
+	content: url("data:image/svg+xml,%3Csvg stroke='currentColor' fill='rgb(165,158,150)' stroke-width='0' viewBox='0 0 512 512' height='2em' width='2em' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M256 38.013c-22.458 0-66.472 110.3-84.64 123.502-18.17 13.2-136.674 20.975-143.614 42.334-6.94 21.358 84.362 97.303 91.302 118.662 6.94 21.36-22.286 136.465-4.116 149.665 18.17 13.2 118.61-50.164 141.068-50.164 22.458 0 122.9 63.365 141.068 50.164 18.17-13.2-11.056-128.306-4.116-149.665 6.94-21.36 98.242-97.304 91.302-118.663-6.94-21.36-125.444-29.134-143.613-42.335-18.168-13.2-62.182-123.502-84.64-123.502z'%3E%3C/path%3E%3C/svg%3E");
+}
+h1 { margin: 0.25em 0 0 0!important; }
+.breadcrumb > *.visited > :after, .breadcrumb > *.current > :after {
+	background-color: transparent!important;
+	content: url("data:image/svg+xml,%3Csvg stroke='currentColor' fill='%23facb65' stroke-width='0' viewBox='0 0 512 512' height='2em' width='2em' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M256 38.013c-22.458 0-66.472 110.3-84.64 123.502-18.17 13.2-136.674 20.975-143.614 42.334-6.94 21.358 84.362 97.303 91.302 118.662 6.94 21.36-22.286 136.465-4.116 149.665 18.17 13.2 118.61-50.164 141.068-50.164 22.458 0 122.9 63.365 141.068 50.164 18.17-13.2-11.056-128.306-4.116-149.665 6.94-21.36 98.242-97.304 91.302-118.663-6.94-21.36-125.444-29.134-143.613-42.335-18.168-13.2-62.182-123.502-84.64-123.502z'%3E%3C/path%3E%3C/svg%3E");
+}
+.breadcrumb > ::after {
+	content: '';
+	position: absolute;
+	left: 50%;
+	top: calc(100% - 1em);
+	transform: translate3d(1.25em,-50%,0);
+	width: calc(100% - 2.5em);
+	border-radius: 0.25em;
+	background: #edeff0;
+	height: 0.5em;
+	z-index: 1;
+}
 .container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
 	--bs-gutter-x: 1.5rem;
 	--bs-gutter-y: 0;
