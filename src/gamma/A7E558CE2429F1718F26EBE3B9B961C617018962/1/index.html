@@ -7,20 +7,21 @@
 	<link rel="stylesheet" href="../../../resources/style.css" />
 	<link rel="stylesheet" href="../../resources/style.css" />
 	<style>
-	#waveform { height: 100%; }
-	#waveform, #output { color: black; background: rgba(255,255,255,1); }
+	#waveform-holder { height: 100%; padding: 1em; }
+	#waveform-holder, #output { color: black; background: rgba(255,255,255,1); }
 	#output > * { padding: 1em; }
 	
 	#line-data { stroke: rgb(34, 84, 244); stroke-width: 2px; }
 	#line-baseline { stroke: #ccc; stroke-width: 4px; }
 	.baseline { background: rgba(204, 204, 204, 1); outline: 2px solid rgba(204, 204, 204, 1); }
 	#line-shaded { fill: rgba(34, 84, 244, 0.2); stroke: none; }
-	.shaded, .F100 { background: rgba(34, 84, 244, 0.2); outline: 2px solid rgba(34, 84, 244, 1); }
+	span.F100 { outline: 2px solid rgba(34, 84, 244); }
+	.F100 { background: rgba(34, 84, 244, 0.2); fill: rgba(34, 84, 244, 0.2); }
+	span.F90 { outline: 2px solid rgba(214, 3, 3); background: rgba(214, 3, 3, 0.2); }
 	#line-t0 { stroke: #444; }
 	.t0 { background: rgba(13, 188, 55, 0.2); outline: 2px solid rgba(13, 188, 55, 1); }
 	#line-t90 { stroke: rgb(214, 3, 3); }
 	.t90 { background: rgba(214, 3, 3, 1); color: white; outline: 2px solid rgba(214, 3, 3, 1); }
-	.F90 { background: rgba(214, 3, 3, 0.2); outline: 2px solid rgba(214, 3, 3, 1); }
 	#line-t100 { stroke: rgb(34, 84, 244); }
 	.t100 { background: rgba(34, 84, 244, 1); color: white; outline: 2px solid rgba(34, 84, 244, 1); }
 	.number { padding: 0 0.25em; border-radius: 2px; }
@@ -70,7 +71,9 @@
 											<section id="step">
 												<div class="widescreen">
 													<div id="no-event">{{ site.translations.main.observatory.gamma.step1.intro }}</div>
-													<div id="waveform" class="waveform"></div>
+													<div id="waveform-holder" class="waveform">
+														<div id="waveform"></div>
+													</div>
 													<div id="output"></div>
 												</div>
 												<div class="padded output ga">
@@ -121,6 +124,7 @@
 	</footer>
 	<script type="text/javascript" src="../../../resources/common.js"></script>
 	<script type="text/javascript" src="../../../gw/waveform-fitter/resources/graph.js"></script>
+	<script type="text/javascript" src="../../../gw/waveform-fitter/resources/graph.draggable.js"></script>
 	<script type="text/javascript" src="../scenario.js"></script>
 	<script type="text/javascript" src="1.js"></script>
 </body>

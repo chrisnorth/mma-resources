@@ -164,6 +164,9 @@ h1 { margin: 0.25em 0 0 0!important; }
 	color: #f9edd4;
 	text-align: center;
 }
+main.main-container main {
+	max-width: 1200px;
+}
 .navbar-brand {
 	color: white;
 	display: grid;
@@ -304,4 +307,12 @@ ol.breadcrumb .step { font-weight: bold; font-family: sans-serif; }
 
 .ga-breadcrumb > .visited::after, .ga-breadcrumb > .visited > ::after, .ga-breadcrumb > * > [aria-current]::after {
 	background: #facb65;
+}
+
+
+@media only screen and (max-width: 800px) {
+	.main-container {
+		padding: 2%;
+		background-image: url("FermiBackground-small.jpg");
+	}
 }

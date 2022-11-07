@@ -50,38 +50,6 @@ function Step(data,opt){
 	opt.values.t90 = this.urlVars.t90;
 	opt.values.t100 = this.urlVars.t100;
 	
-	console.log(opt);
-
-	this.makeDraggable = function(series){
-		var el = series.getLine();
-		var inDrag = false;
-		var _obj = this;
-		el.addEventListener("mousedown", function(e){
-			e.preventDefault();
-			e.stopPropagation();
-			inDrag = true;
-		});
-		document.addEventListener("mousemove", function(e){
-			if (!inDrag) {return;}
-
-			// Find the data position of the cursor
-			var pos = _obj.graph.getValueAt(e.clientX,e.clientY);
-
-			// Update the x-position of the line
-			//console.log(pos.x,_obj.graph.series.data);
-			var x = snapToGrid(pos.x,_obj.graph.series.data.original);
-			var d = [{x:x,y:-Infinity},{x:x,y:Infinity}];
-			series.updateData(d);
-
-			// Update the graph
-			_obj.graph.drawData();
-		});
-		document.addEventListener("mouseup", function(e){
-			inDrag = false;
-			_obj.updateGraph();
-		});
-	};
-	
 	function snapToGrid(x,data){
 		var idx = -1;
 		var min = Infinity;
@@ -103,7 +71,7 @@ function Step(data,opt){
 		opt.values.t100 = this.graph.series.t100.data[0].lineData[0].x;
 		opt.values.F90 = 0;
 		opt.values.F100 = 0;
-		
+
 		data = this.graph.series.data.original;
 		av = 0;
 		n = 0;
@@ -113,31 +81,40 @@ function Step(data,opt){
 				n++;
 			}
 		}
+
 		// Calculate the average
 		av /= n;
-		shaded = [];
+		F100 = [];
+		F90 = [];
 		for(var i = 0; i < data.length; i++){
 		
 			if(data[i].x >= opt.values.t0 && data[i].x <= opt.values.t100){
-				shaded.push({'x':data[i].x,'y':data[i].y});
+				F100.push({'x':data[i].x,'y':data[i].y});
 				opt.values.F100 += data[i].y - av;
 			}
 			if(data[i].x >= opt.values.t0 && data[i].x <= opt.values.t90){
+				F90.push({'x':data[i].x,'y':data[i].y});
 				opt.values.F90 += data[i].y - av;
 			}
 		}
 		// Complete the fill shape
 		for(var i = data.length-1; i >= 0; i--){
 			if(data[i].x >= opt.values.t0 && data[i].x <= opt.values.t100){
-				shaded.push({'x':data[i].x,'y':Math.min(av,data[i].y)});
+				F100.push({'x':data[i].x,'y':Math.min(av,data[i].y)});
+			}
+			if(data[i].x >= opt.values.t0 && data[i].x <= opt.values.t90){
+				F90.push({'x':data[i].x,'y':Math.min(av,data[i].y)});
 			}
 		}
-		
+
 		// Update baseline
 		this.graph.updateSeries("baseline",[{x:-Infinity,y:av},{x:Infinity,y:av}]); 
 
 		// Update shaded area
-		this.graph.updateSeries("shaded",shaded);
+		this.graph.updateSeries("F100",F100);
+		this.graph.updateSeries("F90",F90);
+		
+		this.graph.update();
 
 		var ratio = opt.values.F90/opt.values.F100;
 		var output = "<div>{{ site.translations.main.observatory.gamma.step1.output }}</div>";
@@ -206,7 +183,10 @@ function Step(data,opt){
 					axes.y.max += dy;
 
 					this.graph = new Graph(el.waveform,{
-						'axes':axes
+						'axes':axes,
+						'patterns':{
+							'hatch': {'type':'hatch','size':20,'angle':45,'style':'stroke:rgb(214, 3, 3);stroke-width:20'}
+						}
 					});
 					this.graph.axes.x.setDataRange(axes.x.min,axes.x.max);
 					this.graph.axes.y.setDataRange(axes.y.min,axes.y.max);
@@ -225,10 +205,19 @@ function Step(data,opt){
 					var x100 = axes.x.min + 0.95*(axes.x.max-axes.x.min);
 
 					// Add count data
-					this.graph.setSeries("shaded",series,{
+					this.graph.setSeries("F100",series,{
 						'title': {
 							'label': '{{ site.translations.main.observatory.gamma.step1.shaded }}'
 						},
+						'class': 'F100',
+						'tooltip':{ 'label': label }
+					});
+					this.graph.setSeries("F90",series,{
+						'title': {
+							'label': '{{ site.translations.main.observatory.gamma.step1.shaded }}'
+						},
+						'class': 'F90',
+						'pattern': 'hatch',
 						'tooltip':{ 'label': label }
 					});
 					// Add count data
@@ -239,6 +228,23 @@ function Step(data,opt){
 						'tooltip':{ 'label': label }
 					});
 
+
+					function move(e,series,pos){
+
+						var x = snapToGrid(pos.x,this.series.data.original);
+						var d = [{x:x,y:-Infinity},{x:x,y:Infinity}];
+
+						// Update the data for the series
+						series.updateData(d);
+
+						// Update the graph
+						this.drawData();
+					}
+					function moveEnd(e,series){
+						_obj.updateGraph();
+						return;
+					}
+
 					// Make the t_0 line that stays static
 					this.graph.setSeries("t0",[{x:x0,y:-Infinity},{x:x0,y:Infinity}],{
 						'id': 'line-t0',
@@ -248,9 +254,10 @@ function Step(data,opt){
 						'line': {
 							'stroke-width': 4,
 							'cursor': 'col-resize'
-						}
+						},
+						'z-index': 10
 					});
-					this.makeDraggable(this.graph.series.t0);
+					this.graph.makeDraggable(this.graph.series.t0,{ 'drag':move,'dragend':moveEnd });
 
 					// Make the t_90 line
 					this.graph.setSeries("t90",[{x:x90,y:-Infinity},{x:x90,y:Infinity}],{
@@ -261,9 +268,10 @@ function Step(data,opt){
 						'line': {
 							'stroke-width': 6,
 							'cursor': 'col-resize'
-						}
+						},
+						'z-index': 10
 					});
-					this.makeDraggable(this.graph.series.t90);
+					this.graph.makeDraggable(this.graph.series.t90,{ 'drag':move,'dragend':moveEnd });
 
 					// Make the t_100 line
 					this.graph.setSeries("t100",[{x:x100,y:-Infinity},{x:x100,y:Infinity}],{
@@ -274,14 +282,12 @@ function Step(data,opt){
 						'line': {
 							'stroke-width': 6,
 							'cursor': 'col-resize'
-						}
+						},
+						'z-index': 10
 					});
-					this.makeDraggable(this.graph.series.t100);
+					this.graph.makeDraggable(this.graph.series.t100,{ 'drag':move,'dragend':moveEnd });
 
-					this.graph.update();
-					
 					this.updateGraph();
-					
 				}
 				dt = ev.datetime;
 				

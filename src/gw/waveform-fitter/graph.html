@@ -52,6 +52,13 @@
 	</header>
 	<ul class="index">
 		<li><a href="#basic">Basic example</a></li>
+		<li><a href="#colours">Customise colours</a></li>
+		<li><a href="#range">Update ranges</a></li>
+		<li><a href="#labels">Labels hard-coded</a></li>
+		<li><a href="#labels-fn">Labels defined by a function</a></li>
+		<li><a href="#moveable-line">Add moveable lines</a></li>
+		<li><a href="#moveable-line-quantised">Add moveable line - quantised</a></li>
+		<li><a href="#moveable-lines-shaded">Add moveable lines</a></li>
 	</ul>
 	<div class="page">
 		<section class="example" id="basic">
@@ -314,12 +321,13 @@
 		</section>
 
 
-		<section class="example" id="labels">
+		<section class="example" id="moveable-line">
 
-			<h2>Add moveable lines</h2>
-			<p>This example adds two moveable vertical lines and a static horizontal line.</p>
+			<h2>Add moveable line</h2>
+			<p>This example adds a moveable vertical line and a static horizontal line.</p>
 			<div class="example-code">
 				<div id="graph-holder-line"></div>
+				<script type="text/javascript" src="resources/graph.draggable.js"></script>
 				<script>
 				ready(function(){
 					var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -353,47 +361,10 @@
 							}
 						}
 					});
-					// Add some data
-					var maxtemp = [{x:1,y:6.4},{x:2,y:7},{x:3,y:9.1},{x:4,y:11.9},{x:5,y:14.8},{x:6,y:17.5},{x:7,y:19.6},{x:8,y:19},{x:9,y:16.9},{x:10,y:13.3},{x:11,y:9.1},{x:12,y:6.7}];
-					graph[5].setSeries(0,maxtemp,{
-						'id':'line-data',
-						'label':'test',
-						'class':'data',
-						'line': {
-							'stroke':'#FF6700',
-							'stroke-width': 4
-						}
-					});
+
 					graph[5].axes.x.setDataRange(1,12);
 					graph[5].axes.y.setDataRange(0,25).setTickSpacing(5);
-					graph[5].update();
-					function makeDraggable(series){
-						var el = series.getLine();
-						var inDrag = false;
-						el.addEventListener("mousedown", function(e){
-							e.preventDefault();
-							e.stopPropagation();
-							inDrag = true;
-						});
-						document.addEventListener("mousemove", function(e){
-							if (!inDrag) {return;}
 
-							// Find the data position of the cursor
-							var pos = graph[5].getValueAt(e.clientX,e.clientY);
-
-							// Update the x-position of the line 
-							var x = pos.x; //0.25*Math.round(pos.x/0.25);
-							var d = [{x:x,y:-Infinity},{x:x,y:Infinity}];
-							series.updateData(d);
-
-							// Update the graph
-							graph[5].drawData();
-						});
-						document.addEventListener("mouseup", function(e){
-							inDrag = false;
-							console.log('x',series.data[0].lineData[0].x);
-						});
-					}
 					var baseline = graph[5].setSeries(1,[{x:-Infinity,'y':5},{x:Infinity,y:5}],{
 						'label': 'baseline',
 						'line': {
@@ -401,27 +372,259 @@
 							'stroke-width': 6,
 							'stroke-dasharray': '1 12',
 							'stroke-linecap': 'round'
-						}
+						},
+						'z-index': 5
 					});
-					var start = graph[5].setSeries(2,[{x:2,y:-Infinity},{x:2,y:Infinity}],{
+					var line = graph[5].setSeries(2,[{x:2,y:-Infinity},{x:2,y:Infinity}],{
 						'label': 't_0',
 						'line': {
 							'stroke': '#0DBC37',
 							'stroke-width': 6,
 							'cursor': 'col-resize'
+						},
+						'z-index': 10
+					});
+					// A function to return a new path array given a cursor position
+					function moveLine(pos){
+						// Set a vertical line at the current x-position 
+						return [{x:pos.x,y:-Infinity},{x:pos.x,y:Infinity}];
+					}
+					graph[5].makeDraggable(line,{'move':moveLine});
+
+					// Update the graph
+					graph[5].update();
+				});
+				</script>
+			</div>
+		</section>
+
+
+
+
+		<section class="example" id="moveable-line-quantised">
+
+			<h2>Add moveable line - quantised</h2>
+			<p>This example adds a moveable vertical lines that snaps to the nearest integer on the x-axis.</p>
+			<div class="example-code">
+				<div id="graph-holder-line-quantised"></div>
+				<script type="text/javascript" src="resources/graph.draggable.js"></script>
+				<script>
+				ready(function(){
+					graph[6] = new Graph(document.getElementById("graph-holder-line-quantised"),{
+						'axes':{
+							'x': {
+								'key': 'x',
+								'labels':[
+									{'value':1,'label':'1'},
+									{'value':2,'label':'2'},
+									{'value':3,'label':'3'},
+									{'value':4,'label':'4'},
+									{'value':5,'label':'5'},
+									{'value':6,'label':'6'},
+									{'value':7,'label':'7'},
+									{'value':8,'label':'8'},
+									{'value':9,'label':'9'},
+									{'value':10,'label':'10'},
+									{'value':11,'label':'11'},
+									{'value':12,'label':'12'}
+								],
+								'title': {
+									'label': 'Value'
+								}
+							},
+							'y': {
+								'key': 'y',
+								'title': {
+									'label': 'Value'
+								}
+							}
 						}
 					});
-					var end = graph[5].setSeries(3,[{x:11,y:-Infinity},{x:11,y:Infinity}],{
+
+					graph[6].axes.x.setDataRange(1,12);
+					graph[6].axes.y.setDataRange(0,25).setTickSpacing(5);
+
+					var line = graph[6].setSeries(2,[{x:2,y:-Infinity},{x:2,y:Infinity}],{
+						'label': 't_0',
+						'line': {
+							'stroke': '#0DBC37',
+							'stroke-width': 6,
+							'cursor': 'col-resize'
+						},
+						'z-index': 10
+					});
+					// A function to return a new path array given a cursor position
+					function moveLine(pos){
+						// Round the x-value to the nearest integer
+						var x = Math.round(pos.x);
+						// Set a vertical line at the current x-position
+						return [{x:x,y:-Infinity},{x:x,y:Infinity}];
+					}
+					graph[6].makeDraggable(line,{'move':moveLine});
+
+					// Update the graph
+					graph[6].update();
+				});
+				</script>
+			</div>
+		</section>
+
+
+
+
+
+		<section class="example" id="moveable-lines-shaded">
+
+			<h2>Add moveable lines with shading</h2>
+			<p>This example adds a data series with two moveable vertical lines that set some shading in between.</p>
+			<div class="example-code">
+				<div id="graph-holder-lines"></div>
+				<script type="text/javascript" src="resources/graph.draggable.js"></script>
+				<script>
+				ready(function(){
+					var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+					graph[7] = new Graph(document.getElementById("graph-holder-lines"),{
+						'axes':{
+							'x': {
+								'key': 'x',
+								'labels':[
+									{'value':1,'label':months[0]},
+									{'value':2,'label':months[1]},
+									{'value':3,'label':months[2]},
+									{'value':4,'label':months[3]},
+									{'value':5,'label':months[4]},
+									{'value':6,'label':months[5]},
+									{'value':7,'label':months[6]},
+									{'value':8,'label':months[7]},
+									{'value':9,'label':months[8]},
+									{'value':10,'label':months[9]},
+									{'value':11,'label':months[10]},
+									{'value':12,'label':months[11]}
+								],
+								'title': {
+									'label': 'Month'
+								}
+							},
+							'y': {
+								'key': 'y',
+								'title': {
+									'label': 'Value'
+								}
+							}
+						},
+						'patterns':{
+							'hatch': {'type':'hatch','size':20,'angle':45,'style':'stroke:red;stroke-width:20'}
+						}
+					});
+
+					// Set graph range
+					graph[7].axes.x.setDataRange(1,12);	// Numbers in data space
+					graph[7].axes.y.setDataRange(0,25).setTickSpacing(5);
+
+					// Add some data
+					var maxtemp = [{x:1,y:6.4},{x:2,y:7},{x:3,y:9.1},{x:4,y:11.9},{x:5,y:14.8},{x:6,y:17.5},{x:7,y:19.6},{x:8,y:19},{x:9,y:16.9},{x:10,y:13.3},{x:11,y:9.1},{x:12,y:6.7}];
+					var data = graph[7].setSeries(0,maxtemp,{
+						'id':'line-data',
+						'label':'test',
+						'class':'data',
+						'line': {
+							'stroke':'#FF6700',
+							'stroke-width': 4,
+							'fill': '#FF6700',
+							'fill-opacity': 0.2
+						},
+						'z-index':2
+					});
+
+
+					// Functions to get XY, Y, and data within a range
+					function getXY(dat,x){
+						var pos = {'x':x,'y':null};
+						for(var i = 1; i < dat.length; i++){
+							if(x >= dat[i-1].x && x <= dat[i].x) pos.y = getY(dat[i-1],dat[i],x);
+						}
+						return pos;
+					}
+					// Interpolate a y-value
+					function getY(a,b,x){
+						var f = 1 - ((x - a.x)/(b.x - a.x));
+						return b.y - f*(b.y - a.y);
+					}
+					function cropArea(dat,x1,x2){
+						var o = [];
+						// Add a first point at x1 using an interpolated y-value
+						o.push({'x':x1,'y':getY(dat[0], dat[dat.length-1], x1)});
+						o.push(getXY(dat,x1));
+						for(var i = 0; i < dat.length; i++){
+							if(dat[i].x >= x1 && dat[i].x <= x2) o.push(dat[i]);
+						}
+						// Last point is at x2 using an interpolated y-value
+						o.push(getXY(dat,x2));
+						o.push({'x':x2,'y':getY(dat[0], dat[dat.length-1], x2)});
+						return o;
+					}
+					// Create a shaded area below the data series that uses the "hatch" pattern we defined above
+					var shaded = graph[7].setSeries(1,cropArea(maxtemp,2,11),{
+						'id':'line-data-shaded',
+						'label':'test',
+						'class':'data',
+						'line': {
+							'stroke':'#FF6700',
+							'stroke-width': 'none',
+						},
+						'pattern': 'hatch',
+						'z-index':1
+					});
+
+					// Create a start and end line
+					var start = graph[7].setSeries(2,[{x:2,y:-Infinity},{x:2,y:Infinity}],{
+						'label': 't_0',
+						'line': {
+							'stroke': '#0DBC37',
+							'stroke-width': 6,
+							'cursor': 'col-resize'
+						},
+						'z-index': 10
+					});
+					var end = graph[7].setSeries(3,[{x:11,y:-Infinity},{x:11,y:Infinity}],{
 						'label': 't_end',
 						'line': {
 							'stroke': '#722EA5',
 							'stroke-width': 6,
 							'cursor': 'col-resize'
-						}
+						},
+						'z-index': 11
 					});
-					makeDraggable(start);
-					makeDraggable(end);
-					graph[5].update();
+					// Set a vertical line at the current x-position 
+					function moveLine(e,series,pos){
+						var d = [{x:pos.x,y:-Infinity},{x:pos.x,y:Infinity}];
+
+						// Update the data for the series
+						series.updateData(d);
+
+						// Update the graph
+						this.drawData();
+
+						return;
+					}
+					// Update the shaded series
+					function moveEnd(e,series){
+						var d = cropArea(maxtemp, start.data[0].lineData[0].x, end.data[0].lineData[0].x);
+						this.updateSeries(shaded, d);
+						this.update();
+					}
+					// Update the shaded series
+					function moveEnd2(e,series){
+						var d = cropArea(maxtemp, start.data[0].lineData[0].x, end.data[0].lineData[0].x);
+						this.updateSeries(shaded, d);
+						this.update();
+					}
+					// Make the start/end lines draggable
+					graph[7].makeDraggable(start,{'drag':moveLine,'dragend':moveEnd});
+					graph[7].makeDraggable(end,{'drag':moveLine,'dragend':moveEnd2});
+
+					// Update the graph
+					graph[7].update();
 				});
 				</script>
 			</div>

@@ -41,6 +41,9 @@ textarea { font-size: 1em; line-height: 1.5em; border: solid 1px #ccc; margin-bo
 ol.grid > li {
 	list-style: none;
 }
+.grid > li.fullwidth{
+	grid-column: 1 / span 2;	
+}
 .grid > li > a {
 	display: flex;
 	align-items: center;
@@ -169,7 +172,10 @@ button[disabled]:hover, button[disabled]:focus { background: #dfdfdf; color: bla
 
 
 @media only screen and (max-width: 800px) {
-	ol.grid { grid-template-columns: 100%; }
+	.grid { grid-template-columns: 100%; }
+	 .grid > li.fullwidth {
+		grid-column: 1 / span 1;	
+	}
 	.doublepadded { padding: 1em; }
 	.page iframe { aspect-ratio: 1 / 1; }
 }

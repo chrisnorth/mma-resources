@@ -64,6 +64,7 @@
 			return this;
 		}
 		log.info();
+		this.id = newID();
 		this.el = el;
 		this.opt = {
 			'left': 75,
@@ -139,6 +140,13 @@
 		// Set the class for the <svg> element
 		this.svg.el.classList.add('graph');
 
+		// Create a <defs> and add it to the SVG
+		if(!this.svg.defs) this.svg.defs = svgEl('defs').appendTo(this.svg.el);
+		
+		if(this.opt.patterns){
+			for(var p in this.opt.patterns) this.addPattern(p,this.opt.patterns[p]);
+		}
+
 		// Listen for events
 		var _obj = this;
 		this.el.addEventListener('mousemove',function(e){
@@ -162,7 +170,7 @@
 		x = ax.min + (ax.range)*Math.min(1,Math.max(0,dx/s.graphWidth));
 		y = ay.max - (ay.range)*Math.min(1,Math.max(0,dy/s.graphHeight));
 		//log.info('getValueAt',x,y);
-		return {'x':x,'y':y};
+		return {'x':x,'y':y,'px':dx,'py':dy};
 	};
 	// Attach events
 	Graph.prototype.on = function(type,data,fn){
@@ -206,16 +214,14 @@
 		// Set the size of the <svg>
 		this.svg.el.setAttribute('width',(this.scales.svgWidth));
 		this.svg.el.setAttribute('height',(this.scales.svgHeight));
+		this.svg.el.setAttribute('user-select', 'none');
 		
 		this.svg.el.setAttribute('viewBox','0 0 '+this.scales.svgWidth+' '+this.scales.svgHeight);
-
-		// Create a <defs> and add it to the SVG
-		if(!this.svg.defs) this.svg.defs = svgEl('defs').appendTo(this.svg.el);
 
 		// Create a <clipPath> and add it to the <svg>
 		if(!this.svg.clip){
 			this.svg.clip = svgEl('clipPath');
-			this.svg.clip.appendTo(this.svg.defs).attr('id','clip');
+			this.svg.clip.appendTo(this.svg.defs).attr('id',this.id+'-clip');
 			this.svg.cliprect = svgEl('rect').appendTo(this.svg.clip).attr({'x':0,'y':0});
 		}
 		if(this.svg.cliprect) this.svg.cliprect.attr({'width':this.scales.graphWidth,'height':this.scales.graphHeight});
@@ -234,16 +240,35 @@
 		if(this.axes.y.title) this.axes.y.title.attr(merge({'x':-this.scales.graphHeight/2,'y':(-this.scales.svgMargin.left*0.95 + 5)+'px',"font-size":fs+"px"},this.axes.y.getProps().title.attr||{}));
 
 		// Make data
-		if(!this.svg.data) this.svg.data = svgEl("g").appendTo(this.svg.el).attr({"id":"data-g",'clip-path':'url(#clip)'});
+		if(!this.svg.data) this.svg.data = svgEl("g").appendTo(this.svg.el).attr({"id":this.id+"-data-g",'clip-path':'url(#'+this.id+'-clip)'});
 		this.svg.data.attr({"transform":"translate("+this.scales.svgMargin.left+","+(this.scales.svgMargin.top) + ")"});
+
 		this.drawData();
+
+		// Update the displayed z-index of the series
+		this.updateSeriesOrder();
 
 		// Update legend
 		this.updateLegend({'fontSize':fs});
 
 		return this;
 	};
-
+	Graph.prototype.addPattern = function(id,opts){
+		if(!this.patterns) this.patterns = {};
+		if(!this.patterns[id]){
+			if(!opts) opts = {};
+			this.patterns[id] = svgEl('pattern').attr({'id':this.id+'-pattern-'+id, 'patternUnits':"userSpaceOnUse"}).appendTo(this.svg.defs);
+			if(opts.type == "hatch"){
+				opt = { 'size': 10, 'angle': 45, 'style':'stroke:currentColor; stroke-width:1' };
+				opts = merge(opt,opts||{});
+				var l = svgEl('line');
+				l.attr({'x1':0,'y1':0,'x2':0,'y2':opts.size,'style':opts.style});
+				l.appendTo(this.patterns[id]);
+				this.patterns[id].attr({'width':opts.size,'height':opts.size,'patternTransform':'rotate('+opts.angle+' 0 0)'});
+			}
+		}
+		return this;
+	};
 	Graph.prototype.updateLegend = function(opt){
 
 		if(!opt) opt = {};
@@ -299,16 +324,34 @@
 	};
 	Graph.prototype.setSeries = function(s,data,opt){
 		log.msg('setSeries',s,data,opt);
-		if(!this.series) this.series = {};
+		if(!opt) opt = {};
+		if(typeof opt.id===undefined) opt.id = newID();
+		if(typeof opt.id!=="string") opt.id = s;
+		opt.graphid = this.id;
+		if(this.series[opt.id]) log.warn('There is already a series with the ID '+opt.id+'.');
 		// Either create a new series or update an existing one
 		if(!this.series[s]) this.series[s] = new Series(data,opt,{'x':this.axes.x.key,'y':this.axes.y.key});
-		else this.series[s].update(data,opt,{'x':this.axes.x.key,'y':this.axes.y.key});
+		else this.updateSeries(data,opt);
+
 		return this.getSeries(s);
 	};
-	Graph.prototype.updateSeries = function(s,data){
-		if(this.series[s]){
-			this.series[s].updateData(data)
-			this.update();
+	Graph.prototype.updateSeries = function(s,data,opt={},keys={}){
+		if(typeof s!=="string"){
+			for(var i in this.series){
+				if(this.series[i]==s) s = i;
+			}
+		}
+		this.series[s].update(data,opt,{'x':this.axes.x.key,'y':this.axes.y.key});
+		return this;
+	};
+	Graph.prototype.updateSeriesOrder = function(){
+		var ordered = orderBy(this.series,'z-index');
+		if(this.svg.data){
+			// Simulate z-index by DOM ordering
+			for(let i = 0; i < ordered.length; i++){
+				// Move to end of data SVG element
+				ordered[i].svg.group.appendTo(this.svg.data);
+			}
 		}
 		return this;
 	};
@@ -329,10 +372,16 @@
 			// Work out an ID
 			id = (this.series[s].opt.id ? this.series[s].opt.id : 'line-'+s);
 
+			if(!this.series[s].svg.group._el.parentNode) this.series[s].svg.group.appendTo(this.svg.data);
+
 			// Update the line colours
-			this.series[s].svg.line.appendTo(this.svg.data).addClass('line'+cls).attr({'id':id,'stroke-width':2,'fill':'none'});
+			this.series[s].svg.line.addClass('line'+cls).attr({'id':id,'stroke-width':2,'fill':'none'});
 			this.series[s].svg.line.attr(this.series[s].opt.line);
 
+			// Add a pattern if one was set
+			if(this.series[s].opt.pattern) this.series[s].svg.line.attr({'fill':'url(#'+this.id+'-pattern-'+this.series[s].opt.pattern+')'});
+
+			// Update the title
 			if(this.series[s].opt.title && this.series[s].opt.title.label) this.series[s].svg.title.html(this.series[s].opt.title.label);
 
 			if(this.series[s].data.length==1){
@@ -495,7 +544,7 @@
 		this.updateProps = function(opt){
 			// Merge the new options into the existing ones
 			merge(opts,opt||{});
-console.log(opts);
+
 			// Set main element properties
 			el.attr({'fill':'none','font-size':(opts['font-size']),'font-family':(opts['font-family']),'text-anchor':(opts.dir=="left") ? 'end' : 'middle'});
 
@@ -607,7 +656,6 @@ console.log(opts);
 						vals.push({'value':v,'label':v.toFixed(dp)});
 					}
 				}
-				console.log(opts,vals,opts.labels);
 				for(i = 0; i < vals.length; i++){
 					v = vals[i].value;
 					attr = {'opacity':opts.ticks.opacity};
@@ -683,15 +731,19 @@ console.log(opts);
 			'text':{
 				'fill': 'black'
 			},
-			'label': '?'
+			'label': '?',
+			'keys': {'x':'x','y':'y'},
+			'z-index': 0
 		};
 
 		merge(this.opt,opt||{});
 		
-		this.update = function(data,opts,k){
+		this.update = function(data,opt,keys){
 			this.updateProps(opt);
 			this.updateData(data);
-			keys = k;
+			if(!keys) keys = {};
+			if(typeof keys.x==="string") this.opt.keys.x = keys.x;
+			if(typeof keys.y==="string") this.opt.keys.y = keys.y;
 			return this;
 		};
 		this.updateData = function(data){
@@ -699,18 +751,18 @@ console.log(opts);
 				ndata = new Array(data.length);
 				for(var j = 0; j < data.length; j++){
 					ndata[j] = {};
-					ndata[j][keys.x] = data[j][0];
-					ndata[j][keys.y] = data[j][1];
+					ndata[j][this.opt.keys.x] = data[j][0];
+					ndata[j][this.opt.keys.y] = data[j][1];
 				}
 			}else ndata = data;
 
 			// Add any xoffset to the x-axis
 			if(typeof opt.xoffset==="number"){
-				for(var j = 0; j < ndata.length; j++) ndata[j][keys.x] += opt.xoffset;
+				for(var j = 0; j < ndata.length; j++) ndata[j][this.opt.keys.x] += opt.xoffset;
 			}
 			// Add any yoffset to the y-axis
 			if(typeof opt.yoffset==="number"){
-				for(var j = 0; j < ndata.length; j++) ndata[j][keys.y] += opt.yoffset;
+				for(var j = 0; j < ndata.length; j++) ndata[j][this.opt.keys.y] += opt.yoffset;
 			}
 
 			// Keep a copy of the original data
@@ -732,7 +784,6 @@ console.log(opts);
 			return this.data[i].lineData;
 		};
 		this.clear = function(){
-			console.log('clear',this);
 			if(this.svg.line) this.svg.line._el.setAttribute('path','');;
 			if(this.svg.title) this.svg.title._el.innerHTML = "";
 			return this;
@@ -743,7 +794,8 @@ console.log(opts);
 		// Make the SVG object
 		if(!this.svg) this.svg = {};
 		// Make the line object for this series
-		if(!this.svg.line) this.svg.line = svgEl('path');
+		if(!this.svg.group) this.svg.group = svgEl('g').attr({'id':opt.id+'-group'})//BLAH;
+		if(!this.svg.line) this.svg.line = svgEl('path').appendTo(this.svg.group);
 		if(!this.svg.title) this.svg.title = svgEl('title').appendTo(this.svg.line);
 		this.svg.title.html('');
 
@@ -769,6 +821,35 @@ console.log(opts);
 		}
 		return obj1;
 	}
+	var guids = {};
+	function generateID(){ return (((1+Math.random())*0x10000)|0).toString(36).substring(1); }
+	function newID() {
+		var guid = generateID();
+		while(guids[guid]) guid = generateID();
+		guids[guid] = true;
+		return 'graph-'+guid;
+	}
+	// desired length of Id
+	function uniqueID(idStrLen=32){
+		// always start with a letter -- base 36 makes for a nice shortcut
+		var idStr = (Math.floor((Math.random() * 25)) + 10).toString(36) + "_";
+		// add a timestamp in milliseconds (base 36 again) as the base
+		idStr += (new Date()).getTime().toString(36) + "_";
+		// similar to above, complete the Id using random, alphanumeric characters
+		do {
+			idStr += (Math.floor((Math.random() * 35))).toString(36);
+		} while (idStr.length < idStrLen);
+
+		return (idStr);
+	}
+	function orderBy(arr,by,reverse=false){
+		let k = Object.keys(arr);
+		let o = k.sort((a, b) => {return (reverse ? -1 : 1) * (arr[a].opt[by] - arr[b].opt[by] || arr[a].opt.id > arr[b].opt.id)});
+		let out = [];
+		for(let i = 0; i < o.length; i++) out.push(arr[o[i]]);
+		return out;
+	}
+
 	function Log(){
 		// Version 1.2
 		this.logging = (location.search.indexOf('debug=true') >= 0);
