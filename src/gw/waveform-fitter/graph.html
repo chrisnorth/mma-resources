@@ -384,12 +384,18 @@
 						},
 						'z-index': 10
 					});
-					// A function to return a new path array given a cursor position
-					function moveLine(pos){
-						// Set a vertical line at the current x-position 
-						return [{x:pos.x,y:-Infinity},{x:pos.x,y:Infinity}];
+					// Set a vertical line at the current x-position 
+					function moveLine(e,series,pos){
+						var d = [{x:pos.x,y:-Infinity},{x:pos.x,y:Infinity}];
+						// Update the data for the series
+						series.updateData(d);
+
+						// Update the graph
+						this.drawData();
+
+						return;
 					}
-					graph[5].makeDraggable(line,{'move':moveLine});
+					graph[5].makeDraggable(line,{'drag':moveLine});
 
 					// Update the graph
 					graph[5].update();
@@ -452,15 +458,20 @@
 							'cursor': 'col-resize'
 						},
 						'z-index': 10
+					});					
+					graph[6].makeDraggable(line,{
+						'drag':function moveLine(e,series,pos){
+							var x = Math.round(pos.x);
+							var d = [{x:x,y:-Infinity},{x:x,y:Infinity}];
+							// Update the data for the series
+							series.updateData(d);
+
+							// Update the graph
+							this.drawData();
+
+							return;
+						}
 					});
-					// A function to return a new path array given a cursor position
-					function moveLine(pos){
-						// Round the x-value to the nearest integer
-						var x = Math.round(pos.x);
-						// Set a vertical line at the current x-position
-						return [{x:x,y:-Infinity},{x:x,y:Infinity}];
-					}
-					graph[6].makeDraggable(line,{'move':moveLine});
 
 					// Update the graph
 					graph[6].update();
