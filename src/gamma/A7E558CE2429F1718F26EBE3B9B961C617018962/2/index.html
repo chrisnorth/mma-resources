@@ -77,53 +77,50 @@
 							<h1>{{ site.translations.main.observatory.gamma.step2.title }}</h1>
 
 							<div id="content-wrapper" class="padded">
-								<div class="padded">
+								<div class="panel span2">
+									<div class="padded">
 
-									<div class="panel span2">
-										<div class="padded">
+										<section id="step">
+											<p>{{ site.translations.main.observatory.gamma.step2.intro }}</p>
+											<div id="content">
+											
+												<div id="detector-counts">
+													<h3>{{ site.translations.main.observatory.gamma.step2.counts }}</h3>
+												</div>
+												<div id="detector-locations">
+													<h3>{{ site.translations.main.observatory.gamma.step2.locations }}</h3>
+												</div>
 
-											<section id="step">
-												<p>{{ site.translations.main.observatory.gamma.step2.intro }}</p>
-												<div id="content">
-												
-													<div id="detector-counts">
-														<h3>{{ site.translations.main.observatory.gamma.step2.counts }}</h3>
-													</div>
-													<div id="detector-locations">
-														<h3>{{ site.translations.main.observatory.gamma.step2.locations }}</h3>
-													</div>
-
-												</div>
-												<div class="padded output ga">
-													<label class="prop" for="select-location">{{ site.translations.main.observatory.gamma.step2.selected }}</label>
-													<input id="select-location" />
-												</div>
-											</section>
-											<section id="event-notification">
-												<h2>{{ site.translations.main.observatory.gamma.notification.title }}</h2>
-												<p>{{ site.translations.main.observatory.gamma.notification.intro }}</p>
-												<textarea class="padded b6-bg">{{ site.translations.main.observatory.gamma.notification.text }}</textarea>
-												<div class="nav-right">
-													<div class="nav-inner">
-														<div class="nav-flex">
-															<button id="show-steps" class="button ga-highlight">{{ site.translations.main.observatory.gamma.back }}</button>
-															<button class="button ga-highlight" id="event-copy">{{ site.translations.main.observatory.gamma.notification.copy }}</button>
-															<a href="../3/index.html" id="next" class="button ga-highlight">{{ site.translations.main.observatory.gamma.next }}</a>
-														</div>
+											</div>
+											<div class="padded output ga">
+												<label class="prop" for="select-location">{{ site.translations.main.observatory.gamma.step2.selected }}</label>
+												<input id="select-location" />
+											</div>
+										</section>
+										<section id="event-notification">
+											<h2>{{ site.translations.main.observatory.gamma.notification.title }}</h2>
+											<p>{{ site.translations.main.observatory.gamma.notification.intro }}</p>
+											<textarea class="padded b6-bg">{{ site.translations.main.observatory.gamma.notification.text }}</textarea>
+											<div class="nav-right">
+												<div class="nav-inner">
+													<div class="nav-flex">
+														<button id="show-steps" class="button ga-highlight">{{ site.translations.main.observatory.gamma.back }}</button>
+														<button class="button ga-highlight" id="event-copy">{{ site.translations.main.observatory.gamma.notification.copy }}</button>
+														<a href="../3/index.html" id="next" class="button ga-highlight">{{ site.translations.main.observatory.gamma.next }}</a>
 													</div>
 												</div>
-											</section>
-											<nav>
-												<div class="nav-right">
-													<div class="nav-inner">
-														<div class="nav-flex">
-															<a href="../1/index.html" id="prev" class="button ga-highlight">{{ site.translations.main.observatory.gamma.prev }}</a>
-															<button id="show-notification" class="button ga-highlight">{{ site.translations.main.observatory.gamma.notification.title }}</button>
-														</div>
+											</div>
+										</section>
+										<nav>
+											<div class="nav-right">
+												<div class="nav-inner">
+													<div class="nav-flex">
+														<a href="../1/index.html" id="prev" class="button ga-highlight">{{ site.translations.main.observatory.gamma.prev }}</a>
+														<button id="show-notification" class="button ga-highlight">{{ site.translations.main.observatory.gamma.notification.title }}</button>
 													</div>
 												</div>
-											</nav>
-										</div>
+											</div>
+										</nav>
 									</div>
 								</div>
 							</div>

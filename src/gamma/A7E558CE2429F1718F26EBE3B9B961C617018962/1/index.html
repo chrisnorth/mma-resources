@@ -7,8 +7,9 @@
 	<link rel="stylesheet" href="../../../resources/style.css" />
 	<link rel="stylesheet" href="../../resources/style.css" />
 	<style>
-	#waveform-holder { height: 100%; padding: 1em; }
+	#waveform-holder { height: 100%; padding: 1em; max-width: 100%; }
 	#waveform-holder, #output { color: black; background: rgba(255,255,255,1); }
+	#waveform svg { width: 100%; }
 	#output > * { padding: 1em; }
 	
 	#line-data { stroke: rgb(34, 84, 244); stroke-width: 2px; }
@@ -64,52 +65,49 @@
 							<h1>{{ site.translations.main.observatory.gamma.step1.title }}</h1>
 
 							<div id="content-wrapper" class="padded">
-								<div class="padded">
+								<div class="panel span2">
+									<div class="padded">
+										<section id="step">
+											<div class="widescreen">
+												<div id="no-event">{{ site.translations.main.observatory.gamma.step1.intro }}</div>
+												<div id="waveform-holder" class="waveform">
+													<div id="waveform"></div>
+												</div>
+												<div id="output"></div>
+											</div>
+											<div class="padded output ga">
+												<label class="prop" for="select-event">{{ site.translations.main.observatory.gamma.step1.selected }}</label>
+												<select id="select-event">
+													<option value="">{{ site.translations.main.observatory.gamma.step1.noevent }}</option>
+													<!-- EVENT START --><!-- EVENT END -->
+												</select>
+												<span class="prop">{{ site.translations.main.observatory.gamma.step1.date }}</span> <span class="value event-date">?</span>
+											</div>
+										</section>
+										<section id="event-notification">
+											<h2>{{ site.translations.main.observatory.gamma.notification.title }}</h2>
+											<p>{{ site.translations.main.observatory.gamma.notification.intro }}</p>
+											<textarea class="padded b6-bg">{{ site.translations.main.observatory.gamma.notification.text }}</textarea>
+											<div class="nav-right">
+												<div class="nav-inner">
+													<div class="nav-flex">
+														<button id="show-steps" class="button ga-highlight">{{ site.translations.main.observatory.gamma.back }}</button>
+														<button class="button ga-highlight" id="event-copy">{{ site.translations.main.observatory.gamma.notification.copy }}</button>
+														<a href="../2/index.html" id="next" class="button ga-highlight">{{ site.translations.main.observatory.gamma.next }}</a>
+													</div>
+												</div>
+											</div>
+										</section>
+										<nav>
+											<div class="nav-right">
+												<div class="nav-inner">
+													<div class="nav-flex">
+														<button id="show-notification" class="button ga-highlight">{{ site.translations.main.observatory.gamma.notification.title }}</button>
+													</div>
+												</div>
+											</div>
+										</nav>
 
-									<div class="panel span2">
-										<div class="padded">
-											<section id="step">
-												<div class="widescreen">
-													<div id="no-event">{{ site.translations.main.observatory.gamma.step1.intro }}</div>
-													<div id="waveform-holder" class="waveform">
-														<div id="waveform"></div>
-													</div>
-													<div id="output"></div>
-												</div>
-												<div class="padded output ga">
-													<label class="prop" for="select-event">{{ site.translations.main.observatory.gamma.step1.selected }}</label>
-													<select id="select-event">
-														<option value="">{{ site.translations.main.observatory.gamma.step1.noevent }}</option>
-														<!-- EVENT START --><!-- EVENT END -->
-													</select>
-													<span class="prop">{{ site.translations.main.observatory.gamma.step1.date }}</span> <span class="value event-date">?</span>
-												</div>
-											</section>
-											<section id="event-notification">
-												<h2>{{ site.translations.main.observatory.gamma.notification.title }}</h2>
-												<p>{{ site.translations.main.observatory.gamma.notification.intro }}</p>
-												<textarea class="padded b6-bg">{{ site.translations.main.observatory.gamma.notification.text }}</textarea>
-												<div class="nav-right">
-													<div class="nav-inner">
-														<div class="nav-flex">
-															<button id="show-steps" class="button ga-highlight">{{ site.translations.main.observatory.gamma.back }}</button>
-															<button class="button ga-highlight" id="event-copy">{{ site.translations.main.observatory.gamma.notification.copy }}</button>
-															<a href="../2/index.html" id="next" class="button ga-highlight">{{ site.translations.main.observatory.gamma.next }}</a>
-														</div>
-													</div>
-												</div>
-											</section>
-											<nav>
-												<div class="nav-right">
-													<div class="nav-inner">
-														<div class="nav-flex">
-															<button id="show-notification" class="button ga-highlight">{{ site.translations.main.observatory.gamma.notification.title }}</button>
-														</div>
-													</div>
-												</div>
-											</nav>
-
-										</div>
 									</div>
 								</div>
 							</div>
