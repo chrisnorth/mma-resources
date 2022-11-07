@@ -1,13 +1,15 @@
 // Adapted from https://github.com/chrissy-dev/protected-github-pages
 "use strict"
 var button = document.getElementById('submit');
-var password = document.getElementById('password');
-var username = document.getElementById('username');
+var pass = document.getElementById('password');
+var user = document.getElementById('username');
+
+var wrong = "{{ site.translations.main.login.wrong }}";
 
 function login(secret) {
 	var hash = sha1(secret);
 	var url = '../' + hash.toUpperCase() + "/index.html";
-	var alert = document.getElementById('alert');
+	var msg = document.getElementById('alert');
 
 	var request = new XMLHttpRequest();
 	request.open('GET', url, true);
@@ -17,23 +19,25 @@ function login(secret) {
 			window.location = url;
 		}else{
 			parent.location.hash = hash.toUpperCase();
-			alert.style.display = 'block';
-			password.value = '';
+			msg.style.display = 'block';
+			msg.innerHTML = wrong+' '+hash;
+			pass.value = '';
 		}
 	}
 	request.onerror = function(){
 		parent.location.hash = hash;
-		alert.style.display = 'block';
-		password.value = '';
+		msg.style.display = 'block';
+		msg.innerHTML = wrong;
+		pass.value = '';
 	}
 	request.send();
 }
 
 button.addEventListener("click", function(){
-	login(password.value);
+	login(user.value+'_'+pass.value);
 });
 
 document.onkeydown = function(e){
 	e = e || window.event
-	if(e.keyCode == 13) login(username.value+'_'+password.value);
+	if(e.keyCode == 13) login(user.value+'_'+pass.value);
 }
