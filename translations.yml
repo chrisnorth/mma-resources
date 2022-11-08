@@ -80,7 +80,7 @@ text:
                 select:
                     en: "Select the time difference (ms):"
                 timediff:
-                    en: "Time difference: <strong>{{ dt }}</strong> seconds"
+                    en: "Time difference: <strong>{{ dt }}</strong> ms"
                 selected:
                     en: "Selected grid squares:"
             step3:

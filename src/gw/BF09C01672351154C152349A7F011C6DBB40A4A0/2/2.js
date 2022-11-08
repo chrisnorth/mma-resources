@@ -215,8 +215,11 @@ function Grid(opt){
 
 	// Make grid-specific class
 	this.class = opt.class+'-'+opt.n;
-	var language = {{ site.translations.main.observatory.gw.detectors }};
-	pair = language[opt.id[0]]+' - '+language[opt.id[1]];
+	var language = `{{ site.translations.main.observatory.gw.detectors }}`;
+	if(language.indexOf('site.translations')>0) language = {};
+	else language = JSON.parse(language);
+
+	pair = (language[opt.id[0]]||opt.id[0])+' - '+(language[opt.id[1]]||opt.id[1]);
 	var det_a = language[opt.id[0]];
 	var det_b = language[opt.id[1]];
 
@@ -234,6 +237,7 @@ function Grid(opt){
 	el.appendChild(graphholder);
 	
 	p = document.createElement('p');
+	p.classList.add('timedifference');
 	p.innerHTML = '';
 	el.appendChild(p);
 
@@ -245,10 +249,31 @@ function Grid(opt){
 
 	var wf = (opt) ? (opt.GW.files.waveform_csv ? '../../waveform-fitter/waveforms/'+opt.GW.files.waveform_csv : "") : '';
 	this.mouseactive = true;
+	
+	var lines = {};
+	var shade;
+
 
 	this.showGraph = function(data){
 		var offset = 0.8;
+
+		var t0 = opt.GW.t0_ms;
+		var delta = Math.abs(opt.GW.dtmerger_s[opt.id[0]] - opt.GW.dtmerger_s[opt.id[1]])*2;
+		// Round the value (this can cause range issues)
+		delta = Math.round(delta*1e6)/1e6;
+		if(delta < 1e-3) delta = 0.01;
+
+		deltay = 1.5;
+
+		x1 = (t0/1000)-delta*0.8;
+		x2 = (t0/1000)+delta*0.8;
+
+
 		if(!this.graph){
+			var patterns = {};
+			patterns['hatch-'+opt.id[0]] = {'type':'hatch','size':20,'angle':45,'class':'detector-'+opt.id[0],'style':'stroke-width:20'};
+			patterns['hatch-'+opt.id[1]] = {'type':'hatch','size':20,'angle':135,'class':'detector-'+opt.id[1],'style':'stroke-width:20'};
+			
 			this.graph = new Graph(graphinner,{
 				'left': 24,
 				'right': 1,
@@ -270,24 +295,75 @@ function Grid(opt){
 							'show': true
 						}
 					}
-				}
+				},
+				'patterns':patterns
 			});
 			this.graph.update();
-			this.graph.on('mousemove',{this:this},function(e,d){
-				// If the mouse montoring is active we update the value
-				if(this.mouseactive) p.innerHTML = updateFromTemplate('{{ site.translations.main.observatory.gw.step2.timediff }}',{'dt':(d.x).toFixed(4)});
-			}).on('click',{this:this},function(e,d){
-				// Toggle montioring of mouse position
-				this.mouseactive = !this.mouseactive;
+
+			// Create the two lines
+			lines[opt.id[0]] = this.graph.setSeries(opt.id[0],[{x:x1,y:-Infinity},{x:x1,y:Infinity}],{
+				'label': 'baseline',
+				'line': {
+					'stroke': 'black',
+					'stroke-width': 4,
+					'stroke-linecap': 'round',
+					'class': 'detector-'+opt.id[0],
+				},
+				'z-index': 5
 			});
+			lines[opt.id[1]] = this.graph.setSeries(opt.id[1],[{x:x2,y:-Infinity},{x:x2,y:Infinity}],{
+				'label': 'baseline',
+				'line': {
+					'stroke': 'black',
+					'stroke-width': 4,
+					'stroke-linecap': 'round',
+					'class': 'detector-'+opt.id[1],
+				},
+				'z-index': 5
+			});
+
+			// Create the shading
+			console.log(data);
+			shade = this.graph.setSeries('shade',[{x:x1,y:-deltay},{x:x1,y:deltay},{x:x2,y:deltay},{x:x2,y:-deltay}],{
+				'id':'line-data-shaded',
+				'label':'test',
+				'class':'data',
+				'line': {
+					'fill': 'rgba(255,255,255,0.4)',
+					'stroke':'none',
+					'stroke-width': 'none',
+				},
+				'z-index':1
+			})
+
+			// Now make the two lines draggable
+			function moveLine(e,series,pos){
+				var d = [{x:pos.x,y:-Infinity},{x:pos.x,y:Infinity}];
+				// Update the data for the series
+				series.updateData(d);
+
+				// Update the graph
+				this.drawData();
+
+				// Update x1 and x2 values
+				x1 = lines[opt.id[0]].original[0].x;
+				x2 = lines[opt.id[1]].original[0].x;
+				
+				// Update the shaded area
+				shade.updateData([{x:x1,y:-deltay},{x:x1,y:deltay},{x:x2,y:deltay},{x:x2,y:-deltay}]);
+				
+				// Show the time difference in milliseconds
+				p.innerHTML = updateFromTemplate('{{ site.translations.main.observatory.gw.step2.timediff }}',{'dt':((x1-x2)*1000).toFixed(1)});
+
+				return;
+			}
+			this.graph.makeDraggable(lines[opt.id[0]],{'drag':moveLine});
+			this.graph.makeDraggable(lines[opt.id[1]],{'drag':moveLine});
+
 		}
 
-		var t0 = opt.GW.t0_ms;
-		var delta = Math.abs(opt.GW.dtmerger_s[opt.id[0]] - opt.GW.dtmerger_s[opt.id[1]])*2;
-
-		// Round the value (this can cause range issues)
-		delta = Math.round(delta*1e6)/1e6;
-
+		// Add the two data series to the graph
+		// The first one we will offset horizontally depending on dtmerger_s and we will move it up
 		this.graph.setSeries(0,data,{
 			'id':'line-data',
 			'text':det_a,
@@ -296,8 +372,10 @@ function Grid(opt){
 				'stroke':'rgba(0,150,200,1)'
 			},
 			'xoffset':(opt.GW.dtmerger_s[opt.id[0]])||0,
-			'yoffset':offset
+			'yoffset':offset,
+			'z-index':2
 		});
+		// The second one we will offset horizontally depending on dtmerger_s and then move it down
 		this.graph.setSeries(1,data,{
 			'id':'line-data',
 			'text':det_b,
@@ -306,24 +384,25 @@ function Grid(opt){
 				'stroke':'rgba(200,150,100,1)'
 			},
 			'xoffset':(opt.GW.dtmerger_s[opt.id[1]])||0,
-			'yoffset':-offset
+			'yoffset':-offset,
+			'z-index':2
 		});
-
+		
+		
+		// Work out the toff
 		var toff = ((t0/1000)||0) + opt.GW.dtmerger_s[opt.id[0]];
 
 		// Update the ranges
-		if(delta > 1e-3){
-			this.graph.axes.x.setDataRange(toff-delta,toff+delta);
-		}else{
-			// If the range is effectively zero we manually set it
-			this.graph.axes.x.setDataRange(toff-0.01,toff+0.01);
-		}
-		this.graph.axes.y.setDataRange(-1.5,1.5);
+		this.graph.axes.x.setDataRange(toff-delta,toff+delta);
+
+		// Set the y-axis range
+		this.graph.axes.y.setDataRange(-deltay,deltay);
 
 		// Update the scales and domains
 		this.graph.updateData();
 
 		this.graph.update();
+
 		return this;
 	};
 
