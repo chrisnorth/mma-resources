@@ -219,7 +219,7 @@ function Grid(opt){
 	scale = 'grid-map';
 
 	// Define a colour scale to use for the maps
-	colours.addScale(scale,'rgb(75,75,75) 0%, rgb(180,180,180) 100%');
+	colours.addScale(scale,'rgb(128,128,128) 0%, rgb(255,255,255) 100%');
 
 	// Make grid-specific class
 	this.class = opt.class+'-'+opt.n;
