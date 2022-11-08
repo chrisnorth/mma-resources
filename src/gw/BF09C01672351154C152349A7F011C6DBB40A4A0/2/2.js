@@ -172,8 +172,12 @@ function GridMaps(opt){
 				if(ov[j].parentNode !== null) ov[j].parentNode.removeChild(ov[j]);
 			}
 
-			// Add new overlay paths
-			for(p = 0; p < paths.length; p++) this.els[i].svg.appendChild(paths[p].cloneNode(true));
+			// Add new overlay paths in a different order depending on the GridMap
+			if(i==0){
+				for(p = paths.length-1; p >= 0; p--) this.els[i].svg.appendChild(paths[p].cloneNode(true));
+			}else{
+				for(p = 0; p < paths.length; p++) this.els[i].svg.appendChild(paths[p].cloneNode(true));				
+			}
 		}
 		// Calculate the matching grid squares
 		good = [];
@@ -188,12 +192,12 @@ function GridMaps(opt){
 		return this;
 
 		// Update the form input and trigger a change event
-		if(o!=opt.input.value){
+		/*if(o!=opt.input.value){
 			opt.input.value = o;
 			e = document.createEvent('HTMLEvents');
 			e.initEvent('change', true, false);
 			opt.input.dispatchEvent(e);
-		}
+		}*/
 
 	};
 	return this;
@@ -214,7 +218,6 @@ function Grid(opt){
 	opt.el.appendChild(el);
 
 	var _obj = this;
-
 
 	scale = 'grid-map';
 
@@ -281,9 +284,6 @@ function Grid(opt){
 
 
 		if(!this.graph){
-			var patterns = {};
-			patterns['hatch-'+opt.id[0]] = {'type':'hatch','size':20,'angle':45,'class':'detector-'+opt.id[0],'style':'stroke-width:20'};
-			patterns['hatch-'+opt.id[1]] = {'type':'hatch','size':20,'angle':135,'class':'detector-'+opt.id[1],'style':'stroke-width:20'};
 			
 			this.graph = new Graph(graphinner,{
 				'left': 24,
@@ -306,8 +306,7 @@ function Grid(opt){
 							'show': true
 						}
 					}
-				},
-				'patterns':patterns
+				}
 			});
 			this.graph.update();
 
@@ -479,6 +478,9 @@ function Grid(opt){
 	nx = opt.data[0].length;
 	ny = opt.data.length;
 	svg = svgEl('svg');
+
+	makeStripes(opt.n,svg,this.class);
+
 	w = 440;
 	h = 220;
 	pad = {'left':20,'right':0,'top':20,'bottom':0};
@@ -502,6 +504,7 @@ function Grid(opt){
 		l.attr('x',pad.left - 4).attr('y',pad.top+((y+0.5)*sz)).attr('text-anchor','end').attr('font-size',16).attr('font-weight','bold').attr('dominant-baseline','central');
 		l.appendTo(svg);
 	}
+
 	// Build each level as a path
 	for(n = 0; n < nsteps; n++){
 		this.levels[n] = new Level(n,{'xy':xy,'sz':sz,'pad':pad,'cells':cells[n],'colour':cols[n],'this':this});
@@ -516,36 +519,29 @@ function Grid(opt){
 	this.selectedel = undefined;
 	this.selectedpath = '';
 	this.toggleLevel = function(n){
-		var i;
 
 		// Toggle selection
 		if(this.selectedlevel==n) this.visible = !this.visible;
 		else this.visible = true;
 		this.selectedpath = '';
-
-		for(i in this.levels){
-			if(i==n && this.visible){
-				// Set the class
-				this.levels[i].el.addClass(this.class);
-				this.selectedpath = this.levels[i].el._el.getAttribute('d');
-				this.selectedel = this.levels[i].el._el;
-			}else{
-				this.levels[i].el.removeClass(this.class);
-			}
-		}
-		this.selectedcells = (typeof n==="number") ? this.levels[n].cells : [];
-		this.scalebar.toggleLevel(n);
-		this.selectedlevel = this.visible ? n : undefined;
-
-		// Update parent
-		this.parent.highlight();
-
-		return this;
 		
+		if(this.visible) this.setLevel(n);
+		else this.levelsOff();
+
+		return this;		
+	};
+	this.levelsOff = function(){
+		var i,fill;
+		for(i in this.levels){
+			this.levels[i].el.removeClass(this.class);
+			fill = this.levels[i].el.getAttr('fill-old');
+			if(fill) this.levels[i].el.attr({'fill':fill,'fill-old':''});
+		}
+		return this;
 	};
 	this.setLevel = function(n){
 
-		var i;
+		var i,fill;
 
 		this.visible = true;
 		this.selectedpath = '';
@@ -554,10 +550,17 @@ function Grid(opt){
 			if(i==n){
 				// Set the class
 				this.levels[i].el.addClass(this.class);
-				this.selectedpath = this.levels[i].el._el.getAttribute('d');
+				// If an old fill isn't currently set, we get the current fill
+				fill = "";
+				if(!this.levels[i].el.getAttr('fill-old')) fill = this.levels[i].el.getAttr('fill');
+				this.levels[i].el.attr({'fill':'url(#pattern-'+opt.n+')','fill-old':fill});
+
+				this.selectedpath = this.levels[i].el.getAttr('d');
 				this.selectedel = this.levels[i].el._el;
 			}else{
 				this.levels[i].el.removeClass(this.class);
+				fill = this.levels[i].el.getAttr('fill-old');
+				if(fill) this.levels[i].el.attr({'fill':fill,'fill-old':''});
 			}
 		}
 		this.selectedcells = (typeof n==="number") ? this.levels[n].cells : [];
@@ -573,12 +576,26 @@ function Grid(opt){
 	return this;
 }
 
+function makeStripes(n,svg,cls){
+	var defs = svg._el.querySelector('defs');
+	if(!defs){
+		defs = svgEl('defs');
+		defs.appendTo(svg);
+	}
+	var pattern = svgEl('pattern').attr({'id':'pattern-'+n, 'patternUnits':"userSpaceOnUse",'class':cls}).appendTo(defs);
+	var popt = { 'size': 10, 'angle': (n=="A" ? 45 : 135), 'style':'stroke-width:10;' };
+	var l = svgEl('line');
+	l.attr({'x1':0,'y1':0,'x2':0,'y2':popt.size,'style':popt.style});
+	l.appendTo(pattern);
+	pattern.attr({'width':popt.size,'height':popt.size,'patternTransform':'rotate('+popt.angle+' 0 0)'});
+}
+
 function Level(n,opt){
 	if(!opt) return this;
 	this.el = svgEl('path');
 	this.cells = opt.cells;
 	this.el.attr('data-n',n).attr('d',getPathFromValue(opt.xy,n,opt.sz,opt.pad));
-	this.el.attr('fill',opt.colour).attr('stroke',opt.colour).attr('stroke-width',opt.sz*0.05);
+	this.el.attr('fill',(opt.colour)).attr('stroke',opt.colour).attr('stroke-width',opt.sz*0.05);
 	this.el._el.addEventListener('click',function(e){
 		if(opt.this) opt.this.toggleLevel(n);
 	});
@@ -626,13 +643,15 @@ function ScaleBar(opt){
 		if(this.selectedlevel==n) this.visible = !this.visible;
 		else this.visible = true;
 
-		// Deselect all the colours
+		if(this.visible) this.selectLevel(n);
+		else this.levelsOff();
+		return this;
+	};
+	this.levelsOff = function(){
 		for(var b = 0; b < this.bars.length; b++){
 			this.bars[b].lbl.classList.remove(...(opt.class.split(/ /)));
-			if(b==n && this.visible) this.bars[b].lbl.classList.add(...(opt.class.split(/ /)));
 		}
-
-		this.selectedlevel = n;
+		return this;
 	};
 	this.selectLevel = function(n){
 
@@ -645,6 +664,7 @@ function ScaleBar(opt){
 		}
 
 		this.selectedlevel = n;
+		return this;
 	};
 
 	return this;
@@ -886,6 +906,8 @@ function svgElement(t){
 	this.html = function(t){ this._el.textContent = t; return this; };
 	this.addClass = function(cls){ this._el.classList.add(...cls.split(" ")); return this; };
 	this.removeClass = function(){ this._el.classList.remove(...arguments); return this; };
+	this.removeAttribute = function(a){ this._el.removeAttribute(a); return this; };
+	this.getAttr = function(a){ return this._el.getAttribute(a); };
 	this.data = function(d){ this._data = d; return this; };
 	return this;
 }
