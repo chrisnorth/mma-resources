@@ -63,7 +63,8 @@ function Step(data,opt){
 		}
 		return data[idx].x;
 	}
-	
+
+
 	this.updateGraph = function(){
 		var t0,t90,t100,baseline,data,F100,F90;
 		opt.values.t0 = this.graph.series.t0.data[0].lineData[0].x;
@@ -209,23 +210,20 @@ function Step(data,opt){
 						'title': {
 							'label': '{{ site.translations.main.observatory.gamma.step1.shaded }}'
 						},
-						'class': 'F100',
-						'tooltip':{ 'label': label }
+						'class': 'F100'
 					});
 					this.graph.setSeries("F90",series,{
 						'title': {
 							'label': '{{ site.translations.main.observatory.gamma.step1.shaded }}'
 						},
 						'class': 'F90',
-						'pattern': 'hatch',
-						'tooltip':{ 'label': label }
+						'pattern': 'hatch'
 					});
 					// Add count data
 					this.graph.setSeries("data",series,{
 						'title': {
 							'label': '{{ site.translations.main.observatory.gamma.step1.series }}'
-						},
-						'tooltip':{ 'label': label }
+						}
 					});
 
 
@@ -244,6 +242,9 @@ function Step(data,opt){
 						_obj.updateGraph();
 						return;
 					}
+					function moveStart(e,series){
+						console.log('start',series,series.svg.title._el.innerHTML);
+					}
 
 					// Make the t_0 line that stays static
 					this.graph.setSeries("t0",[{x:x0,y:-Infinity},{x:x0,y:Infinity}],{
@@ -255,9 +256,10 @@ function Step(data,opt){
 							'stroke-width': 4,
 							'cursor': 'col-resize'
 						},
-						'z-index': 10
+						'z-index': 10,
+						'tooltip':{ 'label': label }
 					});
-					this.graph.makeDraggable(this.graph.series.t0,{ 'drag':move,'dragend':moveEnd });
+					this.graph.makeDraggable(this.graph.series.t0,{ 'dragstart':moveStart, 'drag':move,'dragend':moveEnd });
 
 					// Make the t_90 line
 					this.graph.setSeries("t90",[{x:x90,y:-Infinity},{x:x90,y:Infinity}],{
@@ -269,7 +271,8 @@ function Step(data,opt){
 							'stroke-width': 6,
 							'cursor': 'col-resize'
 						},
-						'z-index': 10
+						'z-index': 10,
+						'tooltip':{ 'label': label }
 					});
 					this.graph.makeDraggable(this.graph.series.t90,{ 'drag':move,'dragend':moveEnd });
 
@@ -283,7 +286,8 @@ function Step(data,opt){
 							'stroke-width': 6,
 							'cursor': 'col-resize'
 						},
-						'z-index': 10
+						'z-index': 10,
+						'tooltip':{ 'label': label }
 					});
 					this.graph.makeDraggable(this.graph.series.t100,{ 'drag':move,'dragend':moveEnd });
 

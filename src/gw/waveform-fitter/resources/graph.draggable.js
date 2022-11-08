@@ -78,6 +78,7 @@
 				var selected = findNearestSeries(e);
 				if(graph.series[selected] && graph.series[selected]._draggable){
 					this.selected = selected;
+					if(typeof graph.series[this.selected]._draggable.opt.dragstart==="function") graph.series[this.selected]._draggable.opt.dragstart.call(graph, e, graph.series[this.selected]);
 				}
 				return;
 			};

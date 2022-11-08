@@ -393,9 +393,32 @@
 				d += 'L'+makePath(this.dataToGraph(this.series[s].getData(1)),true).substr(1);
 			}
 			this.series[s].svg.line.attr({'d':d});			
+
+			if(this.series[s].opt.tooltip && this.series[s].opt.tooltip.label){
+				updateTooltip(this.el,this.series[s]);
+			}
 		}
 	};
-	
+	function updateTooltip(el,series){
+		el.style.position = "relative";
+		if(!series.tooltip){
+			series.tooltip = document.createElement('div');
+			el.appendChild(series.tooltip);
+		}
+		if(series.tooltip){	
+			var txt = series.opt.title.label.replace(/\\n/g,'<br />');
+			series.tooltip.innerHTML = txt;
+			// Position the tooltip
+			var bb = series.svg.line._el.getBoundingClientRect();	// Bounding box of the element
+			var bbo = el.getBoundingClientRect(); // Bounding box of SVG holder
+			var off = 4;
+			var sty = window.getComputedStyle(series.svg.line._el);
+			series.tooltip.classList.add(series.opt.title.class||"tooltip");
+			series.tooltip.setAttribute('style','position:absolute;left:'+(bb.left + bb.width/2 - bbo.left).toFixed(2)+'px;top:'+(bbo.top + (series.opt.tooltip.top||0) - bb.top).toFixed(2)+'px;transform:translate3d(0,0,0);display:'+(txt ? 'block':'none')+';');
+			series.tooltip.style.background = sty.stroke;
+			series.tooltip.style.color = "white";
+		}
+	}
 	Graph.prototype.dataToGraph = function(d){
 		var data = new Array(d.length);
 		for(var i = 0; i < d.length; i++){
@@ -798,7 +821,6 @@
 		if(!this.svg.line) this.svg.line = svgEl('path').appendTo(this.svg.group);
 		if(!this.svg.title) this.svg.title = svgEl('title').appendTo(this.svg.line);
 		this.svg.title.html('');
-
 		return this;
 	}
 
