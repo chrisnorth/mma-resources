@@ -69,7 +69,6 @@ function Step(data,opt){
 	};
 	
 	this.setToffset = function(v){
-		console.log('Step setToffset');
 		vals.toffset = v;
 		if(opt.notification) opt.notification.set(vals);
 		return this;
@@ -143,7 +142,6 @@ function GridMaps(opt){
 	this.setToffset = function(){
 		v = '';
 		for(var i = 0; i < this.els.length; i++) v += (v ? ';':'')+this.els[i].selectedlevel;
-		console.log('setToffset',this,opt.this.setToffset(v));
 		return this;
 	};
 
@@ -177,6 +175,7 @@ function GridMaps(opt){
 			// Add new overlay paths
 			for(p = 0; p < paths.length; p++) this.els[i].svg.appendChild(paths[p].cloneNode(true));
 		}
+		// Calculate the matching grid squares
 		good = [];
 		for(id in match){
 			if(match[id] == this.els.length){
@@ -184,6 +183,11 @@ function GridMaps(opt){
 				good.push(id);
 			}
 		}
+
+		this.setToffset();
+		return this;
+
+		// Update the form input and trigger a change event
 		if(o!=opt.input.value){
 			opt.input.value = o;
 			e = document.createEvent('HTMLEvents');
@@ -191,8 +195,6 @@ function GridMaps(opt){
 			opt.input.dispatchEvent(e);
 		}
 
-		this.setToffset();
-		return this;
 	};
 	return this;
 }
@@ -205,13 +207,19 @@ function Grid(opt){
 	}
 	var x,y,max,min,range,el,p,lbl,title,scale,pair,stepsize,nsteps;
 
+	// Create a DOM element to put things in
 	el = document.createElement('div');
 	if(opt.n) el.setAttribute('id','pair-'+opt.n);
 	el.classList.add('grid-pair',opt.n,'padded');
 	opt.el.appendChild(el);
 
+	var _obj = this;
+
+
 	scale = 'grid-map';
-	colours.addScale(scale,'rgb(0,0,0) 0%, rgb(255,255,255) 100%');
+
+	// Define a colour scale to use for the maps
+	colours.addScale(scale,'rgb(75,75,75) 0%, rgb(180,180,180) 100%');
 
 	// Make grid-specific class
 	this.class = opt.class+'-'+opt.n;
@@ -253,6 +261,9 @@ function Grid(opt){
 	var lines = {};
 	var shade;
 
+	function getStepFromValue(v){
+		return Math.max(0,Math.min(nsteps-1,Math.floor(nsteps*(v-min)/(range))));
+	}
 
 	this.showGraph = function(data){
 		var offset = 0.8;
@@ -322,8 +333,7 @@ function Grid(opt){
 				'z-index': 5
 			});
 
-			// Create the shading
-			console.log(data);
+			// Create the shading element
 			shade = this.graph.setSeries('shade',[{x:x1,y:-deltay},{x:x1,y:deltay},{x:x2,y:deltay},{x:x2,y:-deltay}],{
 				'id':'line-data-shaded',
 				'label':'test',
@@ -352,8 +362,12 @@ function Grid(opt){
 				// Update the shaded area
 				shade.updateData([{x:x1,y:-deltay},{x:x1,y:deltay},{x:x2,y:deltay},{x:x2,y:-deltay}]);
 				
+				var dt = x1-x2;
+				
+				_obj.setLevel(getStepFromValue(dt*1000));
+				
 				// Show the time difference in milliseconds
-				p.innerHTML = updateFromTemplate('{{ site.translations.main.observatory.gw.step2.timediff }}',{'dt':((x1-x2)*1000).toFixed(1)});
+				p.innerHTML = updateFromTemplate('{{ site.translations.main.observatory.gw.step2.timediff }}',{'dt':(dt*1000).toFixed(1)});
 
 				return;
 			}
@@ -438,11 +452,12 @@ function Grid(opt){
 		'scale':scale+' quantised '+nsteps,
 		'this': this,
 		'parent': opt.parent,
-		'class': this.class,
-		'click':function(e,attr){ this.setLevel(attr.id); }
+		'class': this.class//,
+		//'click':function(e,attr){ console.log(attr.id,this); this.toggleLevel(attr.id); }
 	});
 
 	this.scalebar.addTo(el);
+
 
 	var xy,cols,cells,svg,n,h,w,nx,ny,pad,sz,l,id;
 	xy = [];
@@ -452,14 +467,14 @@ function Grid(opt){
 		xy.push([]);
 		for(x = 0; x < opt.data[y].length; x++){
 			id = letters[x]+(opt.data.length-y);
-			n = Math.min(nsteps-1,Math.floor(nsteps*(opt.data[y][x]-min)/(range)));
+			n = getStepFromValue(opt.data[y][x]);
 			xy[y].push(n);
 			if(!cols[n]) cols[n] = colours.getColourFromScale(scale+' quantised '+nsteps,opt.data[y][x],min,max);
 			if(!cells[n]) cells[n] = [];
 			cells[n].push(id);
 		}
 	}
-
+	
 	// Make timing map as SVG
 	nx = opt.data[0].length;
 	ny = opt.data.length;
@@ -473,13 +488,14 @@ function Grid(opt){
 	svg.attr('width',w).attr('height',h).attr('viewBox','0 0 '+w+' '+h);
 	svg.addClass('grid-map').appendTo(el);
 	this.levels = [];
-	// Make grid labels
+	// Make grid labels (A-X)
 	for(x = 0; x < nx; x++){
 		l = svgEl('text');
 		l.html(letters[x]);
 		l.attr('x',pad.left + ((x+0.5)*sz)).attr('y',pad.top - 4).attr('text-anchor','middle').attr('font-size',16).attr('font-weight','bold').attr('dominant-baseline','text-bottom');
 		l.appendTo(svg);
 	}
+	// Make grid labels (1-12)
 	for(y = 0; y < ny; y++){
 		l = svgEl('text');
 		l.html(ny-y);
@@ -491,16 +507,15 @@ function Grid(opt){
 		this.levels[n] = new Level(n,{'xy':xy,'sz':sz,'pad':pad,'cells':cells[n],'colour':cols[n],'this':this});
 		this.levels[n].el.appendTo(svg);
 	}
-	this.svg = svg._el;
 
+	this.svg = svg._el;
 	
 	this.visible = false;
 	this.selectedlevel = -1;
 	this.selectedcells = [];
 	this.selectedel = undefined;
 	this.selectedpath = '';
-	this.setLevel = function(n){
-
+	this.toggleLevel = function(n){
 		var i;
 
 		// Toggle selection
@@ -519,8 +534,35 @@ function Grid(opt){
 			}
 		}
 		this.selectedcells = (typeof n==="number") ? this.levels[n].cells : [];
-		this.scalebar.selectLevel(n);
+		this.scalebar.toggleLevel(n);
 		this.selectedlevel = this.visible ? n : undefined;
+
+		// Update parent
+		this.parent.highlight();
+
+		return this;
+		
+	};
+	this.setLevel = function(n){
+
+		var i;
+
+		this.visible = true;
+		this.selectedpath = '';
+
+		for(i in this.levels){
+			if(i==n){
+				// Set the class
+				this.levels[i].el.addClass(this.class);
+				this.selectedpath = this.levels[i].el._el.getAttribute('d');
+				this.selectedel = this.levels[i].el._el;
+			}else{
+				this.levels[i].el.removeClass(this.class);
+			}
+		}
+		this.selectedcells = (typeof n==="number") ? this.levels[n].cells : [];
+		this.scalebar.selectLevel(n);
+		this.selectedlevel = n;
 
 		// Update parent
 		this.parent.highlight();
@@ -538,11 +580,12 @@ function Level(n,opt){
 	this.el.attr('data-n',n).attr('d',getPathFromValue(opt.xy,n,opt.sz,opt.pad));
 	this.el.attr('fill',opt.colour).attr('stroke',opt.colour).attr('stroke-width',opt.sz*0.05);
 	this.el._el.addEventListener('click',function(e){
-		if(opt.this) opt.this.setLevel(n);
+		if(opt.this) opt.this.toggleLevel(n);
 	});
 	return this;
 }
 
+// Create an interactive element to show the scale
 function ScaleBar(opt){
 	var el,inp;
 	if(!opt) opt = {};
@@ -578,7 +621,7 @@ function ScaleBar(opt){
 	};
 	this.selectedlevel = -1;
 	this.visible = true;
-	this.selectLevel = function(n){
+	this.toggleLevel = function(n){
 
 		if(this.selectedlevel==n) this.visible = !this.visible;
 		else this.visible = true;
@@ -591,6 +634,19 @@ function ScaleBar(opt){
 
 		this.selectedlevel = n;
 	};
+	this.selectLevel = function(n){
+
+		this.visible = true;
+
+		// Deselect all the colours
+		for(var b = 0; b < this.bars.length; b++){
+			this.bars[b].lbl.classList.remove(...(opt.class.split(/ /)));
+			if(b==n) this.bars[b].lbl.classList.add(...(opt.class.split(/ /)));
+		}
+
+		this.selectedlevel = n;
+	};
+
 	return this;
 }
 function ScaleBit(opt){
