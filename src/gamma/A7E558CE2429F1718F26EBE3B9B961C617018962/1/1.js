@@ -211,7 +211,7 @@ function Step(data,opt){
 					this.graph = new Graph(el.waveform,{
 						'axes':axes,
 						'patterns':{
-							'hatch': {'type':'hatch','size':20,'angle':45,'style':'stroke:rgb(214, 3, 3);stroke-width:20'}
+							'hatch': {'type':'hatch','size':20,'angle':45,'style':'stroke:rgba(214, 3, 3, 0.2);stroke-width:20'}
 						}
 					});
 					this.graph.axes.x.setDataRange(axes.x.min,axes.x.max);
@@ -222,7 +222,10 @@ function Step(data,opt){
 					this.graph.setSeries("baseline",[{x:-Infinity,y:0},{x:Infinity,y:0}],{
 						'label': 'baseline',
 						'line': {
-							'stroke-width': 6
+							'stroke': 'rgba(180,180,180, 1)',
+							'stroke-width': 8,
+							'stroke-dasharray': '1 12',
+							'stroke-linecap': 'round'
 						}
 					});
 
@@ -235,11 +238,17 @@ function Step(data,opt){
 						'title': {
 							'label': '{{ site.translations.main.observatory.gamma.step1.shaded }}'
 						},
+						'line': {
+							'stroke': ''
+						},
 						'class': 'F100'
 					});
 					this.graph.setSeries("F90",series,{
 						'title': {
 							'label': '{{ site.translations.main.observatory.gamma.step1.shaded }}'
+						},
+						'line': {
+							'stroke': ''
 						},
 						'class': 'F90',
 						'pattern': 'hatch'
@@ -274,6 +283,7 @@ function Step(data,opt){
 
 						// Update the graph
 						this.drawData();
+						_obj.updateGraph();
 					}
 					function moveEnd(e,series){
 						if(series.opt.id==="line-t100"){
