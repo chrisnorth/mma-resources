@@ -6,8 +6,10 @@ function Scenario(file,opt,cb){
 		'queryString': function(extra){
 			q = '?event='+this.vals.event;
 			if(this.vals.gridsquares) q += '&gridsquares='+this.vals.gridsquares;
+			if(this.vals.timesA) q += '&timesA='+this.vals.timesA;
+			if(this.vals.timesB) q += '&timesB='+this.vals.timesB;
 			if(this.vals.toffset) q += '&toffset='+this.vals.toffset;
-			if(this.vals.mass && !isNaN(this.vals.mass[0])) q += '&mass='+this.vals.mass.join(';');
+			if(this.vals.mass) q += '&mass='+this.vals.mass;
 			if(this.vals.dist && !isNaN(this.vals.dist[0])) q += '&dist='+this.vals.dist.join(';');
 			if(this.vals.massratio && !isNaN(this.vals.massratio[0])) q += '&massratio='+this.vals.massratio.join(';');
 			if(this.vals.inc && !isNaN(this.vals.inc[0])) q += '&inc='+this.vals.inc.join(';');
@@ -19,7 +21,9 @@ function Scenario(file,opt,cb){
 				'name': selection.event||"",
 				'date': selection.ev.datetime||"",
 				'locations': decodeURI(selection.gridsquares),
-				'mass': (selection.mass && selection.mass[1] ? selection.mass[0] + ' - ' + selection.mass[1] : ''),
+				'timesA': decodeURI(selection.timesA||""),
+				'timesB': decodeURI(selection.timesB||""),
+				'mass': (selection.mass||""),
 				'massratio': (selection.massratio && selection.massratio[1] ? selection.massratio[0] + ' - ' + selection.massratio[1] : ''),
 				'distance': (selection.dist && selection.dist[1] ? selection.dist[0] + ' - ' + selection.dist[1] : ''),
 				'inclination': (selection.inc && selection.inc[1] ? selection.inc[0] + ' - ' + selection.inc[1] : ''),

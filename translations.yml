@@ -52,7 +52,7 @@ text:
                 intro:
                     en: Below is all the information you have determined so far. You may wish to circulate this to the other teams. You can do so at any time - you do not need to know all the information.
                 text:
-                    en: "Name: {{ name }}\nTime/date: {{ date }}\nPossible locations: {{ locations }}\nMass estimate (M☉): {{ mass }}\nDistance estimate (Mpc): {{ distance }}\nMass ratio: {{ massratio }}\nInclination (°): {{ inclination }}\n\nAdditional notes:\n==========\n"
+                    en: "Name: {{ name }}\nTime/date: {{ date }}\nPossible locations: {{ locations }}\nMass estimate (M☉): {{ mass }} ± 5%\nDistance estimate (Mpc): {{ distance }}\nMass ratio: {{ massratio }}\nInclination (°): {{ inclination }}\n\nAdditional notes:\n==========\n"
                 copy:
                     en: Copy to clipboard
             steps:
@@ -82,7 +82,7 @@ text:
                 timediff:
                     en: "Time difference: <strong>{{ dt }}</strong> ms"
                 selected:
-                    en: "Selected grid squares:"
+                    en: "Matching grid squares:"
             step3:
                 title:
                     en: Basic parameters

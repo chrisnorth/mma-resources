@@ -15,6 +15,8 @@ function Step(data,opt){
 		'event': query.event,
 		'toffset': query.toffset,
 		'gridsquares': query.gridsquares,
+		'timesA': query.timesA,
+		'timesB': query.timesB,
 		'mass': (query.mass||";").split(/;/),
 		'dist': (query.dist||";").split(/;/),
 		'massratio': (query.massratio||";").split(/;/),

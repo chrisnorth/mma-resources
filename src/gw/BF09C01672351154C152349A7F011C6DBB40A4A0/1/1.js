@@ -12,7 +12,7 @@ function Step(data,opt){
 		'event': query.event,
 		'toffset': query.toffset,
 		'gridsquares': query.gridsquares,
-		'mass': (query.mass||";").split(/;/),
+		'mass': (query.mass),
 		'dist': (query.dist||";").split(/;/),
 		'massratio': (query.massratio||";").split(/;/),
 		'inc': (query.inc||";").split(/;/),

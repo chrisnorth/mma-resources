@@ -15,6 +15,8 @@ function Step(data,opt){
 	if(!opt) opt = {};
 	var el = {
 		'gridsquares': document.getElementById('grid-squares'),
+		'timesA': document.getElementById('timesA'),
+		'timesB': document.getElementById('timesB'),
 		'waveform': document.getElementById('waveform'),
 		'none': document.getElementById('no-event'),
 		'prev': document.getElementById('prev'),
@@ -25,7 +27,9 @@ function Step(data,opt){
 		'event': query.event,
 		'toffset': query.toffset,
 		'gridsquares': query.gridsquares,
-		'mass': (query.mass||";").split(/;/),
+		'timesA': query.timesA,
+		'timesB': query.timesB,
+		'mass': (query.mass),
 		'dist': (query.dist||";").split(/;/),
 		'massratio': (query.massratio||";").split(/;/),
 		'inc': (query.inc||";").split(/;/),
@@ -33,9 +37,9 @@ function Step(data,opt){
 	};
 	var _obj = this;
 
-	el.gridsquares.addEventListener('change',function(e){
-		_obj.setGridsquares(e.target.value);
-	});
+	el.gridsquares.addEventListener('change',function(e){ _obj.setGridsquares(e.target.value); });
+	el.timesA.addEventListener('change',function(e){ _obj.setTimesA(e.target.value); });
+	el.timesB.addEventListener('change',function(e){ _obj.setTimesB(e.target.value); });
 	el.prev.addEventListener('click',function(e){
 		e.preventDefault();
 		location.href = e.target.getAttribute('href')+opt.notification.queryString();
@@ -53,7 +57,8 @@ function Step(data,opt){
 	}
 
 	var grids = new GridMaps({
-		'input':document.getElementById('grid-squares'),
+		'input': el.gridsquares,
+		'times': [el.timesA,el.timesB],
 		'el':document.getElementById('localisation'),
 		'defaults': vals.toffset,
 		'this':_obj
@@ -67,6 +72,14 @@ function Step(data,opt){
 
 		if(opt.notification) opt.notification.set(vals);
 	};
+	this.setTimesA = function(v){
+		vals.timesA = v;
+		if(opt.notification) opt.notification.set(vals);
+	}
+	this.setTimesB = function(v){
+		vals.timesB = v;
+		if(opt.notification) opt.notification.set(vals);
+	}
 	
 	this.setToffset = function(v){
 		vals.toffset = v;
@@ -75,8 +88,12 @@ function Step(data,opt){
 	};
 	
 	if(query.gridsquares) el.gridsquares.value = decodeURI(query.gridsquares);
-
 	this.setGridsquares(el.gridsquares.value);
+
+	if(query.timesA) el.timesA.value = decodeURI(query.timesA);
+	if(query.timesB) el.timesB.value = decodeURI(query.timesB);
+	this.setTimesA(el.timesA.value);
+	this.setTimesB(el.timesB.value);
 
 	return this;
 }
@@ -131,7 +148,7 @@ function GridMaps(opt){
 		var i = 0;
 		for(var id in d.GW.dt_arr_ms){
 			if(d.GW.dt_arr_ms[id]){
-				this.els.push(new Grid({'el':el,'id':id,'n':ids[i],'class':'highlight','data':d.GW.dt_arr_ms[id],'GW':d.GW,'parent':this,'origin':opt.this}));
+				this.els.push(new Grid({'el':el,'id':id,'n':ids[i],'class':'highlight','data':d.GW.dt_arr_ms[id],'GW':d.GW,'parent':this,'origin':opt.this,'times':opt.times[i]}));
 				i++;
 			}
 		}
@@ -278,11 +295,19 @@ function Grid(opt){
 		if(delta < 1e-3) delta = 0.01;
 
 		deltay = 1.5;
+		
+		// Work out the toff
+		var toff = ((t0/1000)||0) + opt.GW.dtmerger_s[opt.id[0]];
 
-		x1 = (t0/1000)-delta*0.8;
-		x2 = (t0/1000)+delta*0.8;
-
-
+		var times = opt.times.value.split(/ /g);
+		
+		x1 = toff-delta*0.8;
+		x2 = toff+delta*0.8;
+		if(times.length == 2){
+			x1 = parseFloat(times[0]);
+			x2 = parseFloat(times[1]);
+		}
+		
 		if(!this.graph){
 			
 			this.graph = new Graph(graphinner,{
@@ -358,6 +383,13 @@ function Grid(opt){
 				x1 = lines[opt.id[0]].original[0].x;
 				x2 = lines[opt.id[1]].original[0].x;
 				
+				// Update input fields
+				opt.times.value = x1.toFixed(6)+' '+x2.toFixed(6);
+				// Trigger event
+				e = document.createEvent('HTMLEvents');
+				e.initEvent('change', true, false);
+				opt.times.dispatchEvent(e);
+
 				// Update the shaded area
 				shade.updateData([{x:x1,y:-deltay},{x:x1,y:deltay},{x:x2,y:deltay},{x:x2,y:-deltay}]);
 				
@@ -400,11 +432,10 @@ function Grid(opt){
 			'yoffset':-offset,
 			'z-index':2
 		});
-		
-		
-		// Work out the toff
-		var toff = ((t0/1000)||0) + opt.GW.dtmerger_s[opt.id[0]];
 
+		// Set the initial level
+		this.setLevel(getStepFromValue((x1-x2)*1000));
+		
 		// Update the ranges
 		this.graph.axes.x.setDataRange(toff-delta,toff+delta);
 
