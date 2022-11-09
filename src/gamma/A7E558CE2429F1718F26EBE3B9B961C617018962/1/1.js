@@ -239,11 +239,15 @@ function Step(data,opt){
 						this.drawData();
 					}
 					function moveEnd(e,series){
+						if(series.opt.id==="line-t100"){
+							_obj.graph.showSeries("t90");
+							_obj.graph.showSeries("F90");
+						}
 						_obj.updateGraph();
 						return;
 					}
 					function moveStart(e,series){
-						console.log('start',series,series.svg.title._el.innerHTML);
+						//console.log('start',series,series.svg.title._el.innerHTML);
 					}
 
 					// Make the t_0 line that stays static
@@ -292,6 +296,10 @@ function Step(data,opt){
 					this.graph.makeDraggable(this.graph.series.t100,{ 'drag':move,'dragend':moveEnd });
 
 					this.updateGraph();
+
+					this.graph.hideSeries("t90");
+					this.graph.hideSeries("F90");
+
 				}
 				dt = ev.datetime;
 				

@@ -362,6 +362,16 @@
 		}
 		return this;
 	}
+	Graph.prototype.hideSeries = function(s){
+		this.series[s].svg.group._el.style.display = "none";
+		if(this.series[s].tooltip) this.series[s].tooltip.style.display = "none";
+		return this;
+	}
+	Graph.prototype.showSeries = function(s){
+		this.series[s].svg.group._el.style.display = '';
+		if(this.series[s].tooltip) this.series[s].tooltip.style.display = "";
+		return this;
+	}
 	Graph.prototype.drawSeries = function(s){
 		var cls,id,d;
 		if(this.series[s]){
