@@ -3,6 +3,9 @@ function Step(data,opt){
 	var el = {
 		'event': document.getElementById('select-event'),
 		'waveform': document.getElementById('waveform'),
+		't0': document.getElementById('t0'),
+		't90': document.getElementById('t90'),
+		't100': document.getElementById('t100'),
 		'none': document.getElementById('no-event'),
 		'prev': document.getElementById('prev'),
 		'next': document.getElementById('next'),
@@ -20,9 +23,10 @@ function Step(data,opt){
 	}
 	
 
-	el.event.addEventListener('change',function(e){
-		_obj.setEvent(e.target.value);
-	});
+	el.event.addEventListener('change',function(e){ _obj.setEvent(e.target.value); });
+	el.t0.addEventListener('change',function(e){ _obj.setT0(e.target.value); });
+	el.t90.addEventListener('change',function(e){ _obj.setT90(e.target.value); });
+	el.t100.addEventListener('change',function(e){ _obj.setT100(e.target.value); });
 	el.next.addEventListener('click',function(e){
 		e.preventDefault();
 		if(e.target.getAttribute('disabled')!="disabled") location.href = e.target.getAttribute('href')+opt.notification.queryString();
@@ -47,8 +51,13 @@ function Step(data,opt){
 	this.getUrlVars();
 	
 	opt.values.t0 = this.urlVars.t0||0;
-	opt.values.t90 = this.urlVars.t90;
-	opt.values.t100 = this.urlVars.t100;
+	opt.values.t90 = this.urlVars.t90||"";
+	opt.values.t100 = this.urlVars.t100||"";
+	el.t0.value = opt.values.t0;
+	el.t90.value = opt.values.t90;
+	el.t100.value = opt.values.t100;
+	
+	t90moveable = (opt.values.t90 ? true : false);
 	
 	function snapToGrid(x,data){
 		var idx = -1;
@@ -111,33 +120,49 @@ function Step(data,opt){
 		// Update baseline
 		this.graph.updateSeries("baseline",[{x:-Infinity,y:av},{x:Infinity,y:av}]); 
 
-		// Update shaded area
-		this.graph.updateSeries("F100",F100);
-		this.graph.updateSeries("F90",F90);
+		// Update shaded areas
+		if(F90.length > 0) this.graph.updateSeries("F90",F90);
+		if(F100.length > 0) this.graph.updateSeries("F100",F100);
 		
 		this.graph.update();
 
-		var ratio = opt.values.F90/opt.values.F100;
+		var ratio = "?";
+		if(opt.values.F100 != 0) ratio = opt.values.F90/opt.values.F100;
 		var output = "<div>{{ site.translations.main.observatory.gamma.step1.output }}</div>";
 		var msg = "";
 		if(ratio > 0.95) msg = "{{ site.translations.main.observatory.gamma.step1.ratio.high }}";
 		if(ratio < 0.85) msg = "{{ site.translations.main.observatory.gamma.step1.ratio.low }}";
-		output = output.replace(/\{\{ baseline \}\}/g,('<span class="baseline number">'+av.toFixed(2)+'</span>')).replace(/\{\{ t90 \}\}/g,('<span class="t90 number">'+opt.values.t90.toFixed(2)+'</span>')).replace(/\{\{ t100 \}\}/g,('<span class="t100 number">'+opt.values.t100.toFixed(2)+'</span>')).replace(/\{\{ F90 \}\}/g,('<span class="F90 number">'+Math.round(opt.values.F90)+'</span>')).replace(/\{\{ F100 \}\}/g,('<span class="F100 number">'+Math.round(opt.values.F100)+'</span>')).replace(/\{\{ ratio \}\}/g,('<span class="ratio number">'+(ratio).toFixed(2)+'</span>')).replace(/\{\{ indicator \}\}/g,msg);
+		output = output.replace(/\{\{ baseline \}\}/g,('<span class="baseline number">'+av.toFixed(2)+'</span>')).replace(/\{\{ t90 \}\}/g,('<span class="t90 number">'+(opt.values.t90||0).toFixed(2)+'</span>')).replace(/\{\{ t100 \}\}/g,('<span class="t100 number">'+(opt.values.t100||0).toFixed(2)+'</span>')).replace(/\{\{ F90 \}\}/g,('<span class="F90 number">'+Math.round(opt.values.F90)+'</span>')).replace(/\{\{ F100 \}\}/g,('<span class="F100 number">'+Math.round(opt.values.F100)+'</span>')).replace(/\{\{ ratio \}\}/g,('<span class="ratio number">'+(ratio).toFixed(2)+'</span>')).replace(/\{\{ indicator \}\}/g,msg);
 		document.getElementById('output').innerHTML = output;
 
 		return this;
 	};
-
+	this.setT0 = function(v){
+		opt.values.t0 = v;
+		return this;
+	};
+	this.setT90 = function(v){
+		opt.values.t90 = v;
+		return this;
+	};
+	this.setT100 = function(v){
+		opt.values.t100 = v;
+		return this;
+	};
 	this.setEvent = function(e){
 		var file,ev,dt;
 		dt = '';
 		opt.values.event = e;
 		opt.values.ev = {};
+		opt.values.t0 = parseFloat(el.t0.value)||'';
+		opt.values.t90 = parseFloat(el.t90.value)||'';
+		opt.values.t100 = parseFloat(el.t100.value)||'';
 		opt.values.gridsquares = '';
 		opt.values.mass = '';
 		opt.values.dist = '';
 		opt.values.massratio = '';
 		opt.values.inc = '';
+
 
 		if(e){
 			if(data.events[e]){
@@ -201,9 +226,9 @@ function Step(data,opt){
 						}
 					});
 
-					var x0 = snapToGrid(0,series);
-					var x90 = axes.x.min + 0.9*(axes.x.max-axes.x.min);
-					var x100 = axes.x.min + 0.95*(axes.x.max-axes.x.min);
+					var x0 = opt.values.t0||snapToGrid(0,series);
+					var x90 = opt.values.t90||(axes.x.min + 0.9*(axes.x.max-axes.x.min));
+					var x100 = opt.values.t100||(axes.x.min + 0.95*(axes.x.max-axes.x.min));
 
 					// Add count data
 					this.graph.setSeries("F100",series,{
@@ -234,6 +259,18 @@ function Step(data,opt){
 
 						// Update the data for the series
 						series.updateData(d);
+
+						id = "";
+						if(series.opt.id=="line-t0") id = "t0";
+						else if(series.opt.id=="line-t90") id = "t90";
+						else if(series.opt.id=="line-t100") id = "t100";
+						if(id){
+							el[id].value = x;
+							// Dispatch change event
+							e = document.createEvent('HTMLEvents');
+							e.initEvent('change', true, false);
+							el[id].dispatchEvent(e);
+						}
 
 						// Update the graph
 						this.drawData();
@@ -297,14 +334,16 @@ function Step(data,opt){
 
 					this.updateGraph();
 
-					this.graph.hideSeries("t90");
-					this.graph.hideSeries("F90");
-
+					// If no t90 value is already set, we hide the t90 line for now
+					if(!t90moveable){
+						this.graph.hideSeries("t90");
+						this.graph.hideSeries("F90");
+					}
 				}
 				dt = ev.datetime;
 				
 			}else{
-				errorMessage('Invalid event '+ev,data);
+				console.error('Invalid event '+ev,data);
 			}
 		}else{
 			el.none.style.display = '';
