@@ -9,6 +9,7 @@ function Step(data,opt){
 		'next': document.getElementById('next'),
 	};
 
+	var _obj = this;
 
 	el.prev.addEventListener('click',function(e){
 		e.preventDefault();
@@ -19,19 +20,31 @@ function Step(data,opt){
 		if(e.target.getAttribute('disabled')!="disabled") location.href = e.target.getAttribute('href')+opt.notification.queryString();
 	});
 
+	function highlightDetector(n=""){
+		for(var i in _obj.map.detectors){
+			_obj.map.detectors[i].path.setAttribute('stroke-width',(i==n ? 8 : 1));
+			_obj.map.detectors[i].label.setAttribute('stroke',(i==n ? _obj.map.detectors[i].label.getAttribute('fill') : ''));
+		}
+	}
+	// Construct a row of the detector counts table
+	function makeRow(n){
+		tr = document.createElement('tr');
+		tr.innerHTML = '<td>'+n+'</td><td>'+opt.values.ev.peaks[n]+'</td><td>'+data.metadata.detector.locations[n].RA.value+'&deg;</td><td>'+data.metadata.detector.locations[n].Dec.value+'&deg;</td>';
+		tr.addEventListener('mouseover',function(e){ highlightDetector(n); });
+		tr.addEventListener('click',function(e){ highlightDetector(n); });
+		return tr;
+	}
 	this.init = function(e){
 
 		el.next.setAttribute('disabled','disabled');
 
 		// Make detector counts table
 		var table = document.createElement('table');
-		var str = '<thead><th>{{ site.translations.main.observatory.gamma.step2.table.detector }}</th><th>{{ site.translations.main.observatory.gamma.step2.table.counts }}</th><th>{{ site.translations.main.observatory.gamma.step2.table.ra }}</th><th>{{ site.translations.main.observatory.gamma.step2.table.dec }}</th></thead><tbody>';
-		for(var n in opt.values.ev.peaks){
-			str += '<tr><td>'+n+'</td><td>'+opt.values.ev.peaks[n]+'</td><td>'+data.metadata.detector.locations[n].RA.value+'&deg;</td><td>'+data.metadata.detector.locations[n].Dec.value+'&deg;</td></tr>';
-		}
-		str += '</tbody>';
-		table.innerHTML = str;
+		table.innerHTML = '<thead><th>{{ site.translations.main.observatory.gamma.step2.table.detector }}</th><th>{{ site.translations.main.observatory.gamma.step2.table.counts }}</th><th>{{ site.translations.main.observatory.gamma.step2.table.ra }}</th><th>{{ site.translations.main.observatory.gamma.step2.table.dec }}</th></thead><tbody></tbody>';
+		for(var n in opt.values.ev.peaks) table.querySelector('tbody').appendChild(makeRow(n));
 		el.counts.appendChild(table);
+		table.addEventListener('mouseleave',function(e){ highlightDetector(); });
+		table.addEventListener('blur',function(e){ highlightDetector(); });
 
 
 		if(query.locations) el.input.value = decodeURI(query.locations);
@@ -176,7 +189,7 @@ function Mollweide(el,opt){
 			setAttr(this.detectors[d].path,{'d':str,'fill':'rgba(165,158,150,0.3)','stroke':'rgb(165,158,150)','stroke-width':1,'data':d});
 			g.appendChild(this.detectors[d].path);
 			pos = this.radec2xy(opt.detectors[d].RA.value*this.d2r,opt.detectors[d].Dec.value*this.d2r);
-			console.log(d,pos);
+
 			this.detectors[d].label.innerHTML = d;
 			setAttr(this.detectors[d].label,{'x':pos.x,'y':pos.y,'text-anchor':'middle','dominant-baseline':'central','fill':'#8c8984'});
 			g.appendChild(this.detectors[d].label);
@@ -284,7 +297,7 @@ function Mollweide(el,opt){
 		if(!this.grid[i][j].activated){
 			var _obj = this;
 			this.grid[i][j].cell.addEventListener('mouseover',function(e){
-				console.log(_obj.grid[i][j].id);
+				//console.log(_obj.grid[i][j].id);
 			});
 			this.grid[i][j].cell.addEventListener('click',function(e){
 				_obj.toggleSelection(i,j);
