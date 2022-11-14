@@ -50,7 +50,18 @@ function Step(data,opt){
 	var wf = (ev) ? (ev.GW.files.waveform_csv ? 'waveforms/'+ev.GW.files.waveform_csv : "") : '';
 	var sm = (ev) ? (ev.GW.files.simulations_csv ? 'waveforms/'+ev.GW.files.simulations_csv : "") : '';
 
-	el.waveform.setAttribute('src',(wf ? '../../waveform-fitter/index.html?level=advanced&data='+wf+'&lang='+(opt.language ? opt.language.lang : "")+'&simulation='+sm+'&mass='+opt.values.mass+'&dist='+opt.values.dist[0]+'&inc='+opt.values.inc : ''));
+
+	var qs = 'level=advanced&data='+wf;
+	qs += '&lang='+(opt.language ? opt.language.lang : "");
+	qs += '&simulation='+sm;
+	qs += (opt.values.mass ? '&mass='+opt.values.mass : '');
+	qs += (opt.values.dist && !isNaN(opt.values.dist[0]) ? '&dist='+Math.round((parseFloat(opt.values.dist[0]) + parseFloat(opt.values.dist[1]))/2) : '');
+	qs += (!isNaN(opt.values.inc) ? '&inc='+opt.values.inc : '');
+	qs += (opt.values.ev ? '&M0='+Math.round(opt.values.ev.GW.m1 + opt.values.ev.GW.m2) : '');
+	qs += (opt.values.ev ? '&D0='+Math.round(opt.values.ev.GW.distance) : '');
+	qs += (opt.values.ev ? '&t0='+(opt.values.ev.GW.t0_ms/1000) : '');
+	
+	el.waveform.setAttribute('src',(wf ? '../../waveform-fitter/index.html?'+qs : ''));
 
 	return this;
 }

@@ -21,6 +21,8 @@
 		el.innerHTML = '<span style="border-radius:100%;width:1em;height:1em;line-height:1em;margin-right:0.5em;display:inline-block;background:#D8000C;color:white;">&times;</span>'+msg;
 	}
 
+	var M0=65, D0=420, t0=0.423;
+
 	function WaveFitter(opts){
 
 		this.version = "2.2.0";
@@ -46,26 +48,37 @@
 			}
 		});
 
+		var Mrange = [20,100];
+		var Drange = [100,800]
+
+		if(typeof this.urlVars.M0==="number" && !isNaN(this.urlVars.M0)){
+			M0 = this.urlVars.M0;
+			Mrange = [Math.round(0.1*M0),Math.round(5*M0)];
+		}
+		if(typeof this.urlVars.D0==="number" && !isNaN(this.urlVars.D0)){
+			D0 = this.urlVars.D0;
+			Drange = [Math.round(0.1*D0),Math.round(5*D0)];
+		}
+		if(typeof this.urlVars.t0==="number" && !isNaN(this.urlVars.t0)) t0 = this.urlVars.t0;
+
 		// Pass in M0, D0 and t0 as query string parameters
 		if(!this.scaler) this.scaler = new Scaler(this.urlVars.M0,this.urlVars.D0,this.urlVars.t0);
 
 		if(this.urlVars.simulation) opts.simulation = this.urlVars.simulation;
 		if(this.urlVars.data) opts.data = this.urlVars.data;
 
-		var M0 = this.urlVars.M0 || 50;
-		var d0 = this.urlVars.d0 || 400;
 
 		// Set properties
 		this.props = {
 			'mass':{
-				'range': [Math.round(0.1*M0),Math.round(5*M0)],
+				'range': Mrange,
 				'options':{
 					'step': 1,
 					'tooltips': [{to:function(v){ return Math.round(v); }}]
 				}
 			},
 			'dist':{
-				'range': [100,800],
+				'range': Drange,
 				'options':{
 					'step': 1,
 					'tooltips': [{to:function(v){ return Math.round(v); }}],
@@ -317,10 +330,10 @@
 		return this;
 	};
 
-	function Scaler(M0=65,D0=420,t0=0.423){
-		this.M0 = M0;
-		this.D0 = D0;
-		this.t0 = t0;
+	function Scaler(M=M0,D=D0,t=t0){
+		this.M0 = M;
+		this.D0 = D;
+		this.t0 = t;
 
 		this.scale = function(data,mass,dist,inc){
 			var i,t,h,d;
