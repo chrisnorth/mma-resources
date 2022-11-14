@@ -52,13 +52,24 @@
 		if(this.urlVars.simulation) opts.simulation = this.urlVars.simulation;
 		if(this.urlVars.data) opts.data = this.urlVars.data;
 
+		var M0 = this.urlVars.M0 || 50;
+		var d0 = this.urlVars.d0 || 400;
+
 		// Set properties
 		this.props = {
 			'mass':{
-				'range':[20,100]
+				'range':[20,100],
+				'options':{
+					'step': 1,
+					'tooltips': [{to:function(v){ return Math.round(v); }}]
+				}
 			},
 			'dist':{
-				'range':[100,800]
+				'range':[100,800],
+				'options':{
+					'step': 1,
+					'tooltips': [{to:function(v){ return Math.round(v); }}],
+				}
 			},
 			'inclination':{
 				'range':[0,90],
@@ -171,8 +182,8 @@
 	WaveFitter.prototype.updateData = function(){
 
 		// Set the data series
-		if(this.wavedata.dataH!==null && !this.graph.series[0]){
-			this.graph.setSeries(0,this.wavedata.dataH,{
+		if(this.wavedata.dataH!==null && !this.graph.series.data){
+			this.graph.setSeries("data",this.wavedata.dataH,{
 				'id':'line-data',
 				'text':'{{ site.translations.waveform.legend.data }}',
 				'class':'data',
@@ -181,10 +192,10 @@
 				}
 			});
 			// Update the ranges
-			this.graph.axes.x.setDataRange(this.graph.series[0]);
+			this.graph.axes.x.setDataRange(this.graph.series.data);
 		}
-		if(this.wavedata.simNR!==null && !this.graph.series[1]){
-			this.graph.setSeries(1,this.applyScaling(this.wavedata.simNR),{
+		if(this.wavedata.simNR!==null && !this.graph.series.sim){
+			this.graph.setSeries("sim",this.applyScaling(this.wavedata.simNR),{
 				'id':'line-sim',
 				'text':'{{ site.translations.waveform.legend.simulation }}',
 				'class':'sim',
@@ -214,19 +225,20 @@
 		inc = parseFloat(this.props.inclination.slider.noUiSlider.get());
 		mass = parseFloat(this.props.mass.value);
 		dist = parseFloat(this.props.dist.value);
-
+		
 		return this.scaler.scale(data,mass,dist,inc);
 	};
 
 	WaveFitter.prototype.updateCurves = function(dur=0){
 
-		if(!this.graph.series[0]){
+		if(!this.graph.series.data){
 			console.warn('No data loaded yet');
 			return this;
 		}
-		
-		if(this.wavedata.simNR!==null) this.graph.updateSeries(1,this.applyScaling(this.wavedata.simNR));
-
+		if(this.wavedata.simNR!==null){
+			// Update the data values for the series and update the graph
+			this.graph.updateSeries("sim",this.applyScaling(this.wavedata.simNR)).drawData();
+		}
 		return this;
 	};
 
@@ -293,7 +305,7 @@
 
 		this.scale = function(data,mass,dist,inc){
 			var i,t,h,d;
-			
+
 			// Convert to radians
 			inc *= Math.PI/180;
 

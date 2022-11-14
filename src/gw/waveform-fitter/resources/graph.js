@@ -341,7 +341,8 @@
 				if(this.series[i]==s) s = i;
 			}
 		}
-		this.series[s].update(data,opt,{'x':this.axes.x.key,'y':this.axes.y.key});
+		// Update the data
+		this.series[s].update(data,opt,keys);
 		return this;
 	};
 	Graph.prototype.updateSeriesOrder = function(){
