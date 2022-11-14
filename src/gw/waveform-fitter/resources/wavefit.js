@@ -58,21 +58,21 @@
 		// Set properties
 		this.props = {
 			'mass':{
-				'range':[20,100],
+				'range': [Math.round(0.1*M0),Math.round(5*M0)],
 				'options':{
 					'step': 1,
 					'tooltips': [{to:function(v){ return Math.round(v); }}]
 				}
 			},
 			'dist':{
-				'range':[100,800],
+				'range': [100,800],
 				'options':{
 					'step': 1,
 					'tooltips': [{to:function(v){ return Math.round(v); }}],
 				}
 			},
 			'inclination':{
-				'range':[0,90],
+				'range': [0,90],
 				'values':[0],
 				'options':{
 					'start': [0],
@@ -113,8 +113,9 @@
 			this.props.massratio.options.range = ratiorange;
 		}
 
-		this.props.mass.value = this.props.mass.range[0] + Math.random()*(this.props.mass.range[1]-this.props.mass.range[0]);
-		this.props.dist.value = this.props.dist.range[0] + Math.random()*(this.props.dist.range[1]-this.props.dist.range[0]);
+		this.props.mass.value = (typeof this.urlVars.mass==="number" ? this.urlVars.mass : this.props.mass.range[0] + Math.random()*(this.props.mass.range[1]-this.props.mass.range[0]));
+		this.props.dist.value = (typeof this.urlVars.dist==="number" ? this.urlVars.dist : this.props.dist.range[0] + Math.random()*(this.props.dist.range[1]-this.props.dist.range[0]));
+		this.props.inclination.value = (typeof this.urlVars.inc==="number" ? this.urlVars.inc : 0);
 
 		this.addSliders();
 		this.graph.update();

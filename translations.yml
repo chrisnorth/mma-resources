@@ -92,6 +92,8 @@ text:
                     en: "Mass estimate (M<sub>&#9737;</sub>):"
                 distance:
                     en: "Distance estimate (Mpc):"
+                inclination:
+                    en: "Inclination (&deg;)"
                 to:
                     en: "&rarr;"
             step4:
@@ -101,8 +103,6 @@ text:
                     en: If you have more information about your event, you may be able to refine your estimates of the mass, distance etc.
                 massratio:
                     en: Mass ratio
-                inclination:
-                    en: "Inclination (&deg;)"
                 to:
                     en: "&rarr;"
             detectors:

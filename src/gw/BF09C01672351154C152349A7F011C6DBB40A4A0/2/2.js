@@ -22,19 +22,7 @@ function Step(data,opt){
 		'prev': document.getElementById('prev'),
 		'next': document.getElementById('next')
 	};
-	var vals = {
-		'ev': data.events[query.event],
-		'event': query.event,
-		'toffset': query.toffset,
-		'gridsquares': query.gridsquares,
-		'timesA': query.timesA,
-		'timesB': query.timesB,
-		'mass': (query.mass),
-		'dist': (query.dist||";").split(/;/),
-		'massratio': (query.massratio||";").split(/;/),
-		'inc': (query.inc||";").split(/;/),
-		'extra': query.extra
-	};
+
 	var _obj = this;
 
 	el.gridsquares.addEventListener('change',function(e){ _obj.setGridsquares(e.target.value); });
@@ -60,30 +48,30 @@ function Step(data,opt){
 		'input': el.gridsquares,
 		'times': [el.timesA,el.timesB],
 		'el':document.getElementById('localisation'),
-		'defaults': vals.toffset,
+		'defaults': opt.values.toffset,
 		'this':_obj
 	});
 
-	if(vals.event && data.events[vals.event]) grids.set(data.events[vals.event]);
+	if(opt.values.event && data.events[opt.values.event]) grids.set(data.events[opt.values.event]);
 	this.setGridsquares = function(v){
 		if(v) el.next.removeAttribute('disabled');
 		else el.next.setAttribute('disabled','disabled');
-		vals.gridsquares = v;
+		opt.values.gridsquares = v;
 
-		if(opt.notification) opt.notification.set(vals);
+		if(opt.notification) opt.notification.set(opt.values);
 	};
 	this.setTimesA = function(v){
-		vals.timesA = v;
-		if(opt.notification) opt.notification.set(vals);
+		opt.values.timesA = v;
+		if(opt.notification) opt.notification.set(opt.values);
 	}
 	this.setTimesB = function(v){
-		vals.timesB = v;
-		if(opt.notification) opt.notification.set(vals);
+		opt.values.timesB = v;
+		if(opt.notification) opt.notification.set(opt.values);
 	}
 	
 	this.setToffset = function(v){
-		vals.toffset = v;
-		if(opt.notification) opt.notification.set(vals);
+		opt.values.toffset = v;
+		if(opt.notification) opt.notification.set(opt.values);
 		return this;
 	};
 	
@@ -299,7 +287,7 @@ function Grid(opt){
 		// Work out the toff
 		var toff = ((t0/1000)||0) + opt.GW.dtmerger_s[opt.id[0]];
 
-		var times = opt.times.value.split(/ /g);
+		var times = opt.times.value.split(/;/g);
 		
 		x1 = toff-delta*0.8;
 		x2 = toff+delta*0.8;
@@ -384,7 +372,7 @@ function Grid(opt){
 				x2 = lines[opt.id[1]].original[0].x;
 				
 				// Update input fields
-				opt.times.value = x1.toFixed(6)+' '+x2.toFixed(6);
+				opt.times.value = x1.toFixed(6)+';'+x2.toFixed(6);
 				// Trigger event
 				e = document.createEvent('HTMLEvents');
 				e.initEvent('change', true, false);

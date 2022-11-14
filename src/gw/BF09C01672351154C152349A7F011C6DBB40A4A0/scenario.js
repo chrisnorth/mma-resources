@@ -1,6 +1,20 @@
 function Scenario(file,opt,cb){
 	if(!opt) opt = {};
 	//this.title = "Scenario";
+
+	this.values = {
+		'event': query.event,
+		'toffset': query.toffset,
+		'gridsquares': query.gridsquares,
+		'timesA': (query.timesA),
+		'timesB': (query.timesB),
+		'mass': (query.mass),
+		'dist': (query.dist||";").split(/;/),
+		'massratio': (query.massratio||";").split(/;/),
+		'inc': (query.inc),
+		'extra': query.extra
+	};
+
 	// Create an Event Notification
 	this.notification = new EventNotification({
 		'queryString': function(extra){
@@ -12,7 +26,7 @@ function Scenario(file,opt,cb){
 			if(this.vals.mass) q += '&mass='+this.vals.mass;
 			if(this.vals.dist && !isNaN(this.vals.dist[0])) q += '&dist='+this.vals.dist.join(';');
 			if(this.vals.massratio && !isNaN(this.vals.massratio[0])) q += '&massratio='+this.vals.massratio.join(';');
-			if(this.vals.inc && !isNaN(this.vals.inc[0])) q += '&inc='+this.vals.inc.join(';');
+			if(typeof this.vals.inc!=="undefined") q += '&inc='+this.vals.inc;
 			if(extra) q += '&extra='+extra;
 			return q;
 		},
@@ -26,7 +40,7 @@ function Scenario(file,opt,cb){
 				'mass': (selection.mass||""),
 				'massratio': (selection.massratio && selection.massratio[1] ? selection.massratio[0] + ' - ' + selection.massratio[1] : ''),
 				'distance': (selection.dist && selection.dist[1] ? selection.dist[0] + ' - ' + selection.dist[1] : ''),
-				'inclination': (selection.inc && selection.inc[1] ? selection.inc[0] + ' - ' + selection.inc[1] : ''),
+				'inclination': (selection.inc),
 				'extra': selection.extra||extra
 			};
 			return attr;
@@ -40,7 +54,10 @@ function Scenario(file,opt,cb){
 		this.json = json;
 		var _obj = this;
 		if(typeof Step==="function"){
-			_obj.step = new Step(json,{'notification':_obj.notification});
+			
+			if(query.event && json.events[query.event]) this.values.ev = json.events[query.event];
+
+			_obj.step = new Step(json,{'notification':_obj.notification,'values':this.values});
 		}
 	}).catch(error => {
 		errorMessage('Unable to load the data "'+file+'"',error);
