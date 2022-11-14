@@ -13,11 +13,12 @@ if(abs_path($0) =~ /^(.*\/)[^\/]*/){ $basedir = $1; }
 $basedir .= "../";
 
 $idir = $basedir."data/";
-$odir = $basedir."docs/gw/BF09C01672351154C152349A7F011C6DBB40A4A0/";
+$odir = $basedir."src/gw/BF09C01672351154C152349A7F011C6DBB40A4A0/";
 $wwdir = $basedir."data/GW/waveforms/";
 $wsdir = $basedir."data/GW/templates/";
-$wodir = $basedir."docs/gw/waveform-fitter/waveforms/";
+$wodir = $basedir."src/gw/waveform-fitter/waveforms/";
 $dp = 3;
+@massratios = ("0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1.0");
 
 
 # Open the scenario file for GW
@@ -49,8 +50,19 @@ foreach $ev (sort(keys(%{$json->{'events'}}))){
 				$w = $wsdir;
 			}
 			if(-e $w.$json->{'events'}{$ev}{'GW'}{'files'}{$f}){
-				print "Copying $w$json->{'events'}{$ev}{'GW'}{'files'}{$f} to $wodir\n";
-				`cp $w$json->{'events'}{$ev}{'GW'}{'files'}{$f} $wodir$json->{'events'}{$ev}{'GW'}{'files'}{$f}`;
+				# If the file has a "q1.0" type string in it we will check for the different mass ratios
+				if($json->{'events'}{$ev}{'GW'}{'files'}{$f} =~ /q1\.0/){
+					for($q = 0; $q < @massratios; $q++){
+						$qfile = $json->{'events'}{$ev}{'GW'}{'files'}{$f};
+						$qfile =~ s/q1\.0/q$massratios[$q]/;
+						print "Copying $w$qfile to $wodir\n";
+						`cp $w$qfile $wodir$qfile`;
+					}
+				}else{
+					print "Copying $w$json->{'events'}{$ev}{'GW'}{'files'}{$f} to $wodir\n";
+					`cp $w$json->{'events'}{$ev}{'GW'}{'files'}{$f} $wodir$json->{'events'}{$ev}{'GW'}{'files'}{$f}`;
+				}
+				$json->{'events'}{$ev}{'GW'}{'files'}{$f} =~ s/q1\.0/q{MASSRATIO}/;
 			}else{
 				print "Can't copy $w$json->{'events'}{$ev}{'GW'}{'files'}{$f}\n";
 			}
@@ -84,7 +96,7 @@ foreach $ev (sort(keys(%{$json->{'events'}}))){
 	$opts .= "<option value=\"$ev\">$json->{'events'}{$ev}{'name'}</option>\n";
 }
 #partOfHTML($odir."index.html",{"EVENT"=>$opts});
-partOfHTML($odir."1.html",{"EVENT"=>$opts});
+#partOfHTML($odir."1/index.html",{"EVENT"=>$opts});
 
 
 

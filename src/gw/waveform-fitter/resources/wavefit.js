@@ -85,6 +85,7 @@
 			'massratio': {
 				'range': [0.1,1],
 				'value': 1,
+				'snap': true,
 				'options':{
 					'step': 0.1,
 					'tooltips':[{to:function(v){ return v.toFixed(1); }}],
@@ -95,6 +96,23 @@
 				}
 			}
 		};
+		if(this.urlVars.q){
+			this.props.massratio.options.snap = true;
+			this.urlVars.q = this.urlVars.q.split(/;/);
+			var vals = [];
+			for(var r = 0; r < this.urlVars.q.length; r++){
+				vals[r] = parseFloat(this.urlVars.q[r]);
+			}
+			var ratiorange = {};
+			for(var r = 0; r < this.urlVars.q.length; r++){
+				pc = (100*(vals[r] - vals[0])/(vals[vals.length-1] - vals[0])).toFixed(1)+'%';
+				if(r == 0) pc = "min";
+				if(r == this.urlVars.q.length-1) pc = "max";
+				ratiorange[pc] = vals[r];
+			}
+			this.props.massratio.options.range = ratiorange;
+		}
+
 		this.props.mass.value = this.props.mass.range[0] + Math.random()*(this.props.mass.range[1]-this.props.mass.range[0]);
 		this.props.dist.value = this.props.dist.range[0] + Math.random()*(this.props.dist.range[1]-this.props.dist.range[0]);
 
