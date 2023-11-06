@@ -76,9 +76,9 @@ text:
                     en: Localisation
                     en-US: Localization
                 intro:
-                    en: "Use the detector arrival times to identify the possible locations."
+                    en: "Move the lines to mark similar parts of the two waveforms in order to show the difference in arrival time"
                 select:
-                    en: "Select the time difference (ms):"
+                    en: "Time difference (ms):"
                 timediff:
                     en: "Time difference: <strong>{{ dt }}</strong> ms"
                 selected:
