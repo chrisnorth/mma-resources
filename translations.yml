@@ -87,13 +87,13 @@ text:
                 title:
                     en: Basic parameters
                 intro:
-                    en: Use the interface below to estimate the basic parameters of the system. You will find a range of values will fit the data. Enter the ranges below.
+                    en: Use the interface below to estimate the basic parameters of the system. You will find a range of values will fit the data. If you don't know the inclination, then try 0<sup>o</sup> and 90<sup>o</sup>. Enter the ranges below.
                 mass:
                     en: "Mass estimate (M<sub>&#9737;</sub>):"
                 distance:
                     en: "Distance estimate (Mpc):"
                 inclination:
-                    en: "Inclination (&deg;)"
+                    en: "Inclination (&deg;) [should be hidden]"
                 to:
                     en: "&rarr;"
             step4:
