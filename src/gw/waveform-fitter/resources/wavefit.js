@@ -351,7 +351,7 @@
 				h = data[i][1];
 
 				// Scale the time - CHECK THIS
-				t = (t-this.t0)*this.M0/mass + this.t0;
+				t = (t-this.t0)*mass/this.M0 + this.t0;
 
 				// Scale the strain - CHECK THIS
 				h *= (mass/this.M0)*(this.D0/d);
