@@ -66,9 +66,8 @@
 					this.data.push(this.csv[i]);
 				}
 			}
-			console.log(opt.language,opt.language.getKey('site.translations.mma[text.cosmocalc.yourvalue][site.lang]'))
 			// Add user data
-			this.data.push({'z':(max+min)/2,'zlo':(max+min)/2,'zhi':(max+min)/2,'Name':opt.language.getKey('site.translations.mma[text.cosmocalc.yourvalue][site.lang]')||"🧑",'class':'user'});
+			this.data.push({'z':(max+min)/2,'zlo':(max+min)/2,'zhi':(max+min)/2,'Name':'{{ site.translations.main.cosmocalc.yourvalue }}'||"🧑",'class':'user'});
 			this.min = min;
 			this.max = max;
 			
