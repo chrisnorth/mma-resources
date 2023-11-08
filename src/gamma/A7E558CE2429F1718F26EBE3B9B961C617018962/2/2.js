@@ -29,7 +29,7 @@ function Step(data,opt){
 	// Construct a row of the detector counts table
 	function makeRow(n){
 		tr = document.createElement('tr');
-		tr.innerHTML = '<td>'+n+'</td><td>'+opt.values.ev.peaks[n]+'</td><td>'+data.metadata.detector.locations[n].RA.value+'&deg;</td><td>'+data.metadata.detector.locations[n].Dec.value+'&deg;</td>';
+		tr.innerHTML = '<td>'+n+'</td><td>'+opt.values.ev.peaks[n]+'</td><td>'+opt.values.ev.detector.locations[n].RA.value+'&deg;</td><td>'+opt.values.ev.detector.locations[n].Dec.value+'&deg;</td>';
 		tr.addEventListener('mouseover',function(e){ highlightDetector(n); });
 		tr.addEventListener('click',function(e){ highlightDetector(n); });
 		return tr;
@@ -54,7 +54,7 @@ function Step(data,opt){
 		this.map = new Mollweide(el.locations,{
 			'onSelect': function(str){ _obj.setLocations(str); },
 			'locations': el.input.value,
-			'detectors': data.metadata.detector.locations
+			'detectors': opt.values.ev.detector.locations
 		});
 
 		if(opt.notification) opt.notification.set(opt.values);

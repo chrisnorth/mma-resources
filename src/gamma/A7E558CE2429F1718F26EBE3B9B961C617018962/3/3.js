@@ -80,13 +80,11 @@ function BrightnessIndicator(el,opt){
 		return this;
 	}
 
-	var E_iso_measured = 4.17e39;
-
 	var ev = opt.event;
 	var dist = opt.dist;	// An array of DOM elements
 	var _obj = this;
 
-	function getE(theta,dist){ return Math.pow(10,(9.2 * Math.exp(-0.458*theta) + 37.5)); };
+	function getE(theta,dist){ return Math.pow(10,(9.2 * Math.exp(-0.0458*theta) + 37.5)); };
 
 	// Add brightness indicator elements to DOM
 	var reference = document.createElement('div');
@@ -100,6 +98,7 @@ function BrightnessIndicator(el,opt){
 	dist[0].addEventListener('change',function(e){ _obj.updateValues(); });
 	dist[1].addEventListener('change',function(e){ _obj.updateValues(); });
 
+	var E_iso_measured = ev['E_iso']||4.17e39;
 	var E = Math.log10(E_iso_measured);
 	var E_l = getE(90);
 	var E_r = getE(0);
