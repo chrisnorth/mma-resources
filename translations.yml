@@ -213,6 +213,8 @@ text:
                     en: "Distance:"
                 brightness:
                     en: "Observed brightness (Joules):"
+                measured:
+                    en: "Measured brightness: {{ value }} Joules"
             notification:
                 title:
                     en: Event notification
