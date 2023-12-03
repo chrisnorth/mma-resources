@@ -54,6 +54,7 @@
 		if(typeof this.urlVars.M0==="number" && !isNaN(this.urlVars.M0)){
 			M0 = this.urlVars.M0;
 			Mrange = [Math.round(0.1*M0),Math.round(5*M0)];
+			Mstep = (M0 < 10) ? 0.1 : 1;
 		}
 		if(typeof this.urlVars.D0==="number" && !isNaN(this.urlVars.D0)){
 			D0 = this.urlVars.D0;
@@ -73,8 +74,8 @@
 			'mass':{
 				'range': Mrange,
 				'options':{
-					'step': 1,
-					'tooltips': [{to:function(v){ return Math.round(v); }}]
+					'step': Mstep,
+					'tooltips': [{to:function(v){ return Math.round(v/Mstep)*Mstep; }}]
 				}
 			},
 			'dist':{
