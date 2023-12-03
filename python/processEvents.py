@@ -34,6 +34,8 @@ for e in eventsIn:
             os.makedirs(templatedir)
         ev.gw.plotmatches(plotDir=pdir)
         ev.gw.makewaveform(dataDir=ddir)
+        if hasattr(ev.gw,'max_fitter_t'):
+            ev.gw.makewaveform(dataDir=ddir,suffix="_sim",dur=ev.gw.max_fitter_t)
         ev.gw.waveform.addNoiseReal(1e-23)
         ev.gw.makeSims(dataDir=templatedir)
 

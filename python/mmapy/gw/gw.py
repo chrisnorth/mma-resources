@@ -326,6 +326,8 @@ class EventGW(object):
         # self.setLoc(parent.loc)
         self.loc=parent.loc
         self.datetime=parent.datetime
+        if 'max_fitter_t' in self.parent.initParams:
+                    self.max_fitter_t=self.parent.initParams.get('max_fitter_t',None)
         fromCat=kwargs.get('fromCat',False)
         if 'fromCat':
             self.readCatParams()
@@ -486,6 +488,8 @@ class EventGW(object):
             'files':self.files,'origname':self.nameCat}
         if hasattr(self,'t0_ms'):
             js['t0_ms']=self.t0_ms
+        if hasattr(self,'max_fitter_t'):
+            js['max_fitter_t']=self.max_fitter_t
         if hasattr(self,'simParams'):
             js['simParams']=self.simParams
         js['timedelta_ms']={}
@@ -559,10 +563,10 @@ class EventGW(object):
         self.files['matchcells_png']=pngfile
         return
 
-    def makewaveform(self,dataDir='',csvfile=None,hfact=1e21,precision=4,noise=1e-22,dur=1):
+    def makewaveform(self,dataDir='',csvfile=None,suffix='',hfact=1e21,precision=4,noise=1e-22,dur=1):
         self.waveform=Waveform(mtot=self.mtot,q=self.q,dist=self.dist,noise=noise)
         if not csvfile:
-            csvfile='{}_waveform.csv'.format(self.name)
+            csvfile='{}_waveform{}.csv'.format(self.name,suffix)
         indur=np.where(self.waveform.data['t']>-dur)[0]
         ms=datetime.datetime.fromisoformat(self.datetime).microsecond/1000
         self.waveform.data['t']=self.waveform.data['t']+ms/1000
@@ -571,7 +575,7 @@ class EventGW(object):
         wf_print=pd.DataFrame({'t':self.waveform.data['t'][indur],'strain*{}'.format(hfact):self.waveform.data['strain'][indur]*hfact})
         print(wf_print[0:10])
         wf_print.to_csv(os.path.join(dataDir,csvfile),float_format='%.{}f'.format(precision),index=False)
-        self.files['waveform_csv']=csvfile
+        self.files['waveform{}_csv'.format(suffix)]=csvfile
         self.t0_ms=ms
         return
 

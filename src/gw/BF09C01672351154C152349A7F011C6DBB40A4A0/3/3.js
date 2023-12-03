@@ -57,7 +57,7 @@ function Step(data,opt){
 
 	// Set up Waveform graph
 	var ev = data.events[opt.values.event];
-	var wf = (ev) ? (ev.GW.files.waveform_csv ? 'waveforms/'+ev.GW.files.waveform_csv : "") : '';
+	var wf = (ev) ? (ev.GW.files.waveform_sim_csv ? 'waveforms/'+ev.GW.files.waveform_sim_csv : (ev.GW.files.waveform_csv ? 'waveforms/'+ev.GW.files.waveform_csv : "")) : '';
 	var sm = (ev) ? (ev.GW.files.simulations_csv ? 'waveforms/'+ev.GW.files.simulations_csv : "") : '';
 
 	var qs = 'data='+wf;

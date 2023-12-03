@@ -9,9 +9,10 @@
 			"datetime":"2022-06-17T12:41:41.400",
 			"dist_Mpc":38,
 			"gw_dets":["L","H","V"],
-			"loc":[110.25,-20.15],
+			"loc":[165.25,-20.15],
 			"xray_data":"GW170817_xray.csv",
-			"inclination_deg":28.5
+			"inclination_deg":28.5,
+			"max_fitter_t":0.06
 		},
 		"LVK220612":{
 			"name":"LVK220612",

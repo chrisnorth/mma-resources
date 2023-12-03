@@ -41,10 +41,10 @@
       "dist": 38,
       "location": {
         "loc": [
-          110.25,
+          165.25,
           -20.15
         ],
-        "cellname": "H5"
+        "cellname": "L5"
       },
       "datetime": "2022-06-17T12:41:41.400",
       "GW": {
@@ -62,22 +62,24 @@
         "files": {
           "matchcells_png": "plots/GW/loc_maps/LVK220617_matchcells.png",
           "waveform_csv": "LVK220617_waveform.csv",
+          "waveform_sim_csv": "LVK220617_waveform_sim.csv",
           "simulations_csv": "wf_Mtot5_D50_q1.0.csv"
         },
         "origname": "GW170817",
         "t0_ms": 400.0,
+        "max_fitter_t": 0.06,
         "simParams": {
           "mtot": 5,
           "dist": 50
         },
         "timedelta_ms": {
-          "LH": 5.325,
-          "VL": -11.017
+          "LH": 5.145,
+          "VL": 13.265
         },
         "dtmerger_s": {
           "L": 0.0,
-          "H": -0.005325,
-          "V": -0.011017
+          "H": -0.005145,
+          "V": 0.013265
         },
         "dt_arr_ms": {
           "LH": [
