@@ -25,7 +25,7 @@
 
 	function WaveFitter(opts){
 
-		this.version = "2.2.0";
+		this.version = "2.2.1";
 		this.title = "WaveFitter";
 		console.info(this.title+' '+this.version);
 		this._opts = opts||{};
