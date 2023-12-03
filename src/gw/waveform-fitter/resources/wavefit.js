@@ -75,7 +75,7 @@
 				'range': Mrange,
 				'options':{
 					'step': Mstep,
-					'tooltips': [{to:function(v){ return Math.round(v/Mstep)*Mstep; }}]
+					'tooltips': [{to:function(v){ t=Math.round(v/Mstep)*Mstep; return t.toFixed(Math.round(Math.log10(1/Mstep)))}}]
 				}
 			},
 			'dist':{
