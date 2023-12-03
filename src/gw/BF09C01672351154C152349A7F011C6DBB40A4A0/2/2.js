@@ -280,7 +280,7 @@ function Grid(opt){
 		var delta = Math.abs(opt.GW.dtmerger_s[opt.id[0]] - opt.GW.dtmerger_s[opt.id[1]])*2;
 		// Round the value (this can cause range issues)
 		delta = Math.round(delta*1e6)/1e6;
-		if(delta < 2e-2) delta = 0.2;
+		if(delta < 2e-2) delta = 0.02;
 
 		deltay = 1.5;
 		
