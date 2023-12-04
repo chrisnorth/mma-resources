@@ -105,6 +105,7 @@
 					'tooltips':[{to:function(v){ return v.toFixed(1); }}],
 					'pips': {mode: 'values', values: [0.1,1], density:100,'format':{'to':function(v){ return v.toFixed(1); }}},
 					'onupdate': function(e,test){
+						console.log('new massratio',self)
 						this.loadSim(opts.simulation);
 					}
 				}
@@ -238,7 +239,7 @@
 			});
 		}
 
-		this.graph.axes.y.setDataRange(-2,2);
+		this.graph.axes.y.setDataRange(-1,1);
 
 		// Update the scales and domains
 		this.graph.updateData();
@@ -352,7 +353,7 @@
 				h = data[i][1];
 
 				// Scale the time - CHECK THIS
-				t = (t-this.t0)*mass/this.M0 + this.t0;
+				t = (t)*mass/this.M0 + this.t0;
 
 				// Scale the strain - CHECK THIS
 				h *= (mass/this.M0)*(this.D0/d);

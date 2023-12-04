@@ -578,6 +578,25 @@ class EventGW(object):
         self.files['waveform{}_csv'.format(suffix)]=csvfile
         self.t0_ms=ms
         return
+    
+    def makeScaledSim(self,dataDir='',csvfile=None,suffix='',hfact=1e21,precision=4,noise=0,dur=1):
+        print('simParams',self.simParams)
+        simM=self.simParams['mtot']
+        simD=self.simParams['dist']
+        print('scaling {}->{} Msun, {}->{} MPc'.format(self.mtot,simM,self.dist,simD))
+        self.scaledSim=Waveform(mtot=self.mtot,q=self.q,dist=self.dist,noise=noise)
+        self.scaledSim.data['t']=self.scaledSim.data['t']*(simM/self.mtot)
+        self.scaledSim.data['strain']=self.scaledSim.data['strain']*((simM/self.mtot)*(self.dist/simD))
+        if not csvfile:
+            csvfile='{}_simulation{}.csv'.format(self.name,suffix)
+        indur=np.where(self.scaledSim.data['t']>-dur)[0]
+        
+        # save to file
+        wf_print=pd.DataFrame({'t':self.scaledSim.data['t'][indur],'strain*{}'.format(hfact):self.scaledSim.data['strain'][indur]*hfact})
+        print(wf_print[0:10])
+        wf_print.to_csv(os.path.join(dataDir,csvfile),float_format='%.{}f'.format(precision),index=False)
+        self.files['simulation{}_csv_simple'.format(suffix)]=csvfile
+        return
 
     def makeSims(self,dataDir='',csvfile=None,hfact=1e21,precision=4,noise=0,dur=1,overwrite=False):
         simParams={}
@@ -603,13 +622,15 @@ class EventGW(object):
             else:
                 updateFile=True
             if updateFile:
-                waveform=Waveform(mtot=simParams['mtot'],q=self.q,dist=simParams['dist'])
+                waveform=Waveform(mtot=simParams['mtot'],q=q,dist=simParams['dist'])
 
-                indur=np.where(self.waveform.data['t']>-dur)[0]
-                wf_print=pd.DataFrame({'t':self.waveform.data['t'][indur],'strain*{}'.format(hfact):self.waveform.data['strain'][indur]*hfact})
+                indur=np.where(waveform.data['t']>-dur)[0]
+                wf_print=pd.DataFrame({'t':waveform.data['t'][indur],'strain*{}'.format(hfact):waveform.data['strain'][indur]*hfact})
                 print(wf_print[0:10])
+                print(fileout)
                 wf_print.to_csv(fileout,float_format='%.{}f'.format(precision),index=False)
         self.files['simulations_csv']=simFiles['1.0']
+        self.files['simulations_csv_adv']=simFiles['1.0'].replace('1.0','MASSRATIO')
         self.simParams=simParams
         return
 
@@ -647,7 +668,7 @@ class Waveform(object):
         self.noise=noise
         self.m1=mtot_to_m1(self.mtot,self.q)
         self.m2=mtot_to_m2(self.mtot,self.q)
-        self.mch=mtot_to_m2(self.m1,self.m2)
+        self.mch=m1m2_to_mch(self.m1,self.m2)
         self.generate()
         return
 
@@ -676,7 +697,7 @@ class Waveform(object):
         tmin=self.f_to_t(self.fmin)
         fref=self.fmin
         tref=self.f_to_t(fref)
-        print('processing {} + {} [{}] ({} MPc) at 1/{}s resolution from {:.2f}Hz [{:.2f}s from {:.2f}Hz]'.format(self.m1,self.m2,self.mch,self.dist,1./self.tres,self.fmin,tref,fref))
+        print('processing {:.2f} + {:.2f} [{:.2f}] ({} MPc) at 1/{}s resolution from {:.2f}Hz [{:.2f}s from {:.2f}Hz]'.format(self.m1,self.m2,self.mch,self.dist,1./self.tres,self.fmin,tref,fref))
         hp,hc = get_td_waveform(approximant="SEOBNRv3_opt_rk4",
                      mass1=self.m1,
                      mass2=self.m2,

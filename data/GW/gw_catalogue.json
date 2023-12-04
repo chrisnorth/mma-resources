@@ -4,7 +4,7 @@
 			"datetime":"2017-08-17T12:41:41",
 			"dist_Mpc":38,
 			"gw_dets":["L","H","V"],
-			"totalmass_Msun":2.73,
+			"totalmass_Msun":2.13,
 			"massratio":0.87
 		},
 		"GW190412":{
