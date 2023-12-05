@@ -57,8 +57,9 @@ function Step(data,opt){
 
 	// Set up Waveform graph
 	var ev = data.events[opt.values.event];
-	var wf = (ev) ? (ev.GW.files.waveform_csv ? 'waveforms/'+ev.GW.files.waveform_csv : "") : '';
-	var sm = (ev) ? (ev.GW.files.simulations_csv ? 'waveforms/'+ev.GW.files.simulations_csv : "") : '';
+	var wf = (ev) ? (ev.GW.files.waveform_fitter_csv ? 'waveforms/'+ev.GW.files.waveform_fitter_csv : (ev.GW.files.waveform_csv ? 'waveforms/'+ev.GW.files.waveform_csv : "")) : '';
+	// var sm = (ev) ? (ev.GW.files.simulations_csv ? 'waveforms/'+ev.GW.files.simulations_csv : "") : '';
+	var sm = (ev) ? (ev.GW.files.simulation_csv_simple ? 'waveforms/'+ev.GW.files.simulation_csv_simple : "") : '';
 
 	var qs = 'data='+wf;
 	qs += '&lang='+(opt.language ? opt.language.lang : "");
@@ -66,8 +67,8 @@ function Step(data,opt){
 	qs += (opt.values.mass ? '&mass='+opt.values.mass : '');
 	qs += (opt.values.dist && !isNaN(opt.values.dist[0]) ? '&dist='+Math.round((parseFloat(opt.values.dist[0]) + parseFloat(opt.values.dist[1]))/2) : '');
 	qs += (!isNaN(opt.values.inc) ? '&inc='+opt.values.inc : '');
-	qs += (opt.values.ev ? '&M0='+Math.round(opt.values.ev.GW.m1 + opt.values.ev.GW.m2) : '');
-	qs += (opt.values.ev ? '&D0='+Math.round(opt.values.ev.GW.distance) : '');
+	qs += (opt.values.ev ? '&M0='+Math.round(opt.values.ev.GW.simParams.mtot) : '');
+	qs += (opt.values.ev ? '&D0='+Math.round(opt.values.ev.GW.simParams.dist) : '');
 	qs += (opt.values.ev ? '&t0='+(opt.values.ev.GW.t0_ms/1000) : '');
 	
 	el.waveform.setAttribute('src',(wf ? '../../waveform-fitter/index.html?'+qs : ''));

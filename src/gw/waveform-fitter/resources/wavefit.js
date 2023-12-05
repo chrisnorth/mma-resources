@@ -25,7 +25,7 @@
 
 	function WaveFitter(opts){
 
-		this.version = "2.2.0";
+		this.version = "2.2.1";
 		this.title = "WaveFitter";
 		console.info(this.title+' '+this.version);
 		this._opts = opts||{};
@@ -54,6 +54,7 @@
 		if(typeof this.urlVars.M0==="number" && !isNaN(this.urlVars.M0)){
 			M0 = this.urlVars.M0;
 			Mrange = [Math.round(0.1*M0),Math.round(5*M0)];
+			Mstep = (M0 < 10) ? 0.1 : 1;
 		}
 		if(typeof this.urlVars.D0==="number" && !isNaN(this.urlVars.D0)){
 			D0 = this.urlVars.D0;
@@ -73,8 +74,8 @@
 			'mass':{
 				'range': Mrange,
 				'options':{
-					'step': 1,
-					'tooltips': [{to:function(v){ return Math.round(v); }}]
+					'step': Mstep,
+					'tooltips': [{to:function(v){ t=Math.round(v/Mstep)*Mstep; return t.toFixed(Math.round(Math.log10(1/Mstep)))}}]
 				}
 			},
 			'dist':{
@@ -104,6 +105,7 @@
 					'tooltips':[{to:function(v){ return v.toFixed(1); }}],
 					'pips': {mode: 'values', values: [0.1,1], density:100,'format':{'to':function(v){ return v.toFixed(1); }}},
 					'onupdate': function(e,test){
+						console.log('new massratio',self)
 						this.loadSim(opts.simulation);
 					}
 				}
@@ -237,7 +239,7 @@
 			});
 		}
 
-		this.graph.axes.y.setDataRange(-2,2);
+		this.graph.axes.y.setDataRange(-1,1);
 
 		// Update the scales and domains
 		this.graph.updateData();
@@ -351,7 +353,7 @@
 				h = data[i][1];
 
 				// Scale the time - CHECK THIS
-				t = (t-this.t0)*mass/this.M0 + this.t0;
+				t = (t)*mass/this.M0 + this.t0;
 
 				// Scale the strain - CHECK THIS
 				h *= (mass/this.M0)*(this.D0/d);

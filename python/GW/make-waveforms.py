@@ -51,6 +51,8 @@ for mtot in mtot_arr:
         t= hp.sample_times
         wf=pd.DataFrame({'t':t.data,'strain*1e21':hp.data*1e21})
         file='wf_Mtot{:.0f}_q{:.1f}_D{:.0f}_fmin{:.0f}_tres{:.0f}.csv'.format(mtot,q,dist,f_lower,1./tres)
+        file2='wf_Mtot{:.0f}_D{:.0f}_q{:.1f}.csv'.format(mtot,dist,q)
         wf.to_csv(os.path.join(dataDir,'GW','templates',file),float_format='%.4f',index=False)
+        wf.to_csv(os.path.join(dataDir,'GW','templates',file2),float_format='%.4f',index=False)
         
 

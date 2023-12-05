@@ -41,10 +41,10 @@
       "dist": 38,
       "location": {
         "loc": [
-          110.25,
+          165.25,
           -20.15
         ],
-        "cellname": "H5"
+        "cellname": "L5"
       },
       "datetime": "2022-06-17T12:41:41.400",
       "GW": {
@@ -62,22 +62,26 @@
         "files": {
           "matchcells_png": "plots/GW/loc_maps/LVK220617_matchcells.png",
           "waveform_csv": "LVK220617_waveform.csv",
-          "simulations_csv": "wf_Mtot5_D50_q1.0.csv"
+          "waveform_fitter_csv": "LVK220617_waveform_fitter.csv",
+          "simulations_csv": "wf_Mtot5_D50_q1.0.csv",
+          "simulations_csv_adv": "wf_Mtot5_D50_qMASSRATIO.csv",
+          "simulation_csv_simple": "LVK220617_simulation.csv"
         },
         "origname": "GW170817",
         "t0_ms": 400.0,
+        "max_fitter_t": 0.06,
         "simParams": {
           "mtot": 5,
           "dist": 50
         },
         "timedelta_ms": {
-          "LH": 5.325,
-          "VL": -11.017
+          "LH": 5.145,
+          "VL": 13.265
         },
         "dtmerger_s": {
           "L": 0.0,
-          "H": -0.005325,
-          "V": -0.011017
+          "H": -0.005145,
+          "V": 0.013265
         },
         "dt_arr_ms": {
           "LH": [
@@ -737,7 +741,9 @@
         "files": {
           "matchcells_png": "plots/GW/loc_maps/LVK220612_matchcells.png",
           "waveform_csv": "LVK220612_waveform.csv",
-          "simulations_csv": "wf_Mtot30_D500_q1.0.csv"
+          "simulations_csv": "wf_Mtot30_D500_q1.0.csv",
+          "simulations_csv_adv": "wf_Mtot30_D500_qMASSRATIO.csv",
+          "simulation_csv_simple": "LVK220612_simulation.csv"
         },
         "origname": "GW190412",
         "t0_ms": 200.0,
@@ -1412,7 +1418,9 @@
         "files": {
           "matchcells_png": "plots/GW/loc_maps/LVK220628_matchcells.png",
           "waveform_csv": "LVK220628_waveform.csv",
-          "simulations_csv": "wf_Mtot50_D3000_q1.0.csv"
+          "simulations_csv": "wf_Mtot50_D3000_q1.0.csv",
+          "simulations_csv_adv": "wf_Mtot50_D3000_qMASSRATIO.csv",
+          "simulation_csv_simple": "LVK220628_simulation.csv"
         },
         "origname": "GW190828_063405",
         "t0_ms": 800.0,

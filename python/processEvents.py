@@ -34,8 +34,11 @@ for e in eventsIn:
             os.makedirs(templatedir)
         ev.gw.plotmatches(plotDir=pdir)
         ev.gw.makewaveform(dataDir=ddir)
+        if hasattr(ev.gw,'max_fitter_t'):
+            ev.gw.makewaveform(dataDir=ddir,suffix="_fitter",dur=ev.gw.max_fitter_t)
         ev.gw.waveform.addNoiseReal(1e-23)
         ev.gw.makeSims(dataDir=templatedir)
+        ev.gw.makeScaledSim(dataDir=ddir)
 
         # plot all waveforms
         wfax.plot(ev.gw.waveform.data['t']-ev.gw.t0_ms/1000,wfp+ev.gw.waveform.data['strain']*1e+21)
