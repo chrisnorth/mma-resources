@@ -630,7 +630,7 @@ class EventGW(object):
                 print(fileout)
                 wf_print.to_csv(fileout,float_format='%.{}f'.format(precision),index=False)
         self.files['simulations_csv']=simFiles['1.0']
-        self.files['simulations_csv_adv']=simFiles['1.0'].replace('1.0','MASSRATIO')
+        self.files['simulations_csv_adv']=simFiles['1.0'].replace('1.0','{MASSRATIO}')
         self.simParams=simParams
         return
 

@@ -64,7 +64,7 @@
           "waveform_csv": "LVK220617_waveform.csv",
           "waveform_fitter_csv": "LVK220617_waveform_fitter.csv",
           "simulations_csv": "wf_Mtot5_D50_q1.0.csv",
-          "simulations_csv_adv": "wf_Mtot5_D50_qMASSRATIO.csv",
+          "simulations_csv_adv": "wf_Mtot5_D50_q{MASSRATIO}.csv",
           "simulation_csv_simple": "LVK220617_simulation.csv"
         },
         "origname": "GW170817",
@@ -742,7 +742,7 @@
           "matchcells_png": "plots/GW/loc_maps/LVK220612_matchcells.png",
           "waveform_csv": "LVK220612_waveform.csv",
           "simulations_csv": "wf_Mtot30_D500_q1.0.csv",
-          "simulations_csv_adv": "wf_Mtot30_D500_qMASSRATIO.csv",
+          "simulations_csv_adv": "wf_Mtot30_D500_q{MASSRATIO}.csv",
           "simulation_csv_simple": "LVK220612_simulation.csv"
         },
         "origname": "GW190412",
@@ -1419,7 +1419,7 @@
           "matchcells_png": "plots/GW/loc_maps/LVK220628_matchcells.png",
           "waveform_csv": "LVK220628_waveform.csv",
           "simulations_csv": "wf_Mtot50_D3000_q1.0.csv",
-          "simulations_csv_adv": "wf_Mtot50_D3000_qMASSRATIO.csv",
+          "simulations_csv_adv": "wf_Mtot50_D3000_q{MASSRATIO}.csv",
           "simulation_csv_simple": "LVK220628_simulation.csv"
         },
         "origname": "GW190828_063405",
