@@ -158,10 +158,16 @@ function errorMessage(msg,error){
 function roundTo(v,to){
 	return Math.round(v/to)*to;
 }
-var query = {};
-var qs = location.search.substr(1);
-qs = qs.split(/\&/);
-for(var i = 0; i < qs.length; i++){
-	qs[i] = qs[i].split(/=/);
-	query[qs[i][0]] = qs[i][1];
+function getQueryString(){
+	// Version 1.1
+	var qs = location.search.substr(1);
+	qs = qs.split(/\&/);
+	var idx,key,i,query = {};
+	for(i = 0; i < qs.length; i++){
+		idx = qs[i].indexOf("=");
+		key = qs[i].substr(0,idx);
+		query[key] = qs[i].substr(idx+1,);
+	}
+	return query;
 }
+var query = getQueryString();
