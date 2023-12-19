@@ -175,7 +175,6 @@ function Step(data,opt){
 				ev = data.events[e];
 
 				opt.values.ev = data.events[e];
-				el.next.removeAttribute('disabled');
 				el.none.style.display = 'none';
 				el.waveform.style.display = '';
 
@@ -297,6 +296,9 @@ function Step(data,opt){
 						_obj.graph.showSeries("F90");
 					}
 					_obj.updateGraph();
+					// Enable the next button if we've moved the t90 line
+					if(series.opt.id==="line-t90") el.next.removeAttribute('disabled');
+					if(opt.notification) opt.notification.set(opt.values);
 					return;
 				}
 				function moveStart(e,series){
