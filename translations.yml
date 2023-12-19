@@ -81,10 +81,6 @@ text:
                     en-US: Localization
                 intro:
                     en: "Move the lines to mark similar parts of the two waveforms in order to show the difference in arrival time"
-                select:
-                    en: "Time difference (ms):"
-                timediff:
-                    en: "Time difference: <strong>{{ dt }}</strong> ms"
                 selected:
                     en: "Matching grid squares:"
             step3:
@@ -148,7 +144,7 @@ text:
                 intro:
                     en: Below is all the information you have determined so far. You may wish to circulate this to the other teams. You can do so at any time - you do not need to know all the information.
                 text:
-                    en: "GAMMA RAY TEAM\nEVENT NOTIFICATION\n\nName: {{ name }}\nTime/date: {{ date }}\nt_90: {{ t90 }} seconds\nLocations: {{ locations }}\nInclination: {{ inclination }}&deg;\n\nAdditional notes:\n==========\n"
+                    en: "GAMMA RAY TEAM\nEVENT NOTIFICATION\n\nName: {{ name }}\nTime/date: {{ date }}\nT90: {{ t90 }} seconds\nLocations: {{ locations }}\nInclination: {{ inclination }}&deg;\n\nAdditional notes:\n==========\n"
                 copy:
                     en: Copy to clipboard
             steps:
@@ -176,13 +172,13 @@ text:
                 tooltip:
                     en: "{{ title }}<br />Time: {{ x }} s<br />Value: {{ y }} counts/s"
                 output:
-                    en: "t<sub>90</sub> = {{ t90 }} seconds, t<sub>100</sub> = {{ t100 }} seconds, baseline = {{ baseline }} counts/s, F<sub>90</sub> = {{ F90 }} counts, F<sub>100</sub> = {{ F100 }} counts, ratio = {{ ratio }} {{ indicator }}"
+                    en: "T<sub>90</sub> = {{ t90 }} seconds, T<sub>100</sub> = {{ t100 }} seconds, baseline = {{ baseline }} counts/s, F<sub>90</sub> = {{ F90 }} counts, F<sub>100</sub> = {{ F100 }} counts, ratio = {{ ratio }} {{ indicator }}"
                 t0:
-                    en: "t<sub>0</sub>"
+                    en: "T<sub>0</sub>"
                 t90:
-                    en: "t<sub>90</sub>"
+                    en: "T<sub>90</sub>"
                 t100:
-                    en: "t<sub>100</sub>"
+                    en: "T<sub>100</sub>"
                 baseline:
                     en: "Baseline"
                 shaded:

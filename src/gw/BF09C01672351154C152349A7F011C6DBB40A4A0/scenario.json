@@ -1,6 +1,6 @@
 {
 	"_notes": "Created by data/update-gw.pl using data/scenario-1.json",
-	"_update": "2023-12-19T17:32:05Z",
+	"_update": "2023-12-19T20:09:53Z",
 	"events": {
 		"LVK220612": {
 			"GW": {
