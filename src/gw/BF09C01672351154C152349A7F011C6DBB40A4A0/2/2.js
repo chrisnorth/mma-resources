@@ -331,6 +331,7 @@ function Grid(opt){
 					'stroke-width': 4,
 					'stroke-linecap': 'round',
 					'class': 'detector-'+opt.id[0],
+					'cursor': 'col-resize'
 				},
 				'z-index': 5
 			});
@@ -341,6 +342,7 @@ function Grid(opt){
 					'stroke-width': 4,
 					'stroke-linecap': 'round',
 					'class': 'detector-'+opt.id[1],
+					'cursor': 'col-resize'
 				},
 				'z-index': 5
 			});

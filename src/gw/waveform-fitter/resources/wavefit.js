@@ -223,7 +223,8 @@
 				'class':'data',
 				'line':{
 					'stroke':'rgba(0,150,200,1)'
-				}
+				},
+				'z-index': 50
 			});
 			// Update the ranges
 			this.graph.axes.x.setDataRange(this.graph.series.data);
@@ -235,7 +236,8 @@
 				'class':'sim',
 				'line': {
 					'stroke':'rgba(200,150,0,1)'
-				}
+				},
+				'z-index': 100
 			});
 		}
 
