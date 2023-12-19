@@ -57,7 +57,7 @@ foreach $ev (sort(keys(%{$json->{'events'}}))){
 						msg("Copying <cyan>$w$qfile<none> to <cyan>$wodir<none>\n");
 						`cp $w$qfile $wodir$qfile`;
 					}else{
-						warning("Can't copy <cyan>$w$qfile<none>\n");
+						error("Can't copy <cyan>$w$qfile<none>\n");
 					}
 				}
 			}else{
@@ -65,7 +65,7 @@ foreach $ev (sort(keys(%{$json->{'events'}}))){
 					msg("Copying <cyan>$w$json->{'events'}{$ev}{'GW'}{'files'}{$f}<none> to <cyan>$wodir<none>\n");
 					`cp $w$json->{'events'}{$ev}{'GW'}{'files'}{$f} $wodir$json->{'events'}{$ev}{'GW'}{'files'}{$f}`;
 				}else{
-					warning("Can't copy <cyan>$w$json->{'events'}{$ev}{'GW'}{'files'}{$f}<none>\n");
+					error("Can't copy <cyan>$w$json->{'events'}{$ev}{'GW'}{'files'}{$f}<none>\n");
 				}
 			}
 			$json->{'events'}{$ev}{'GW'}{'files'}{$f} =~ s/q1\.0/q{MASSRATIO}/;

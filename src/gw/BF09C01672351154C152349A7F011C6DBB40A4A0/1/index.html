@@ -47,7 +47,16 @@
 					</div>
 					<div class="widescreen">
 						<div id="no-event" class="text-center">{{ site.translations.main.observatory.gw.step1.intro }}</div>
-						<div id="waveform" class="waveform"></div>
+						<div id="waveforms">
+							<div id="waveform-a" style="display:none">
+								<div>{{ site.translations.main.observatory.gw.step1.waveform-a }}</div>
+								<div class="waveform"></div>
+							</div>
+							<div id="waveform-b" style="display:none">
+								<div>{{ site.translations.main.observatory.gw.step1.waveform-b }}</div>
+								<div class="waveform"></div>
+							</div>
+						</div>
 					</div>
 				</section>
 				<section id="event-notification" class="doublepadded">

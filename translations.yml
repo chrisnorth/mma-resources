@@ -71,6 +71,10 @@ text:
                     en: "Time/date:"
                 selected:
                     en: "Selected event:"
+                waveform-a:
+                    en: A half second of the waveform
+                waveform-b:
+                    en: A zoom-in of 10 cycles of the waveform
             step2:
                 title:
                     en: Localisation

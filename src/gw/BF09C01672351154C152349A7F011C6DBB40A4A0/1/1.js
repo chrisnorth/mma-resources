@@ -2,7 +2,8 @@ function Step(data,opt){
 	if(!opt) opt = {};
 	var el = {
 		'event': document.getElementById('select-event'),
-		'waveform': document.getElementById('waveform'),
+		'waveformA': document.getElementById('waveform-a'),
+		'waveformB': document.getElementById('waveform-b'),
 		'none': document.getElementById('no-event'),
 		'prev': document.getElementById('prev'),
 		'next': document.getElementById('next'),
@@ -34,9 +35,10 @@ function Step(data,opt){
 				opt.values.ev = data.events[e];
 				el.next.removeAttribute('disabled');
 				el.none.style.display = 'none';
-				el.waveform.style.display = '';
-				if(!this.graph){
-					this.graph = new Graph(el.waveform,{
+				el.waveformA.style.display = '';
+				el.waveformB.style.display = '';
+				if(!this.graphA){
+					this.graphA = new Graph(el.waveformA.querySelector('.waveform'),{
 						'axes':{
 							'x':{
 								'title': {
@@ -50,21 +52,31 @@ function Step(data,opt){
 							}
 						}
 					});
-					this.graph.update();
-					this.graph.on('mousemove',{this:this},function(e,d){
-						// If the mouse montoring is active we update the value
-						//if(this.mouseactive) p.innerHTML = updateFromTemplate('{{ site.translations.main.observatory.gw.step2.timediff }}',{'dt':(d.x*1000).toFixed(2)});
-					}).on('click',{this:this},function(e,d){
-						// Toggle montioring of mouse position
-						this.mouseactive = !this.mouseactive;
+					this.graphA.update();
+				}
+				if(!this.graphB){
+					this.graphB = new Graph(el.waveformB.querySelector('.waveform'),{
+						'axes':{
+							'x':{
+								'title': {
+									'label':'{{ site.translations.waveform.axis.time }}'
+								}
+							},
+							'y':{
+								'title': {
+									'label':'{{ site.translations.waveform.axis.strain }}'
+								}
+							}
+						}
 					});
-
+					this.graphB.update();
 				}
 				ev = data.events[e];
 				dt = ev.datetime;
-				file = (ev) ? (ev.GW.files.waveform_csv ? '../../waveform-fitter/waveforms/'+ev.GW.files.waveform_csv : "") : '';
 				
-				// Get waveform data
+
+				// Get waveform data for the first graph
+				file = (ev) ? (ev.GW.files['waveform_csv'] ? '../../waveform-fitter/waveforms/'+ev.GW.files['waveform_csv'] : "") : '';
 				fetch(file).then(response => {
 					if(!response.ok) throw new Error('Network response was not OK');
 					return response.text();
@@ -75,8 +87,8 @@ function Step(data,opt){
 					t0 = ev.GW.t0_ms;
 					lbl = "{{ site.translations.waveform.legend.data }}";
 
-					if(this.graph.series.wf){
-						this.graph.updateSeries("wf",wfdata,{
+					if(this.graphA.series.wf){
+						this.graphA.updateSeries("wf",wfdata,{
 							'id':'line-data',
 							'text':lbl,
 							'class':'data',
@@ -85,7 +97,7 @@ function Step(data,opt){
 							}
 						});
 					}else{
-						this.graph.setSeries("wf",wfdata,{
+						this.graphA.setSeries("wf",wfdata,{
 							'id':'line-data',
 							'text':lbl,
 							'class':'data',
@@ -96,23 +108,71 @@ function Step(data,opt){
 					}
 
 					// Update the ranges
-					this.graph.setDataRanges({'x':[wfdata[0][0],wfdata[wfdata.length-1][0]],'y':[-1.5,1.5]});
+					this.graphA.setDataRanges({'x':[wfdata[0][0],wfdata[wfdata.length-1][0]],'y':[-1.5,1.5]});
 
 					// Update the scales and domains
-					this.graph.updateData();
+					this.graphA.updateData();
 
-					this.graph.update();
+					this.graphA.update();
+
+				}).catch(error => {
+					errorMessage('Unable to load the data "'+file+'"',error);
+				});
+
+
+
+				// Get waveform data for the first graph
+				file = (ev) ? (ev.GW.files['waveform_csv_0.5s'] ? '../../waveform-fitter/waveforms/'+ev.GW.files['waveform_csv_0.5s'] : "") : '';
+				fetch(file).then(response => {
+					if(!response.ok) throw new Error('Network response was not OK');
+					return response.text();
+				}).then(txt => {
+					var wfdata,t0,lbl;
+
+					wfdata = parseCSV(txt);
+					t0 = ev.GW.t0_ms;
+					lbl = "{{ site.translations.waveform.legend.data }}";
+
+					if(this.graphB.series.wf){
+						this.graphB.updateSeries("wf",wfdata,{
+							'id':'line-data',
+							'text':lbl,
+							'class':'data',
+							'line':{
+								'stroke':'rgba(0,150,200,1)'
+							}
+						});
+					}else{
+						this.graphB.setSeries("wf",wfdata,{
+							'id':'line-data',
+							'text':lbl,
+							'class':'data',
+							'line':{
+								'stroke':'rgba(0,150,200,1)'
+							}
+						});
+					}
+
+					// Update the ranges
+					this.graphB.setDataRanges({'x':[wfdata[0][0],wfdata[wfdata.length-1][0]],'y':[-1.5,1.5]});
+
+					// Update the scales and domains
+					this.graphB.updateData();
+
+					this.graphB.update();
 
 				}).catch(error => {
 					errorMessage('Unable to load the data "'+file+'"',error);
 				});
 				
+
 			}else{
 				errorMessage('Invalid event '+ev,data);
 			}
 		}else{
 			el.none.style.display = '';
-			el.waveform.style.display = 'none';
+			el.waveformA.style.display = 'none';
+			el.waveformB.style.display = 'none';
 			el.next.setAttribute('disabled','disabled');
 			console.warn('No event set');
 		}

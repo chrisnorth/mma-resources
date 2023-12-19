@@ -1,5 +1,6 @@
 @import url('../../resources/fonts/play.css');
 
+
 .gw-bg {
 	background: #342730;
 	background-image: url("purple_page_background.jpg");
@@ -56,7 +57,11 @@ iframe:not([src^=http]){ background: rgba(0,0,0,0); }
 .grid-pair { text-align: center; }
 .grid-pair p { text-align: left; }
 .grid-pair > svg { max-width: 100%; height:auto; }
-.waveform { margin-bottom: 1em; line-height: 0; width: 100%; height: 100%; }
+
+#waveforms { display: grid; grid-template-rows: 50% 50%; height: 100%; width: 100%; }
+#waveforms > * { margin-top: 1em; display: grid; grid-template-rows: auto 1fr; }
+#waveforms .waveform { margin-top: 1em; }
+.waveform { line-height: 0; }
 .waveform svg { width: 100%; max-width: 100%; height: 100%; }
 .waveform .axis text { fill: black; font-size:1em; stroke-width: 0.5px; }
 .waveform .axis path { stroke: black; }
