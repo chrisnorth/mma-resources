@@ -21,7 +21,6 @@ function Step(data,opt){
 		selopt.innerHTML = e;
 		el.event.appendChild(selopt);
 	}
-	
 
 	el.event.addEventListener('change',function(e){ _obj.setEvent(e.target.value); });
 	el.t0.addEventListener('change',function(e){ _obj.setT0(e.target.value); });
@@ -70,11 +69,16 @@ function Step(data,opt){
 				min = diff;
 			}
 		}
+		// Find the midpoint
+//		if(idx < data.length-1){
+//			return (data[idx+1].x - data[idx].x)/2;
+//		}
 		return data[idx].x;
 	}
 
 
 	this.updateGraph = function(){
+
 		var t0,t90,t100,baseline,data,F100,F90;
 		opt.values.t0 = this.graph.series.t0.data[0].lineData[0].x;
 		opt.values.t90 = this.graph.series.t90.data[0].lineData[0].x;
@@ -163,6 +167,8 @@ function Step(data,opt){
 		opt.values.massratio = '';
 		opt.values.inc = '';
 
+		// Reset output
+		console.log('setEvent',e,data.events[e]);
 
 		if(e){
 			if(data.events[e]){
@@ -172,193 +178,198 @@ function Step(data,opt){
 				el.next.removeAttribute('disabled');
 				el.none.style.display = 'none';
 				el.waveform.style.display = '';
-				if(!this.graph){
-					var series = [];
-					// A function to create the contents of a tooltip
-					function label(d){
-						var txt = "{{ site.translations.main.observatory.gamma.step1.tooltip }}";
-						if(txt.indexOf('site.translations.main.observatory') > 0) txt = "?";
-						return updateFromTemplate(txt,{'x':d.data.x,'y':d.data.y.toFixed(1),'title':d.series.title});
-					}
-					var axes = {
-						'x':{
-							'min': Infinity,
-							'max': -Infinity,
-							'title': { 'label': '{{ site.translations.main.observatory.gamma.step1.time }}', 'attr': { 'fill': 'black' } }
-						},
-						'y':{
-							'min': Infinity,
-							'max': -Infinity,
-							'title': { 'label':'{{ site.translations.main.observatory.gamma.step1.counts }}', 'attr': { 'fill': 'black' } },
-							'grid': {'show':true,'stroke':'#dfdfdf'}
-						}
-					};
-					for(var i = 0; i < ev.lightcurve.length; i++){
-						series.push({'x':ev.lightcurve[i][0],'y':ev.lightcurve[i][1]});
-						if(i < ev.lightcurve.length-1){
-							series.push({'x':ev.lightcurve[i+1][0],'y':ev.lightcurve[i][1]});
-						}
-						axes.x.min = Math.min(axes.x.min,ev.lightcurve[i][0]);
-						axes.x.max = Math.max(axes.x.max,ev.lightcurve[i][0]);
-						axes.y.min = Math.min(axes.y.min,ev.lightcurve[i][1]);
-						axes.y.max = Math.max(axes.y.max,ev.lightcurve[i][1]);
-					}
-					// Expand y-axis range
-					var dy = (axes.y.max-axes.y.min)*0.05;
-					axes.y.min -= dy;
-					axes.y.max += dy;
 
-					this.graph = new Graph(el.waveform,{
-						'axes':axes,
-						'patterns':{
-							'hatch': {'type':'hatch','size':20,'angle':45,'style':'stroke:rgba(214, 3, 3, 0.2);stroke-width:20'}
-						}
-					});
-					this.graph.axes.x.setDataRange(axes.x.min,axes.x.max);
-					this.graph.axes.y.setDataRange(axes.y.min,axes.y.max);
-					
-
-					// Make baseline
-					this.graph.setSeries("baseline",[{x:-Infinity,y:0},{x:Infinity,y:0}],{
-						'label': 'baseline',
-						'line': {
-							'stroke': 'rgba(180,180,180, 1)',
-							'stroke-width': 8,
-							'stroke-dasharray': '1 12',
-							'stroke-linecap': 'round'
-						}
-					});
-
-					var x0 = opt.values.t0||snapToGrid(0,series);
-					var x90 = opt.values.t90||(axes.x.min + 0.9*(axes.x.max-axes.x.min));
-					var x100 = opt.values.t100||(axes.x.min + 0.95*(axes.x.max-axes.x.min));
-
-					// Add count data
-					this.graph.setSeries("F100",series,{
-						'title': {
-							'label': '{{ site.translations.main.observatory.gamma.step1.shaded }}'
-						},
-						'line': {
-							'stroke': ''
-						},
-						'class': 'F100'
-					});
-					this.graph.setSeries("F90",series,{
-						'title': {
-							'label': '{{ site.translations.main.observatory.gamma.step1.shaded }}'
-						},
-						'line': {
-							'stroke': ''
-						},
-						'class': 'F90',
-						'pattern': 'hatch'
-					});
-					// Add count data
-					this.graph.setSeries("data",series,{
-						'title': {
-							'label': '{{ site.translations.main.observatory.gamma.step1.series }}'
-						}
-					});
-
-
-					function move(e,series,pos){
-
-						var x = snapToGrid(pos.x,this.series.data.original);
-						var d = [{x:x,y:-Infinity},{x:x,y:Infinity}];
-
-						// Update the data for the series
-						series.updateData(d);
-
-						id = "";
-						if(series.opt.id=="line-t0") id = "t0";
-						else if(series.opt.id=="line-t90") id = "t90";
-						else if(series.opt.id=="line-t100") id = "t100";
-						if(id){
-							el[id].value = x;
-							// Dispatch change event
-							e = document.createEvent('HTMLEvents');
-							e.initEvent('change', true, false);
-							el[id].dispatchEvent(e);
-						}
-
-						// Update the graph
-						this.drawData();
-						_obj.updateGraph();
-					}
-					function moveEnd(e,series){
-						if(series.opt.id==="line-t100"){
-							_obj.graph.showSeries("t90");
-							_obj.graph.showSeries("F90");
-						}
-						_obj.updateGraph();
-						return;
-					}
-					function moveStart(e,series){
-						//console.log('start',series,series.svg.title._el.innerHTML);
-					}
-
-					// Make the t_0 line that stays static
-					this.graph.setSeries("t0",[{x:x0,y:-Infinity},{x:x0,y:Infinity}],{
-						'id': 'line-t0',
-						'title': {
-							'label': '{{ site.translations.main.observatory.gamma.step1.t0 }}'
-						},
-						'line': {
-							'stroke-width': 4,
-							'cursor': 'col-resize'
-						},
-						'z-index': 10,
-						'tooltip':{ 'label': label }
-					});
-					this.graph.makeDraggable(this.graph.series.t0,{ 'dragstart':moveStart, 'drag':move,'dragend':moveEnd });
-
-					// Make the t_90 line
-					this.graph.setSeries("t90",[{x:x90,y:-Infinity},{x:x90,y:Infinity}],{
-						'id': 'line-t90',
-						'title': {
-							'label': '{{ site.translations.main.observatory.gamma.step1.t90 }}'
-						},
-						'line': {
-							'stroke-width': 6,
-							'cursor': 'col-resize'
-						},
-						'z-index': 10,
-						'tooltip':{ 'label': label }
-					});
-					this.graph.makeDraggable(this.graph.series.t90,{ 'drag':move,'dragend':moveEnd });
-
-					// Make the t_100 line
-					this.graph.setSeries("t100",[{x:x100,y:-Infinity},{x:x100,y:Infinity}],{
-						'id': 'line-t100',
-						'title': {
-							'label': '{{ site.translations.main.observatory.gamma.step1.t100 }}'
-						},
-						'line': {
-							'stroke-width': 6,
-							'cursor': 'col-resize'
-						},
-						'z-index': 10,
-						'tooltip':{ 'label': label }
-					});
-					this.graph.makeDraggable(this.graph.series.t100,{ 'drag':move,'dragend':moveEnd });
-
-					this.updateGraph();
-
-					// If no t90 value is already set, we hide the t90 line for now
-					if(!t90moveable){
-						this.graph.hideSeries("t90");
-						this.graph.hideSeries("F90");
-					}
+				var series = [];
+				// A function to create the contents of a tooltip
+				function label(d){
+					var txt = "{{ site.translations.main.observatory.gamma.step1.tooltip }}";
+					if(txt.indexOf('site.translations.main.observatory') > 0) txt = "?";
+					return updateFromTemplate(txt,{'x':d.data.x,'y':d.data.y.toFixed(1),'title':d.series.title});
 				}
+				var axes = {
+					'x':{
+						'min': Infinity,
+						'max': -Infinity,
+						'title': { 'label': '{{ site.translations.main.observatory.gamma.step1.time }}', 'attr': { 'fill': 'black' } }
+					},
+					'y':{
+						'min': Infinity,
+						'max': -Infinity,
+						'title': { 'label':'{{ site.translations.main.observatory.gamma.step1.counts }}', 'attr': { 'fill': 'black' } },
+						'grid': {'show':true,'stroke':'#dfdfdf'}
+					}
+				};
+				for(var i = 0; i < ev.lightcurve.length; i++){
+					series.push({'x':ev.lightcurve[i][0],'y':ev.lightcurve[i][1]});
+					if(i < ev.lightcurve.length-1){
+						series.push({'x':ev.lightcurve[i+1][0],'y':ev.lightcurve[i][1]});
+					}
+					axes.x.min = Math.min(axes.x.min,ev.lightcurve[i][0]);
+					axes.x.max = Math.max(axes.x.max,ev.lightcurve[i][0]);
+					axes.y.min = Math.min(axes.y.min,ev.lightcurve[i][1]);
+					axes.y.max = Math.max(axes.y.max,ev.lightcurve[i][1]);
+				}
+
+				// Expand y-axis range
+				var dy = (axes.y.max-axes.y.min)*0.05;
+				axes.y.min -= dy;
+				axes.y.max += dy;
+
+				this.graph = new Graph(el.waveform,{
+					'axes':axes,
+					'patterns':{
+						'hatch': {'type':'hatch','size':20,'angle':45,'style':'stroke:rgba(214, 3, 3, 0.2);stroke-width:20'}
+					}
+				});
+				this.graph.axes.x.setDataRange(axes.x.min,axes.x.max);
+				this.graph.axes.y.setDataRange(axes.y.min,axes.y.max);
+				
+
+				// Make baseline
+				this.graph.setSeries("baseline",[{x:-Infinity,y:0},{x:Infinity,y:0}],{
+					'label': 'baseline',
+					'line': {
+						'stroke': 'rgba(180,180,180, 1)',
+						'stroke-width': 8,
+						'stroke-dasharray': '1 12',
+						'stroke-linecap': 'round'
+					}
+				});
+
+				var x0 = opt.values.t0||snapToGrid(0,series);
+				var x90 = opt.values.t90||(axes.x.min + 0.9*(axes.x.max-axes.x.min));
+				var x100 = opt.values.t100||(axes.x.min + 0.95*(axes.x.max-axes.x.min));
+
+				// Add count data
+				this.graph.setSeries("F100",series,{
+					'title': {
+						'label': '{{ site.translations.main.observatory.gamma.step1.shaded }}'
+					},
+					'line': {
+						'stroke': ''
+					},
+					'class': 'F100'
+				});
+				this.graph.setSeries("F90",series,{
+					'title': {
+						'label': '{{ site.translations.main.observatory.gamma.step1.shaded }}'
+					},
+					'line': {
+						'stroke': ''
+					},
+					'class': 'F90',
+					'pattern': 'hatch'
+				});
+				// Add count data
+				this.graph.setSeries("data",series,{
+					'title': {
+						'label': '{{ site.translations.main.observatory.gamma.step1.series }}'
+					}
+				});
+
+				function move(e,series,pos){
+
+					var x = snapToGrid(pos.x,this.series.data.original);
+					var d = [{x:x,y:-Infinity},{x:x,y:Infinity}];
+
+					// Update the data for the series
+					series.updateData(d);
+
+					id = "";
+					if(series.opt.id=="line-t0") id = "t0";
+					else if(series.opt.id=="line-t90") id = "t90";
+					else if(series.opt.id=="line-t100") id = "t100";
+					if(id){
+						el[id].value = x;
+						// Dispatch change event
+						e = document.createEvent('HTMLEvents');
+						e.initEvent('change', true, false);
+						el[id].dispatchEvent(e);
+					}
+
+					// Update the graph
+					this.drawData();
+					_obj.updateGraph();
+				}
+				function moveEnd(e,series){
+					if(series.opt.id==="line-t100"){
+						_obj.graph.showSeries("t90");
+						_obj.graph.showSeries("F90");
+					}
+					_obj.updateGraph();
+					return;
+				}
+				function moveStart(e,series){
+					//console.log('start',series,series.svg.title._el.innerHTML);
+				}
+
+				// Make the t_0 line that stays static
+				this.graph.setSeries("t0",[{x:x0,y:-Infinity},{x:x0,y:Infinity}],{
+					'id': 'line-t0',
+					'title': {
+						'label': '{{ site.translations.main.observatory.gamma.step1.t0 }}'
+					},
+					'line': {
+						'stroke': '#444',
+						'stroke-width': 4,
+						'cursor': 'col-resize'
+					},
+					'z-index': 10,
+					'tooltip':{ 'label': label }
+				});
+				this.graph.makeDraggable(this.graph.series.t0,{ 'dragstart':moveStart, 'drag':move,'dragend':moveEnd });
+
+				// Make the t_90 line
+				this.graph.setSeries("t90",[{x:x90,y:-Infinity},{x:x90,y:Infinity}],{
+					'id': 'line-t90',
+					'title': {
+						'label': '{{ site.translations.main.observatory.gamma.step1.t90 }}'
+					},
+					'line': {
+						'stroke-width': 6,
+						'stroke': 'rgb(214, 3, 3)',
+						'cursor': 'col-resize'
+					},
+					'z-index': 10,
+					'tooltip':{ 'label': label }
+				});
+				this.graph.makeDraggable(this.graph.series.t90,{ 'drag':move,'dragend':moveEnd });
+
+				// Make the t_100 line
+				this.graph.setSeries("t100",[{x:x100,y:-Infinity},{x:x100,y:Infinity}],{
+					'id': 'line-t100',
+					'title': {
+						'label': '{{ site.translations.main.observatory.gamma.step1.t100 }}'
+					},
+					'line': {
+						'stroke-width': 6,
+						'stroke': 'rgb(34, 84, 244)',
+						'cursor': 'col-resize'
+					},
+					'z-index': 10,
+					'tooltip':{ 'label': label }
+				});
+				this.graph.makeDraggable(this.graph.series.t100,{ 'drag':move,'dragend':moveEnd });
+
+				this.updateGraph();
+
+				// If no t90 value is already set, we hide the t90 line for now
+				if(!t90moveable){
+					this.graph.hideSeries("t90");
+					this.graph.hideSeries("F90");
+				}
+
 				dt = ev.datetime;
 				
 			}else{
 				console.error('Invalid event '+ev,data);
+				document.getElementById('output').innerHTML = '';
 			}
 		}else{
 			el.none.style.display = '';
 			el.waveform.style.display = 'none';
 			el.next.setAttribute('disabled','disabled');
+			document.getElementById('output').innerHTML = '';
 			console.warn('No event set');
 		}
 

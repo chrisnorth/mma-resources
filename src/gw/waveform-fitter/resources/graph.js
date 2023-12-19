@@ -75,7 +75,7 @@
 				'x': {
 					'key': 'x',
 					'dir': 'bottom',
-					'ticks': {'spacing':0.02},
+					'ticks': {},
 					'range': [0.2,1],
 					'font-size': 14,
 					'title':{
@@ -86,7 +86,7 @@
 				'y': {
 					'key': 'y',
 					'dir': 'left',
-					'ticks': {'spacing':0.5},
+					'ticks': {},
 					'range': [-3,3],
 					'font-size': 14,
 					'title':{
@@ -259,7 +259,7 @@
 			if(!opts) opts = {};
 			this.patterns[id] = svgEl('pattern').attr({'id':this.id+'-pattern-'+id, 'patternUnits':"userSpaceOnUse"}).appendTo(this.svg.defs);
 			if(opts.type == "hatch"){
-				opt = { 'size': 10, 'angle': 45, 'style':'stroke:currentColor; stroke-width:1' };
+				var opt = { 'size': 10, 'angle': 45, 'style':'stroke:currentColor; stroke-width:1' };
 				opts = merge(opt,opts||{});
 				var l = svgEl('line');
 				l.attr({'x1':0,'y1':0,'x2':0,'y2':opts.size,'style':opts.style});
@@ -349,7 +349,7 @@
 		var ordered = orderBy(this.series,'z-index');
 		if(this.svg.data){
 			// Simulate z-index by DOM ordering
-			for(let i = 0; i < ordered.length; i++){
+			for(var i = 0; i < ordered.length; i++){
 				// Move to end of data SVG element
 				ordered[i].svg.group.appendTo(this.svg.data);
 			}
@@ -362,21 +362,24 @@
 			if(o[a]) this.axes[a].setDataRange(o[a][0],o[a][1]);
 		}
 		return this;
-	}
+	};
 	Graph.prototype.hideSeries = function(s){
 		this.series[s].svg.group._el.style.display = "none";
 		if(this.series[s].tooltip) this.series[s].tooltip.style.display = "none";
 		return this;
-	}
+	};
 	Graph.prototype.showSeries = function(s){
 		this.series[s].svg.group._el.style.display = '';
 		if(this.series[s].tooltip) this.series[s].tooltip.style.display = "";
 		return this;
-	}
+	};
 	Graph.prototype.drawSeries = function(s){
+		//log.msg('Graph.drawSeries('+s+')',this.series[s]);
+
 		var cls,id,d;
 		if(this.series[s]){
-			
+
+
 			// Work out the class
 			cls = (this.series[s].opt.class ? ' '+this.series[s].opt.class : '');
 
@@ -395,6 +398,7 @@
 			// Update the title
 			if(this.series[s].opt.title && this.series[s].opt.title.label) this.series[s].svg.title.html(this.series[s].opt.title.label);
 
+
 			if(this.series[s].data.length==1){
 				// Draw a line
 				d = makePath(this.dataToGraph(this.series[s].getData(0)));
@@ -403,11 +407,13 @@
 				d = makePath(this.dataToGraph(this.series[s].getData(0)));
 				d += 'L'+makePath(this.dataToGraph(this.series[s].getData(1)),true).substr(1);
 			}
+
 			this.series[s].svg.line.attr({'d':d});			
 
 			if(this.series[s].opt.tooltip && this.series[s].opt.tooltip.label){
 				updateTooltip(this.el,this.series[s]);
 			}
+
 		}
 	};
 	function updateTooltip(el,series){
@@ -419,7 +425,9 @@
 		if(series.tooltip){	
 			var txt = series.opt.title.label.replace(/\\n/g,'<br />');
 			series.tooltip.innerHTML = txt;
+
 			// Position the tooltip
+			series.tooltip.classList.add(series.opt.title.class||"tooltip");
 			var bb = series.svg.line._el.getBoundingClientRect();	// Bounding box of the element
 			var bbo = el.getBoundingClientRect(); // Bounding box of SVG holder
 			var off = 4;
@@ -445,7 +453,6 @@
 
 	Graph.prototype.drawData = function(){
 		log.msg('Graph.drawData');
-
 		for(var s in this.series) this.drawSeries(s);
 
 		var xr = this.axes.x.getDataRange();
@@ -537,7 +544,6 @@
 			'font-family': 'sans-serif',
 			'dir': 'left',
 			'ticks': {
-				'spacing': 1,
 				'opacity': 1,
 				'show': true,
 				'line': {'stroke':'#ddd'},
@@ -664,6 +670,7 @@
 				console.warn('setTickSpacing - bad spacing',s,opts);
 				return this;
 			}
+
 			// If we've changed the spacing update it and the ticks
 			if(opts.ticks.spacing!=s){
 				opts.ticks.spacing = s;
@@ -675,7 +682,7 @@
 			vals = [];
 			ticks = el._el.querySelectorAll('.tick');
 			for(t = 0; t < ticks.length; t++) ticks[t].parentNode.removeChild(ticks[t]);
-			if(this.scale && opts.ticks.show){
+			if(this.scale && opts.ticks.show && opts.ticks.spacing > 0){
 				if(opts.labels){
 					if(typeof opts.labels==="object"){
 						vals = opts.labels;
@@ -781,9 +788,10 @@
 			return this;
 		};
 		this.updateData = function(data){
+			var j,ndata;
 			if(data[0].length==2){
 				ndata = new Array(data.length);
-				for(var j = 0; j < data.length; j++){
+				for(j = 0; j < data.length; j++){
 					ndata[j] = {};
 					ndata[j][this.opt.keys.x] = data[j][0];
 					ndata[j][this.opt.keys.y] = data[j][1];
@@ -792,11 +800,11 @@
 
 			// Add any xoffset to the x-axis
 			if(typeof opt.xoffset==="number"){
-				for(var j = 0; j < ndata.length; j++) ndata[j][this.opt.keys.x] += opt.xoffset;
+				for(j = 0; j < ndata.length; j++) ndata[j][this.opt.keys.x] += opt.xoffset;
 			}
 			// Add any yoffset to the y-axis
 			if(typeof opt.yoffset==="number"){
-				for(var j = 0; j < ndata.length; j++) ndata[j][this.opt.keys.y] += opt.yoffset;
+				for(j = 0; j < ndata.length; j++) ndata[j][this.opt.keys.y] += opt.yoffset;
 			}
 
 			// Keep a copy of the original data
@@ -828,7 +836,7 @@
 		// Make the SVG object
 		if(!this.svg) this.svg = {};
 		// Make the line object for this series
-		if(!this.svg.group) this.svg.group = svgEl('g').attr({'class':opt.id+'-group'})//,'id':(opt.graphid ? opt.graphid+'-':'')+opt.id+'-group';
+		if(!this.svg.group) this.svg.group = svgEl('g').attr({'class':opt.id+'-group'});//,'id':(opt.graphid ? opt.graphid+'-':'')+opt.id+'-group';
 		if(!this.svg.line) this.svg.line = svgEl('path').appendTo(this.svg.group);
 		if(!this.svg.title) this.svg.title = svgEl('title').appendTo(this.svg.line);
 		this.svg.title.html('');
@@ -876,10 +884,10 @@
 		return (idStr);
 	}
 	function orderBy(arr,by,reverse=false){
-		let k = Object.keys(arr);
-		let o = k.sort((a, b) => {return (reverse ? -1 : 1) * (arr[a].opt[by] - arr[b].opt[by] || arr[a].opt.id > arr[b].opt.id)});
-		let out = [];
-		for(let i = 0; i < o.length; i++) out.push(arr[o[i]]);
+		var k = Object.keys(arr);
+		var o = k.sort((a, b) => {return (reverse ? -1 : 1) * (arr[a].opt[by] - arr[b].opt[by] || arr[a].opt.id > arr[b].opt.id); });
+		var out = [];
+		for(var i = 0; i < o.length; i++) out.push(arr[o[i]]);
 		return out;
 	}
 
@@ -894,11 +902,11 @@
 			var typ = arguments[0];
 			var arg = arguments[1];
 			if(this.logging || typ=="ERROR" || typ=="WARNING" || typ=="INFO"){
-				a = Array.prototype.slice.call(arg, 0);
+				var a = Array.prototype.slice.call(arg, 0);
 				var str = '';
 				if(typeof a[0]==="string"){ str = ': '+a[0]; a.shift(1); }
 				// Build basic result
-				ext = ['%c'+title+' '+version+'%c'+(str || ''),'font-weight:bold;',''];
+				var ext = ['%c'+title+' '+version+'%c'+(str || ''),'font-weight:bold;',''];
 				// If there are extra parameters passed we add them
 				if(a.length > 0) ext = ext.concat(a);
 				if(console && typeof console.log==="function"){
