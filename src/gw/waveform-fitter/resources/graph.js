@@ -128,12 +128,12 @@
 		if(!this.axes) this.axes = {};
 		if(!this.svg.xaxis){
 			// Make x-axis
-			this.svg.xaxis = svgEl('g').appendTo(this.svg.el).addClass("x-axis axis").attr({'id':'x-axis-g'});
+			this.svg.xaxis = svgEl('g').appendTo(this.svg.el).addClass("x-axis axis");
 			this.axes.x = new Axis(this.svg.xaxis,this.opt.axes.x,svgEl('text').addClass("x-axis axis-title translate"));
 		}
 		if(!this.svg.yaxis){
 			// Make y-axis
-			this.svg.yaxis = svgEl('g').appendTo(this.svg.el).addClass("y-axis axis").attr({'id':'y-axis-g'});
+			this.svg.yaxis = svgEl('g').appendTo(this.svg.el).addClass("y-axis axis");
 			this.axes.y = new Axis(this.svg.yaxis,this.opt.axes.y,svgEl('text').addClass("y-axis axis-title translate"));
 		}
 		
@@ -240,7 +240,7 @@
 		if(this.axes.y.title) this.axes.y.title.attr(merge({'x':-this.scales.graphHeight/2,'y':(-this.scales.svgMargin.left*0.95 + 5)+'px',"font-size":fs+"px"},this.axes.y.getProps().title.attr||{}));
 
 		// Make data
-		if(!this.svg.data) this.svg.data = svgEl("g").appendTo(this.svg.el).attr({"id":this.id+"-data-g",'clip-path':'url(#'+this.id+'-clip)'});
+		if(!this.svg.data) this.svg.data = svgEl("g").appendTo(this.svg.el).attr({'class':'data-layer','clip-path':'url(#'+this.id+'-clip)'});
 		this.svg.data.attr({"transform":"translate("+this.scales.svgMargin.left+","+(this.scales.svgMargin.top) + ")"});
 
 		this.drawData();
@@ -818,7 +818,7 @@
 			return this.data[i].lineData;
 		};
 		this.clear = function(){
-			if(this.svg.line) this.svg.line._el.setAttribute('path','');;
+			if(this.svg.line) this.svg.line._el.setAttribute('path','');
 			if(this.svg.title) this.svg.title._el.innerHTML = "";
 			return this;
 		};
@@ -828,7 +828,7 @@
 		// Make the SVG object
 		if(!this.svg) this.svg = {};
 		// Make the line object for this series
-		if(!this.svg.group) this.svg.group = svgEl('g').attr({'id':opt.id+'-group'})//BLAH;
+		if(!this.svg.group) this.svg.group = svgEl('g').attr({'class':opt.id+'-group'})//,'id':(opt.graphid ? opt.graphid+'-':'')+opt.id+'-group';
 		if(!this.svg.line) this.svg.line = svgEl('path').appendTo(this.svg.group);
 		if(!this.svg.title) this.svg.title = svgEl('title').appendTo(this.svg.line);
 		this.svg.title.html('');
