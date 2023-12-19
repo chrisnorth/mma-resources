@@ -1,0 +1,57 @@
+{
+	"events": {
+		"GRB180817A": {
+			"datetime": "2018-08-17T12:00:00",
+			"distance": 40,
+			"E_iso": 1e40,
+			"peaks": {
+				"file": "DetectorPeaks_GRB170817A.csv",
+				"detector": "Detector",
+				"count": "Peak Count Rate (count/s)"
+			},
+			"detector": {
+				"file": "detector_locs.csv",
+				"detector": "Detector",
+				"ra": { "value": "RA","uncertainty":"RA_range"},
+				"dec": { "value": "Dec","uncertainty":"Dec_range"}
+			},
+			"lightcurve": {
+				"file": "Lightcurve_GRB170817A.csv",
+				"time": "Time From Event",
+				"count": "Light Counts"
+			}
+		},
+		"080916C": {
+			"datetime": "2000-01-01T00:00:00",
+			"distance": 0,
+			"E_iso": 0,
+			"detector": {
+				"file": "080916C_detectors.csv",
+				"detector": "Det",
+				"ra": { "value": "RA","uncertainty":"RA_range"},
+				"dec": { "value": "Dec","uncertainty":"Dec_range"}
+			},
+			"lightcurve": {
+				"file": "080916C_count_rates.csv",
+				"time": "tstart",
+				"count": ["n0","n1","n2","n3","n4","n5","n6","n7","n8","n9","na","nb"]
+			}
+		},
+		"191031D": {
+			"datetime": "2000-01-01T00:00:00",
+			"distance": 0,
+			"E_iso": 0,
+			"detector": {
+				"file": "191031D_detectors.csv",
+				"detector": "Det",
+				"ra": { "value": "RA","uncertainty":"RA_range"},
+				"dec": { "value": "Dec","uncertainty":"Dec_range"}
+			},
+			"lightcurve": {
+				"file": "191031D_count_rates.csv",
+				"time": "tstart",
+				"count": ["n0","n1","n2","n3","n4","n5","n6","n7","n8","n9","na","nb"]
+			}
+		}
+	}
+}
