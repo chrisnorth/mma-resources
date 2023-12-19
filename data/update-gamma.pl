@@ -89,8 +89,8 @@ foreach $ev ((keys(%{$gamma->{'events'}}))){
 		$gamma->{'events'}{$ev}{'detector'} = {'locations'=>{}};
 		for($i = 0; $i < @vals; $i++){
 			$gamma->{'events'}{$ev}{'detector'}{'locations'}{$vals[$i]{$conf->{'detector'}}} = {
-				'RA' => {'value'=> $vals[$i]{$conf->{'ra'}{'value'}}+0,'uncertainty'=> $vals[$i]{$conf->{'ra'}{'uncertainty'}}+0},
-				'Dec' => {'value'=> $vals[$i]{$conf->{'dec'}{'value'}}+0,'uncertainty'=> $vals[$i]{$conf->{'dec'}{'uncertainty'}}+0}
+				'RA' => {'value'=> $vals[$i]{$conf->{'ra'}{'value'}}+0,'uncertainty'=> ($vals[$i]{$conf->{'ra'}{'uncertainty'}}||10)+0},
+				'Dec' => {'value'=> $vals[$i]{$conf->{'dec'}{'value'}}+0,'uncertainty'=> ($vals[$i]{$conf->{'dec'}{'uncertainty'}}||10)+0}
 			}
 			
 		}
