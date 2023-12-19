@@ -1,43 +1,43 @@
 text:
     title:
-        en: Multi-messenger Observatory
+        en: "Multi-messenger Observatory"
     welcome:
         title:
-            en: Welcome to the Multi-messenger Observatory
-            cy: Croeso
+            en: "Welcome to the Multi-messenger Observatory"
+            cy: "Croeso i Multi-messenger Observatory"
         intro:
-            en: Don't shoot us...
-            cy: Don't shoot us... (Welsh)
+            en: "Don't shoot us..."
+            cy: "Don't shoot us... (Welsh)"
     login:
         title:
-            en: Observer Portal Sign In
+            en: "Observer Portal Sign In"
         intro:
-            en: Welcome to the Observer Portal. Please sign in to continue.
+            en: "Welcome to the Observer Portal. Please sign in to continue."
         signin:
-            en: Sign In
+            en: "Sign In"
         signout:
-            en: Sign Out
+            en: "Sign Out"
         username:
-            en: User name
+            en: "User name"
         password:
-            en: Password
+            en: "Password"
         wrong:
-            en: Your login details were incorrect
+            en: "Your login details were incorrect"
     observatory:
         gw:
             title:
-                en: Gravitational Wave Network Observatory
+                en: "Gravitational Wave Network Observatory"
             front:
                 intro:
-                    en: Welcome to the Gravitational Wave Network Observatory. Some inspiral-ational text...
+                    en: "Welcome to the Gravitational Wave Network Observatory. Some inspiral-ational text..."
                 hero:
                     title:
-                        en: LIGO-Virgo-KAGRA Finds Elusive Mergers of Black Holes with Neutron Stars
+                        en: "LIGO-Virgo-KAGRA Finds Elusive Mergers of Black Holes with Neutron Stars"
                     desc:
-                        en: LVK scientists capture two NSBH merger events 10 days apart in January 2020.
+                        en: "LVK scientists capture two NSBH merger events 10 days apart in January 2020."
                 links:
                     title:
-                        en: Useful links
+                        en: "Useful links"
                 footer:
                     en: "&copy; Some footer text"
             prev:
@@ -45,49 +45,51 @@ text:
             next:
                 en: "Next &raquo;"
             back:
-                en: Back
+                en: "Back"
             notification:
                 title:
-                    en: Event notification
+                    en: "Event notification"
                 intro:
-                    en: Below is all the information you have determined so far. You may wish to circulate this to the other teams. You can do so at any time - you do not need to know all the information.
+                    en: "Below is all the information you have determined so far. You may wish to circulate this to the other teams. You can do so at any time - you do not need to know all the information."
                 text:
                     en: "GRAVITATIONAL WAVE TEAM\nEVENT NOTIFICATION\n\nName: {{ name }}\nTime/date: {{ date }}\nPossible locations: {{ locations }}\nMass estimate (M☉): {{ mass }} ± 5%\nDistance estimate (Mpc): {{ distance }}\nMass ratio: {{ massratio }}\nInclination (°): {{ inclination }}\n\nAdditional notes:\n==========\n"
                 copy:
-                    en: Copy to clipboard
+                    en: "Copy to clipboard"
             steps:
                 title:
-                    en: Observer Portal
+                    en: "Observer Portal"
                 intro:
                     en: "Welcome to the Observer Portal. Clicking 'Next' will take you to the event selection."
             step1:
                 title:
-                    en: Initial event selection
+                    en: "Initial event selection"
                 intro:
                     en: "Select the event that you would like to investigate further above."
                 noevent:
-                    en: No event selected
+                    en: "No event selected"
                 date:
                     en: "Time/date:"
                 selected:
                     en: "Selected event:"
                 waveform-a:
-                    en: A half second of the waveform
+                    en: "A half second of the waveform"
                 waveform-b:
-                    en: A zoom-in of 10 cycles of the waveform
+                    en: "A zoom-in of 10 cycles of the waveform"
             step2:
                 title:
-                    en: Localisation
-                    en-US: Localization
+                    en: "Localisation"
+                    en-US: "Localization"
                 intro:
                     en: "Move the lines to mark similar parts of the two waveforms in order to show the difference in arrival time"
+                skymap:
+                    en: "Find the overlapping sections of the sky"
                 selected:
                     en: "Matching grid squares:"
             step3:
                 title:
-                    en: Basic parameters
+                    en: "Basic parameters"
                 intro:
-                    en: Use the interface below to estimate the basic parameters of the system. You will find a range of values will fit the data. If you don't know the inclination, then try 0<sup>o</sup> and 90<sup>o</sup>. Enter the ranges below.
+                    en: "Use the interface below to estimate the basic parameters of the system. You will find a range of values will fit the data. If you don't know the inclination, then try 0<sup>o</sup> and 90<sup>o</sup>. Enter the ranges below."
                 mass:
                     en: "Mass estimate (M<sub>&#9737;</sub>):"
                 distance:
@@ -98,38 +100,38 @@ text:
                     en: "&rarr;"
             step4:
                 title:
-                    en: Advanced parameters
+                    en: "Advanced parameters"
                 intro:
-                    en: If you have more information about your event, you may be able to refine your estimates of the mass, distance etc.
+                    en: "If you have more information about your event, you may be able to refine your estimates of the mass, distance etc."
                 massratio:
-                    en: Mass ratio
+                    en: "Mass ratio"
                 to:
                     en: "&rarr;"
             detectors:
                 H:
-                    en: Hanford
+                    en: "Hanford"
                 L:
-                    en: Livingston
+                    en: "Livingston"
                 V:
-                    en: Virgo
+                    en: "Virgo"
                 K:
-                    en: KAGRA
+                    en: "KAGRA"
         optical:
             title:
-                en: International Optical Telescope
+                en: "International Optical Telescope"
         gamma:
             title:
-                en: Gamma-ray Observatory
+                en: "Gamma-ray Observatory"
             home:
-                en: Home
+                en: "Home"
             logo:
-                en: GAMMA
+                en: "GAMMA"
             front:
                 intro:
-                    en: Welcome to the Gamma Ray Observatory. We're bursting to get started...
+                    en: "Welcome to the Gamma Ray Observatory. We're bursting to get started..."
                 links:
                     title:
-                        en: Operations
+                        en: "Operations"
                 footer:
                     en: "&copy; Some footer text"
             prev:
@@ -137,28 +139,28 @@ text:
             next:
                 en: "Next"
             back:
-                en: Back
+                en: "Back"
             notification:
                 title:
-                    en: Event notification
+                    en: "Event notification"
                 intro:
-                    en: Below is all the information you have determined so far. You may wish to circulate this to the other teams. You can do so at any time - you do not need to know all the information.
+                    en: "Below is all the information you have determined so far. You may wish to circulate this to the other teams. You can do so at any time - you do not need to know all the information."
                 text:
                     en: "GAMMA RAY TEAM\nEVENT NOTIFICATION\n\nName: {{ name }}\nTime/date: {{ date }}\nT90: {{ t90 }} seconds\nLocations: {{ locations }}\nInclination: {{ inclination }}&deg;\n\nAdditional notes:\n==========\n"
                 copy:
-                    en: Copy to clipboard
+                    en: "Copy to clipboard"
             steps:
                 title:
-                    en: Observer Portal
+                    en: "Observer Portal"
                 intro:
                     en: "Welcome to the Observer Portal. Clicking 'Next' will take you to the event selection."
             step1:
                 title:
-                    en: Initial event selection
+                    en: "Initial event selection"
                 intro:
                     en: "Select the event that you would like to investigate further."
                 noevent:
-                    en: No event selected
+                    en: "No event selected"
                 selected:
                     en: "Selected event:"
                 date:
@@ -190,34 +192,34 @@ text:
                         en: "Too low"
             step2:
                 title:
-                    en: Localisation
-                    en-US: Localization
+                    en: "Localisation"
+                    en-US: "Localization"
                 intro:
                     en: "Use the detector counts to identify the possible locations."
                 selected:
                     en: "Selected location:"
                 counts:
-                    en: Detector counts
+                    en: "Detector counts"
                 locations:
-                    en: Detector locations
+                    en: "Detector locations"
                 table:
                     detector:
-                        en: Detector
+                        en: "Detector"
                     counts:
-                        en: Counts
+                        en: "Counts"
                     ra:
-                        en: RA
+                        en: "RA"
                     dec:
-                        en: Dec
+                        en: "Dec"
             step3:
                 title:
-                    en: Inclination
+                    en: "Inclination"
                 intro:
                     en: "If you have more information about your event, you may be able to refine your estimates of the inclination of the event."
                 inclination:
                     en: "Inclination:"
                 units:
-                    en: degrees
+                    en: "degrees"
                 distance:
                     en: "Distance:"
                 brightness:
@@ -226,19 +228,19 @@ text:
                     en: "Measured brightness: {{ value }} Joules"
         xr:
             title:
-                en: X-ray & Radio Observatory
+                en: "X-ray & Radio Observatory"
     cosmocalc:
         title:
-            en: Cosmological Calculator
+            en: "Cosmological Calculator"
         intro:
             en: "Placeholder text."
         result:
             en: "Result"
         redshift:
-            en: Redshift
+            en: "Redshift"
         distance:
             en: "Distance (Mpc)"
         yourvalue:
-            en: Your value
+            en: "Your value"
         age:
-            en: Age of the Universe (billion years)
+            en: "Age of the Universe (billion years)"

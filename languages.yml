@@ -1,11 +1,14 @@
 en:
     label:  English
     enabled: false
+    text: "Select your language"
 en-US:
     label:  English (US)
     inherit: en
     enabled: false
+    text: "Select your language (US)"
 cy:
     label:  Cymraeg
     inherit: en
     enabled: false
+    text: "Select your language (Welsh)"

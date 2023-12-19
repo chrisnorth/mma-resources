@@ -5,19 +5,36 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="resources/style.css">
 	<script type="text/javascript" src="resources/common.js"></script>
+	<script type="text/javascript" src="resources/languages.js"></script>
+	<style>
+	header {
+		width: 100%;
+		text-align: right;
+		padding: 0.5em;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+	#language-switcher select {
+		border: 0;
+		background: transparent;
+	}
+	</style>
 </head>
 <body>
-	<header><div id="translate"></div></header>
-	<div class="login">
-		<h1>{{ site.translations.main.welcome.title }}</h1>
-		<p>{{ site.translations.main.welcome.intro }}</p>
-		<ol class="grid">
-			<li><a href="gw/index.html" class="gw-highlight doublepadded"><h2>{{ site.translations.main.observatory.gw.title }}</h2></a></li>
-			<li><a href="gamma/index.html" class="ga-highlight doublepadded"><h2>{{ site.translations.main.observatory.gamma.title }}</h2></a></li>
-			<li><a href="x-r/index.html" class="xr-highlight doublepadded"><h2>{{ site.translations.main.observatory.xr.title }}</h2></a></li>
-			<li><a href="optical/index.html" class="op-highlight doublepadded"><h2>{{ site.translations.main.observatory.optical.title }}</h2></a></li>
-			<li class="fullwidth"><a href="cosmological-calculator/index.html" class="cc-highlight padded"><h2>{{ site.translations.main.cosmocalc.title }}</h2></a></li>
-		</ol>
+	<header><div id="language-switcher"></div></header>
+	<div class="body">
+		<div class="login">
+			<h1>{{ site.translations.main.welcome.title }}</h1>
+			<p>{{ site.translations.main.welcome.intro }}</p>
+			<ol class="grid">
+				<li><a href="gw/index.html" class="gw-highlight doublepadded"><h2>{{ site.translations.main.observatory.gw.title }}</h2></a></li>
+				<li><a href="gamma/index.html" class="ga-highlight doublepadded"><h2>{{ site.translations.main.observatory.gamma.title }}</h2></a></li>
+				<li><a href="x-r/index.html" class="xr-highlight doublepadded"><h2>{{ site.translations.main.observatory.xr.title }}</h2></a></li>
+				<li><a href="optical/index.html" class="op-highlight doublepadded"><h2>{{ site.translations.main.observatory.optical.title }}</h2></a></li>
+				<li class="fullwidth"><a href="cosmological-calculator/index.html" class="cc-highlight padded"><h2>{{ site.translations.main.cosmocalc.title }}</h2></a></li>
+			</ol>
+		</div>
 	</div>
 </body>
 </html>
