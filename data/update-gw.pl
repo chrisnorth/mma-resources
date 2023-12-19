@@ -10,6 +10,8 @@ use POSIX qw(strftime);
 my $basedir = "./";
 if(abs_path($0) =~ /^(.*\/)[^\/]*/){ $basedir = $1; }
 
+require $basedir.'lib.pl';
+
 $basedir .= "../";
 
 $idir = $basedir."data/";
@@ -23,14 +25,10 @@ $dp = 3;
 
 # Open the scenario file for GW
 $file = $idir."scenario-1.json";
-open(FILE,$file);
-@lines = <FILE>;
-close(FILE);
-eval { $json = JSON::XS->new->utf8->decode(join("",@lines)); }
-or do { $json = {}; };
+$json = LoadJSON($file);
 
 # Add generation note
-$json->{'_notes'} = "Created by data/update.pl from data/scenario-1.json";
+$json->{'_notes'} = "Created by $0 using data/scenario-1.json";
 $json->{'_update'} = strftime("%FT%TZ",gmtime);
 
 # Trim decimal places in grid map values
@@ -55,43 +53,43 @@ foreach $ev (sort(keys(%{$json->{'events'}}))){
 					for($q = 0; $q < @massratios; $q++){
 						$qfile = $json->{'events'}{$ev}{'GW'}{'files'}{$f};
 						$qfile =~ s/q1\.0/q$massratios[$q]/;
-						print "Copying $w$qfile to $wodir\n";
+						msg("Copying <cyan>$w$qfile<none> to <cyan>$wodir<none>\n");
 						`cp $w$qfile $wodir$qfile`;
 					}
 				}else{
-					print "Copying $w$json->{'events'}{$ev}{'GW'}{'files'}{$f} to $wodir\n";
+					msg("Copying <cyan>$w$json->{'events'}{$ev}{'GW'}{'files'}{$f}<none> to <cyan>$wodir<none>\n");
 					`cp $w$json->{'events'}{$ev}{'GW'}{'files'}{$f} $wodir$json->{'events'}{$ev}{'GW'}{'files'}{$f}`;
 				}
 				$json->{'events'}{$ev}{'GW'}{'files'}{$f} =~ s/q1\.0/q{MASSRATIO}/;
 			}else{
-				print "Can't copy $w$json->{'events'}{$ev}{'GW'}{'files'}{$f}\n";
+				warning("Can't copy <cyan>$w$json->{'events'}{$ev}{'GW'}{'files'}{$f}<none>\n");
 			}
 		}
 	}
 	
 }
 
-saveJSON($odir."scenario-1.json",$json);
+SaveJSON($json,$odir."scenario.json",4);
 
 $opts = "";
 foreach $ev (sort(keys(%{$json->{'events'}}))){
 	if(!$json->{'events'}{$ev}{'name'}){
-		print "Missing name for $ev\n";
+		warning("Missing name for $ev\n");
 	}
 	if(!$json->{'events'}{$ev}{'datetime'}){
-		print "Missing datetime for $ev\n";
+		warning("Missing datetime for $ev\n");
 	}
 	if(!$json->{'events'}{$ev}{'GW'}){
-		print "Missing GW for $ev\n";
+		warning("Missing GW for $ev\n");
 	}
 	if(!$json->{'events'}{$ev}{'GW'}{'files'}){
-		print "Missing GW->files for $ev\n";
+		warning("Missing GW->files for $ev\n");
 	}
 	if(!$json->{'events'}{$ev}{'GW'}{'files'}{'waveform_csv'}){
-		print "Missing GW->files->waveform_csv for $ev\n";
+		warning("Missing GW->files->waveform_csv for $ev\n");
 	}
 	if(!$json->{'events'}{$ev}{'GW'}{'files'}{'simulations_csv'}){
-		print "Missing GW->files->simulations_csv for $ev\n";
+		warning("Missing GW->files->simulations_csv for $ev\n");
 	}
 	$opts .= "<option value=\"$ev\">$json->{'events'}{$ev}{'name'}</option>\n";
 }
@@ -144,27 +142,27 @@ sub partOfHTML {
 	
 }
 
-sub saveJSON {
-	my $file = shift;
-	my $json = $_[0];
-
-	$str = JSON::XS->new->utf8->canonical->pretty->encode($json);
-
-	# Clean up
-
-	# Swap spaces for tabs
-	$str =~ s/   /\t/g;	
-
-	# Compress number arrays
-	$str =~ s/\n\t{7}([0-9\.\-]+)/$1/g;
-	$str =~ s/\[\n\t{6}\[/\[\[/g;
-	$str =~ s/\n\t{6}\],\n\t{6}\[/\],\[/g;
-	$str =~ s/\n\t{6}\]\n\t{5}\]/\]\]/g;
-
-	# Save the file
-	open(JSON,">",$file);
-	print JSON $str;
-	close(JSON);
-
-	return;
-}
+#sub saveJSON {
+#	my $file = shift;
+#	my $json = $_[0];
+#
+#	$str = JSON::XS->new->utf8->canonical->pretty->encode($json);
+#
+#	# Clean up
+#
+#	# Swap spaces for tabs
+#	$str =~ s/   /\t/g;	
+#
+#	# Compress number arrays
+#	$str =~ s/\n\t{7}([0-9\.\-]+)/$1/g;
+#	$str =~ s/\[\n\t{6}\[/\[\[/g;
+#	$str =~ s/\n\t{6}\],\n\t{6}\[/\],\[/g;
+#	$str =~ s/\n\t{6}\]\n\t{5}\]/\]\]/g;
+#
+#	# Save the file
+#	open(JSON,">",$file);
+#	print JSON $str;
+#	close(JSON);
+#
+#	return;
+#}

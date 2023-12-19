@@ -7,6 +7,9 @@
 	<link rel="stylesheet" href="../../../resources/style.css">
 	<link rel="stylesheet" href="../../resources/style.css">
 	<script type="text/javascript" src="../../waveform-fitter/resources/graph.js"></script>
+	<style>
+	#waveform { margin-top: 2em; }
+	</style>
 </head>
 <body class="gw-bg">
 	<div id="main" class="page">
@@ -34,10 +37,6 @@
 				</ol>
 				<section id="step" class="doublepadded">
 					<h2>{{ site.translations.main.observatory.gw.step1.title }}</h2>
-					<div class="widescreen">
-						<div id="no-event" class="text-center">{{ site.translations.main.observatory.gw.step1.intro }}</div>
-						<div id="waveform" class="waveform"></div>
-					</div>
 					<div class="padded output gw">
 						<label class="prop" for="select-event">{{ site.translations.main.observatory.gw.step1.selected }}</label>
 						<select id="select-event">
@@ -45,6 +44,10 @@
 							<!-- EVENT START --><option value="LVK220612">LVK220612</option><option value="LVK220617">LVK220617</option><option value="LVK220628">LVK220628</option><!-- EVENT END -->
 						</select>
 						<span class="prop">{{ site.translations.main.observatory.gw.step1.date }}</span> <span class="value event-date">?</span>
+					</div>
+					<div class="widescreen">
+						<div id="no-event" class="text-center">{{ site.translations.main.observatory.gw.step1.intro }}</div>
+						<div id="waveform" class="waveform"></div>
 					</div>
 				</section>
 				<section id="event-notification" class="doublepadded">
@@ -79,7 +82,7 @@
 	<script>
 	var scenario;
 	ready(function(){
-		scenario = new Scenario('../scenario-1.json');
+		scenario = new Scenario('../scenario.json');
 	});
 	</script>
 </body>

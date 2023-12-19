@@ -52,7 +52,7 @@ text:
                 intro:
                     en: Below is all the information you have determined so far. You may wish to circulate this to the other teams. You can do so at any time - you do not need to know all the information.
                 text:
-                    en: "Name: {{ name }}\nTime/date: {{ date }}\nPossible locations: {{ locations }}\nMass estimate (M☉): {{ mass }} ± 5%\nDistance estimate (Mpc): {{ distance }}\nMass ratio: {{ massratio }}\nInclination (°): {{ inclination }}\n\nAdditional notes:\n==========\n"
+                    en: "GRAVITATIONAL WAVE TEAM\nEVENT NOTIFICATION\n\nName: {{ name }}\nTime/date: {{ date }}\nPossible locations: {{ locations }}\nMass estimate (M☉): {{ mass }} ± 5%\nDistance estimate (Mpc): {{ distance }}\nMass ratio: {{ massratio }}\nInclination (°): {{ inclination }}\n\nAdditional notes:\n==========\n"
                 copy:
                     en: Copy to clipboard
             steps:
@@ -64,7 +64,7 @@ text:
                 title:
                     en: Initial event selection
                 intro:
-                    en: "Select the event that you would like to investigate further below."
+                    en: "Select the event that you would like to investigate further above."
                 noevent:
                     en: No event selected
                 date:
@@ -138,6 +138,15 @@ text:
                 en: "Next"
             back:
                 en: Back
+            notification:
+                title:
+                    en: Event notification
+                intro:
+                    en: Below is all the information you have determined so far. You may wish to circulate this to the other teams. You can do so at any time - you do not need to know all the information.
+                text:
+                    en: "GAMMA RAY TEAM\nEVENT NOTIFICATION\n\nName: {{ name }}\nTime/date: {{ date }}\nt_90: {{ t90 }} seconds\nLocations: {{ locations }}\nInclination: {{ inclination }}&deg;\n\nAdditional notes:\n==========\n"
+                copy:
+                    en: Copy to clipboard
             steps:
                 title:
                     en: Observer Portal
@@ -215,15 +224,6 @@ text:
                     en: "Observed brightness (Joules):"
                 measured:
                     en: "Measured brightness: {{ value }} Joules"
-            notification:
-                title:
-                    en: Event notification
-                intro:
-                    en: Below is all the information you have determined so far. You may wish to circulate this to the other teams. You can do so at any time - you do not need to know all the information.
-                text:
-                    en: "GAMMA RAY EVENT NOTIFICATION\n\nName: {{ name }}\nTime/date: {{ date }}\nt_90: {{ t90 }} seconds\nLocations: {{ locations }}\nInclination: {{ inclination }}&deg;\n\nAdditional notes:\n==========\n"
-                copy:
-                    en: Copy to clipboard
         xr:
             title:
                 en: X-ray & Radio Observatory

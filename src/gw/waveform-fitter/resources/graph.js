@@ -577,7 +577,7 @@
 				// Count decimal places
 				if(str.indexOf(".") > 0) dp = str.split(".")[1].length;
 			}else{
-				console.warn('Tick spacing is not a number',opts,opts.ticks);
+				//console.warn('Tick spacing is not a number',opts,opts.ticks);
 			}
 			return this;
 		};

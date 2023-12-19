@@ -105,9 +105,3 @@ $gamma->{'_update'} = strftime("%FT%TZ",gmtime);
 
 SaveJSON($gamma,"src/gamma/A7E558CE2429F1718F26EBE3B9B961C617018962/scenario.json",3);
 
-exit;
-
-# Add generation note
-$json->{'_notes'} = "Created by data/update.pl from data/scenario-1.json";
-$json->{'_update'} = strftime("%FT%TZ",gmtime);
-
