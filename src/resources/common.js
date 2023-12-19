@@ -67,6 +67,7 @@ function EventNotification(opt){
 
 		// Update notification replacements - match entire line that has a replacement value
 		var str = original.replace(/([^\n]*)\{\{ ([^\}]+) \}\}([^\n]*)\n/g,function(m,p1,p2,p3){
+			if(location.search.indexOf('debug')>=0) console.log(p1,p2,p3,_obj.attr);
 			if(_obj.attr[p2] || (typeof _obj.attr[p2]==="number" && !isNaN(_obj.attr[p2]))){
 				// If we have a replacement value, replace it in the line
 				return (p1+_obj.attr[p2]+p3)+"\n";

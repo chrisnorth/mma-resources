@@ -33,7 +33,7 @@ function Step(data,opt){
 		// Build Inclination slider
 		var rangeSlider = noUiSlider.create(el.slider, {
 			start: [0],
-			step: 0.01,
+			step: 0.1,
 			range: {
 				'min': 0,
 				'max': 90
@@ -48,7 +48,7 @@ function Step(data,opt){
 		var rangeSliderValueElement = document.getElementById('slider-range-value');
 
 		el.slider.noUiSlider.on('update', function (values, handle) {
-			rangeSliderValueElement.innerHTML = values[handle]+'&deg;';
+			rangeSliderValueElement.innerHTML = parseFloat(values[handle]).toFixed(1)+'&deg;';
 			brightness.updateValues();
 		});
 

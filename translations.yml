@@ -221,7 +221,7 @@ text:
                 intro:
                     en: Below is all the information you have determined so far. You may wish to circulate this to the other teams. You can do so at any time - you do not need to know all the information.
                 text:
-                    en: "GAMMA RAY EVENT NOTIFICATION\n\nName: {{ name }}\nTime/date: {{ date }}\nt_90: {{ t90 }}\nInclination range: (&deg;): {{ inclination }}\n\nAdditional notes:\n==========\n"
+                    en: "GAMMA RAY EVENT NOTIFICATION\n\nName: {{ name }}\nTime/date: {{ date }}\nt_90: {{ t90 }} seconds\nLocations: {{ locations }}\nInclination: {{ inclination }}&deg;\n\nAdditional notes:\n==========\n"
                 copy:
                     en: Copy to clipboard
         xr:
