@@ -47,23 +47,28 @@ foreach $ev (sort(keys(%{$json->{'events'}}))){
 			}else{
 				$w = $wsdir;
 			}
-			if(-e $w.$json->{'events'}{$ev}{'GW'}{'files'}{$f}){
-				# If the file has a "q1.0" type string in it we will check for the different mass ratios
-				if($json->{'events'}{$ev}{'GW'}{'files'}{$f} =~ /q1\.0/){
-					for($q = 0; $q < @massratios; $q++){
-						$qfile = $json->{'events'}{$ev}{'GW'}{'files'}{$f};
-						$qfile =~ s/q1\.0/q$massratios[$q]/;
+
+			# If the file has a "q1.0" type string or "q{MASSRATIO}" in it we will check for the different mass ratios
+			if($json->{'events'}{$ev}{'GW'}{'files'}{$f} =~ /q(1\.0|\{MASSRATIO\})/){
+				for($q = 0; $q < @massratios; $q++){
+					$qfile = $json->{'events'}{$ev}{'GW'}{'files'}{$f};
+					$qfile =~ s/q(1\.0|\{MASSRATIO\})/q$massratios[$q]/;
+					if(-e $w.$qfile){
 						msg("Copying <cyan>$w$qfile<none> to <cyan>$wodir<none>\n");
 						`cp $w$qfile $wodir$qfile`;
+					}else{
+						warning("Can't copy <cyan>$w$qfile<none>\n");
 					}
-				}else{
+				}
+			}else{
+				if(-e $w.$json->{'events'}{$ev}{'GW'}{'files'}{$f}){
 					msg("Copying <cyan>$w$json->{'events'}{$ev}{'GW'}{'files'}{$f}<none> to <cyan>$wodir<none>\n");
 					`cp $w$json->{'events'}{$ev}{'GW'}{'files'}{$f} $wodir$json->{'events'}{$ev}{'GW'}{'files'}{$f}`;
+				}else{
+					warning("Can't copy <cyan>$w$json->{'events'}{$ev}{'GW'}{'files'}{$f}<none>\n");
 				}
-				$json->{'events'}{$ev}{'GW'}{'files'}{$f} =~ s/q1\.0/q{MASSRATIO}/;
-			}else{
-				warning("Can't copy <cyan>$w$json->{'events'}{$ev}{'GW'}{'files'}{$f}<none>\n");
 			}
+			$json->{'events'}{$ev}{'GW'}{'files'}{$f} =~ s/q1\.0/q{MASSRATIO}/;
 		}
 	}
 	
