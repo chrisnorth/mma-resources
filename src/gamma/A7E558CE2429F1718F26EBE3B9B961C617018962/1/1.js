@@ -168,8 +168,6 @@ function Step(data,opt){
 		opt.values.inc = '';
 
 		// Reset output
-		console.log('setEvent',e,data.events[e]);
-
 		if(e){
 			if(data.events[e]){
 				ev = data.events[e];
@@ -321,22 +319,6 @@ function Step(data,opt){
 				});
 				this.graph.makeDraggable(this.graph.series.t0,{ 'dragstart':moveStart, 'drag':move,'dragend':moveEnd });
 
-				// Make the t_90 line
-				this.graph.setSeries("t90",[{x:x90,y:-Infinity},{x:x90,y:Infinity}],{
-					'id': 'line-t90',
-					'title': {
-						'label': '{{ site.translations.main.observatory.gamma.step1.t90 }}'
-					},
-					'line': {
-						'stroke-width': 6,
-						'stroke': 'rgb(214, 3, 3)',
-						'cursor': 'col-resize'
-					},
-					'z-index': 10,
-					'tooltip':{ 'label': label }
-				});
-				this.graph.makeDraggable(this.graph.series.t90,{ 'drag':move,'dragend':moveEnd });
-
 				// Make the t_100 line
 				this.graph.setSeries("t100",[{x:x100,y:-Infinity},{x:x100,y:Infinity}],{
 					'id': 'line-t100',
@@ -352,6 +334,22 @@ function Step(data,opt){
 					'tooltip':{ 'label': label }
 				});
 				this.graph.makeDraggable(this.graph.series.t100,{ 'drag':move,'dragend':moveEnd });
+
+				// Make the t_90 line
+				this.graph.setSeries("t90",[{x:x90,y:-Infinity},{x:x90,y:Infinity}],{
+					'id': 'line-t90',
+					'title': {
+						'label': '{{ site.translations.main.observatory.gamma.step1.t90 }}'
+					},
+					'line': {
+						'stroke-width': 6,
+						'stroke': 'rgb(214, 3, 3)',
+						'cursor': 'col-resize'
+					},
+					'z-index': 10,
+					'tooltip':{ 'label': label }
+				});
+				this.graph.makeDraggable(this.graph.series.t90,{ 'drag':move,'dragend':moveEnd });
 
 				this.updateGraph();
 

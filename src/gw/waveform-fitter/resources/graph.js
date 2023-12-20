@@ -365,12 +365,12 @@
 	};
 	Graph.prototype.hideSeries = function(s){
 		this.series[s].svg.group._el.style.display = "none";
-		if(this.series[s].tooltip) this.series[s].tooltip.style.display = "none";
+		if(this.series[s].tooltip) this.series[s].tooltip._el.style.overflow = "hidden";
 		return this;
 	};
 	Graph.prototype.showSeries = function(s){
 		this.series[s].svg.group._el.style.display = '';
-		if(this.series[s].tooltip) this.series[s].tooltip.style.display = "";
+		if(this.series[s].tooltip) this.series[s].tooltip._el.style.overflow = "visible";
 		return this;
 	};
 	Graph.prototype.drawSeries = function(s){
@@ -411,31 +411,36 @@
 			this.series[s].svg.line.attr({'d':d});			
 
 			if(this.series[s].opt.tooltip && this.series[s].opt.tooltip.label){
-				updateTooltip(this.el,this.series[s]);
+				updateTooltip(this.series[s]);
 			}
 
 		}
 	};
-	function updateTooltip(el,series){
-		el.style.position = "relative";
+	function getLineCoordinate(el){
+		var path = el.getAttribute('d');
+		var m = path.match(/^M([0-9\.\-\+]+)[,\s]([0-9\.\-\+]+)L([0-9\.\-\+]+)[,\s]([0-9\.\-\+]+)/);
+		var x = 0;
+		var y = 0;
+		if(m.length == 5){
+			x = parseFloat(m[1]);
+			y = parseFloat(m[4]);
+		}
+		return {'x':x,'y':y};
+	}
+	function updateTooltip(series){
 		if(!series.tooltip){
-			series.tooltip = document.createElement('div');
-			el.appendChild(series.tooltip);
+			series.tooltip = svgEl("foreignObject").appendTo(series.svg.group);
 		}
 		if(series.tooltip){	
-			var txt = series.opt.title.label.replace(/\\n/g,'<br />');
-			series.tooltip.innerHTML = txt;
-
-			// Position the tooltip
-			series.tooltip.classList.add(series.opt.title.class||"tooltip");
-			var bb = series.svg.line._el.getBoundingClientRect();	// Bounding box of the element
-			var bbo = el.getBoundingClientRect(); // Bounding box of SVG holder
-			var off = 4;
 			var sty = window.getComputedStyle(series.svg.line._el);
-			series.tooltip.classList.add(series.opt.title.class||"tooltip");
-			series.tooltip.setAttribute('style','position:absolute;left:'+(bb.left + bb.width/2 - bbo.left).toFixed(2)+'px;top:'+(bbo.top + (series.opt.tooltip.top||0) - bb.top).toFixed(2)+'px;transform:translate3d(0,0,0);display:'+(txt ? 'block':'none')+';');
-			series.tooltip.style.background = sty.stroke;
-			series.tooltip.style.color = "white";
+			var txt = series.opt.title.label.replace(/\\n/g,'<br />');
+			var bb = series.svg.line._el.getBoundingClientRect();	// Bounding box of the element
+			var off = 4;
+			var xy = getLineCoordinate(series.svg.line._el);
+			var w = parseFloat(sty['stroke-width']);
+
+			series.tooltip._el.innerHTML = '<div style="background:'+sty.stroke+';color:white;display:table;padding:0 0.25em;">'+txt+'</div>';
+			series.tooltip.attr({'class':series.opt.title.class||"tooltip",'x':Math.round(xy.x + w/3),'y':Math.round(xy.y + (series.opt.tooltip.top||0)),'width':'1','height':'2','style':'overflow:visible'});
 		}
 	}
 	Graph.prototype.dataToGraph = function(d){
@@ -507,7 +512,7 @@
 			// Build an object from a key/value pair
 			if(typeof obj==="string"){ key = obj; obj = {}; obj[key] = v; }
 			for(key in obj){
-				if(obj[key]) this._el.setAttribute(key,obj[key]);
+				if(obj[key] || (typeof obj[key]==="number")) this._el.setAttribute(key,obj[key]);
 			}
 			return this;
 		};
