@@ -46,6 +46,8 @@ function Step(data,opt){
 		table.addEventListener('mouseleave',function(e){ highlightDetector(); });
 		table.addEventListener('blur',function(e){ highlightDetector(); });
 
+		var ids = document.querySelectorAll('.event-id');
+		ids.forEach(function(el){ el.innerHTML = query.event; });
 
 		if(query.locations) el.input.value = decodeURI(query.locations);
 

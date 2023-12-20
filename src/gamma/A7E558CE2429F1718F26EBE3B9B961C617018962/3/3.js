@@ -44,11 +44,15 @@ function Step(data,opt){
 				density: 10
 			}
 		});
+		var beams = document.getElementById('beams');
+		var clip = document.getElementById('clip-inner');
 
 		var rangeSliderValueElement = document.getElementById('slider-range-value');
 
 		el.slider.noUiSlider.on('update', function (values, handle) {
 			rangeSliderValueElement.innerHTML = parseFloat(values[handle]).toFixed(1)+'&deg;';
+			beams.setAttribute('transform','rotate('+values[handle]+')');
+			clip.setAttribute('transform','rotate('+values[handle]+')');
 			brightness.updateValues();
 		});
 

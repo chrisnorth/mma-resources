@@ -195,7 +195,7 @@ text:
                     en: "Localisation"
                     en-US: "Localization"
                 intro:
-                    en: "Use the detector counts to identify the possible locations."
+                    en: "Use the detector counts to identify the possible locations for event <span class=\"event-id\"></span>."
                 selected:
                     en: "Selected sky location(s):"
                 counts:
@@ -226,6 +226,8 @@ text:
                     en: "Observed brightness (Joules):"
                 measured:
                     en: "Measured brightness: {{ value }} Joules"
+                lineofsight:
+                    en: "Line of sight"
         xr:
             title:
                 en: "X-ray & Radio Observatory"

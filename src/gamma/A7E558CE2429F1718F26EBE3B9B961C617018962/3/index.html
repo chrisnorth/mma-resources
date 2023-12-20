@@ -58,6 +58,7 @@
 		background: #999;
 	}
 	.axis-label .label sup { font-size: 0.7em; }
+	#content h3 { margin-top: 1em; text-align: left; }
 	</style>
 </head>
 <body class="ga">
@@ -109,6 +110,23 @@
 												<div id="content">
 													<label class="prop" for="dist-lo">{{ site.translations.main.observatory.gamma.step3.distance }}</label> <input type="number" class="selection" id="dist-lo" min="0" max="1000" step="1" /> &rarr; <input type="number" class="selection" id="dist-hi" min="0" max="1000" step="1" />
 													<h3>{{ site.translations.main.observatory.gamma.step3.inclination }}</h3>
+													<div id="figure">
+														<svg viewBox="0 0 1000 160" preserveAspectRatio="xMidYMid meet" style="width:100%">
+															<clipPath id="myClip">
+																<rect id="clip-inner" x="100" y="0" width="80" height="80" fill="red" transform="rotate(0)" transform-origin="100 80"></rect>
+															</clipPath>
+															<!--<circle cx="150" cy="150" r="250" fill="white" style="background: conic-gradient(white 0deg, grey 30deg, black 90deg, grey 150deg, white 180deg, grey 210deg, black 270deg, grey 330deg, white);"></circle>-->
+															<path id="los" d="M100 80 l 800 0" stroke="white" stroke-width="2" stroke-dasharray="4 6" fill="transparent"></path>
+															<text x="500" y="80" text-anchor="middle" dominant-baseline="text-bottom" dy="-5" font-size="16" fill="#f9edd4">{{ site.translations.main.observatory.gamma.step3.lineofsight }}</text>
+															<path id="eye" d="M930 80 q -15 0 -30 -20 m 30 20 q -15 0 -30 20 m 30 -20 m -25 -15 q -10 15 0 30" stroke="white" stroke-width="2" fill="transparent"></path>
+															<g id="beams" transform="rotate(0)" transform-origin="100 80">
+																<circle cx="100" cy="80" r="5" fill="white"></circle>
+																<ellipse cx="100" cy="80" rx="4" ry="10" stroke="white" stroke-width="2" fill="transparent"></ellipse>
+																<path d="M100,80 c -26.8 -100 26.8 -100 0 0 c -26.8 100 26.8 100 0 0z" stroke="white" stroke-width="2" fill="rgba(255,255,255,0.5)" transform="rotate(90)" transform-origin="100 80"></path>
+															</g>
+															<path id="angle" d="M170,80 a 70 70 0 0 1 -70 70" clip-path="url(#myClip)" stroke="white" stroke-width="2" stroke-dasharray="4 6" fill="transparent"></path>
+														</svg>
+													</div>
 													<div id="slider"></div>
 													<div id="slider-range-value"></div>
 													<h3>{{ site.translations.main.observatory.gamma.step3.brightness }}</h3>
