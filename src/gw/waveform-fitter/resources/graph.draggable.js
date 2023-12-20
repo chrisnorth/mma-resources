@@ -88,9 +88,28 @@
 				}
 				this.selected = "";
 			};
+			this.key = function(e){
+				// Work out which group this is based on the target/group
+				for(var s in graph.series){
+					if(graph.series[s].svg.group._el == e.target) this.selected = s;
+				}
+				if(graph.series[this.selected]){
+					var bbox = graph.series[this.selected].svg.line._el.getBoundingClientRect();
+					var dx = 0;
+					if(e.keyCode==37) dx = -1;
+					if(e.keyCode==39) dx = 2;
+					var pos = graph.getValueAt(bbox.x + (bbox.width/2) + dx, bbox.y);
+					pos.shift = dx;
+					if(typeof graph.series[this.selected]._draggable.opt.drag==="function") graph.series[this.selected]._draggable.opt.drag.call(graph, e, graph.series[this.selected], pos);
+					if(typeof graph.series[this.selected]._draggable.opt.dragend==="function") graph.series[this.selected]._draggable.opt.dragend.call(graph, e, graph.series[this.selected]);
+				}
+				graph.series[this.selected].svg.group._el.focus();
+				this.selected = "";
+			};
 
 			this.enable = function(s,opt){
 				s._draggable = {'enabled':true,'opt':opt||{}};
+				s.svg.group.attr('tabindex','0');
 				return this;
 			};
 
@@ -102,6 +121,8 @@
 			graph.el.addEventListener("touchstart", function(e){ e.preventDefault(); e.stopPropagation(); _obj.start(e); });
 			graph.el.addEventListener("touchmove", function(e){ e.preventDefault(); e.stopPropagation(); _obj.move(e); });
 			graph.el.addEventListener("touchend", function(e){ e.preventDefault(); e.stopPropagation(); _obj.end(e); });
+
+			graph.el.addEventListener("keydown", function(e){ _obj.key(e); });
 
 			return this;
 		};

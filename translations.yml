@@ -197,7 +197,7 @@ text:
                 intro:
                     en: "Use the detector counts to identify the possible locations."
                 selected:
-                    en: "Selected location:"
+                    en: "Selected sky location(s):"
                 counts:
                     en: "Detector counts"
                 locations:

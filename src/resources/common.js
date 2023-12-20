@@ -96,6 +96,8 @@ function EventNotification(opt){
 		el.breadcrumb.style.display = 'none';
 		el.show.style.display = 'none';
 		el.nav.style.display = 'none';
+		// Set the focus to the text area of the notification
+		el.notification.querySelector('textarea').focus();
 		return this;
 	};
 	this.hide = function(){

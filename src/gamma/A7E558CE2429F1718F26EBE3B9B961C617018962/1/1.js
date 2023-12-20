@@ -58,7 +58,7 @@ function Step(data,opt){
 	
 	t90moveable = (opt.values.t90 ? true : false);
 	
-	function snapToGrid(x,data){
+	function snapToGrid(x,data,dx){
 		var idx = -1;
 		var min = Infinity;
 		var diff;
@@ -69,10 +69,9 @@ function Step(data,opt){
 				min = diff;
 			}
 		}
-		// Find the midpoint
-//		if(idx < data.length-1){
-//			return (data[idx+1].x - data[idx].x)/2;
-//		}
+		if(dx) idx += dx;
+		if(idx < 0) idx = 0;
+		if(idx > data.length-1) idx = data.length-1;
 		return data[idx].x;
 	}
 
@@ -266,7 +265,7 @@ function Step(data,opt){
 
 				function move(e,series,pos){
 
-					var x = snapToGrid(pos.x,this.series.data.original);
+					var x = snapToGrid(pos.x,this.series.data.original,pos.shift);
 					var d = [{x:x,y:-Infinity},{x:x,y:Infinity}];
 
 					// Update the data for the series
