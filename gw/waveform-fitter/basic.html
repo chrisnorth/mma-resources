@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="utf-8" />
+	<title>Waveform Fitter</title>
+	<link rel="icon" type="image/vnd.microsoft.icon" href="resources/favicon-32x32.png" />
+	<link rel="stylesheet" href="resources/gwfitter.css">
+	<script type="text/javascript" src="resources/lang.js"></script>
+	<script type="text/javascript" src="resources/graph.js"></script>
+	<script type="text/javascript" src="resources/basic.js"></script>
+	<style>
+	#fitter-holder {
+		height: 100vh;
+		padding: 2em;
+	}
+	</style>
+</head>
+<body>
+	<div class="page">
+		<div id="fitter-holder">
+			<div id="graph-holder"></div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+	var wf;
+	ready(function(){
+
+		// If we haven't created a WaveFitter we do that
+		wf = new BasicWaveFitter({
+			"graphholder":document.getElementById("graph-holder"),
+			"data": "data/dataHanford.csv"
+		});
+	});
+	</script>
+</body>
+</html>

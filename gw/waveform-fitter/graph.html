@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="utf-8" />
+	<title>Standalone graph test</title>
+	<link rel="icon" type="image/vnd.microsoft.icon" href="resources/favicon-32x32.png" />
+	<style>
+	/*! minireset.css v0.0.6 | MIT License | github.com/jgthms/minireset.css */html,body,p,ol,ul,li,dl,dt,dd,blockquote,figure,fieldset,legend,textarea,pre,iframe,hr,h1,h2,h3,h4,h5,h6{margin:0;padding:0}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}ul{list-style:none}button,input,select{margin:0}html{box-sizing:border-box}*,*::before,*::after{box-sizing:inherit}img,video{height:auto;max-width:100%}iframe{border:0}table{border-collapse:collapse;border-spacing:0}td,th{padding:0}
+	html { scroll-behavior: smooth; }
+	body { font-family: sans-serif; font-size: 16px; padding: 2em; max-width: 1080px; margin: auto; }
+	header { margin-bottom: 1em; }
+	h1, h2, h3, h4 { font-weight: bold; }
+	h1 { font-size: 1.45em; }
+	h2 { font-size: 1.3em; }
+	h3 { font-size: 1.15em; }
+	h2 + *, h3 + * { margin-top: 1em; }
+	h4 { margin-top: 1em; }
+	.hljs{display:block;overflow-x:auto;padding:0.5em;background:#fff}.hljs,.hljs-subst{color:#000}.hljs-string,.hljs-meta,.hljs-symbol,.hljs-template-tag,.hljs-template-variable,.hljs-addition{color:#0DBC37}.hljs-comment,.hljs-quote{color:#aaa}.hljs-number,.hljs-regexp,.hljs-literal,.hljs-bullet,.hljs-link{color:#31a354}.hljs-deletion,.hljs-variable{color:#88f}.hljs-keyword,.hljs-selector-tag,.hljs-title,.hljs-section,.hljs-built_in,.hljs-doctag,.hljs-type,.hljs-tag,.hljs-name,.hljs-selector-id,.hljs-selector-class,.hljs-strong{color:#2254F4}.hljs-emphasis{font-style:italic}.hljs-attribute{color:#D73058}
+	.prettyprint {
+		background: #efefef;
+		padding: 1em;
+	}
+	ul.index {
+		list-style: disc;
+		margin-left: 1em;
+		margin-bottom: 1em;
+	}
+	section.example {
+		padding: 2em 0;
+		margin-bottom: 2em;
+	}
+	section.example:last-child { margin-bottom: 0; }
+	.example-code { margin-top: 1em; }
+	input[type=number] { width: 5em; }
+	</style>
+	<script src="resources/highlight.pack.js"></script>
+	<script type="text/javascript" src="resources/oi.formatexamples.js"></script>
+	<script type="text/javascript" src="resources/graph.js"></script>
+	<script type="text/javascript">
+	function ready(fn){
+		// Version 1.1
+		if(document.readyState != 'loading') fn();
+		else document.addEventListener('DOMContentLoaded', fn);
+	};
+	var graph = [];
+	</script>
+</head>
+<body>
+	<header>
+		<h1>Standalone graph tests</h1>
+	</header>
+	<ul class="index">
+		<li><a href="#basic">Basic example</a></li>
+		<li><a href="#colours">Customise colours</a></li>
+		<li><a href="#range">Update ranges</a></li>
+		<li><a href="#labels">Labels hard-coded</a></li>
+		<li><a href="#labels-fn">Labels defined by a function</a></li>
+		<li><a href="#moveable-line">Add moveable lines</a></li>
+		<li><a href="#moveable-line-quantised">Add moveable line - quantised</a></li>
+		<li><a href="#moveable-lines-shaded">Add moveable lines</a></li>
+	</ul>
+	<div class="page">
+		<section class="example" id="basic">
+
+			<h2>Basic example</h2>
+			<p>This example just shows a simple graph</p>
+			<div class="example-code">
+				<div id="graph-holder0"></div>
+				<script>
+				ready(function(){
+					graph[0] = new Graph(document.getElementById("graph-holder0"),{
+						'legend': {'show':true},
+						'axes':{
+							'x': {'key':'t'},
+							'y': {'key':'h'}
+						}
+					});
+					graph[0].setSeries(0,[{'t':0,'h':0.5},{'t':1,'h':2},{'t':2,'h':1},{'t':3,'h':1.5},{'t':4,'h':1.25}],{
+						'id':'line-data',
+						'label':'test',
+						'class':'data',
+						'line': {
+							'stroke':'rgba(0,150,200,1)'
+						}
+					});
+					graph[0].update();
+					graph[0].axes.x.setDataRange(0,4);
+					graph[0].axes.y.setDataRange(0,2);
+					graph[0].update();
+				});
+				</script>
+			</div>
+		</section>
+
+
+		<section class="example" id="colours">
+
+			<h2>Customise colours</h2>
+			<p>This example shows the same data as before but we customise various colours and styles</p>
+			<div class="example-code">
+				<div id="graph-holder-dark"></div>
+				<style>
+				#graph-holder-dark { background: #005776; }
+				</style>
+				<script>
+				ready(function(){
+					graph[1] = new Graph(document.getElementById("graph-holder-dark"),{
+						'axes': {
+							'x': {
+								'key': 't',
+								'domain': { 'stroke': 'green', 'stroke-width': 4 }
+							},
+							'y': {
+								'key': 'h',
+								'domain': { 'stroke': '' }
+							}
+						}
+					});
+					graph[1].setSeries(0,[{'t':0,'h':0.5},{'t':1,'h':2},{'t':2,'h':1},{'t':3,'h':1.5},{'t':4,'h':1.25}],{
+						'id':'line-data',
+						'label':'test',
+						'class':'data',
+						'line': {
+							'stroke':'#C7B200',
+							'stroke-width': 4,
+							'stroke-dasharray': '10 5'
+						},
+						'text': {
+							'fill': 'white'
+						}
+					});
+					graph[1].update();
+					graph[1].axes.x.setDataRange(0,4);
+					graph[1].axes.y.setDataRange(0,2);
+					graph[1].update();
+				});
+				</script>
+			</div>
+		</section>
+
+		<section class="example" id="range">
+
+			<h2>Update ranges</h2>
+			<p>Allow ranges to be updated.</p>
+			<label for="range-x-min">x-axis minimum:</label><input id="range-x-min" type="number" value="0" step="0.1" />
+			<label for="range-x-max">x-axis maximum:</label><input id="range-x-max" type="number" value="4" step="0.1" />
+			<label for="range-y-min">y-axis minimum:</label><input id="range-y-min" type="number" value="0" step="0.1" />
+			<label for="range-y-max">y-axis maximum:</label><input id="range-y-max" type="number" value="2" step="0.1" />
+			<div class="example-code">
+				<div id="graph-holder-range"></div>
+				<script>
+				ready(function(){
+					graph[2] = new Graph(document.getElementById("graph-holder-range"),{
+						'axes':{
+							'x': {'key':'t'},
+							'y': {'key':'h'}
+						}
+					});
+					graph[2].setSeries(0,[{'t':0,'h':0.5},{'t':1,'h':2},{'t':2,'h':1},{'t':3,'h':1.5},{'t':4,'h':1.25}],{
+						'id':'line-data',
+						'label':'test',
+						'class':'data',
+						'line': {
+							'stroke':'red',
+							'stroke-width': 4,
+							'stroke-dasharray': '10 5'
+						},
+						'text': {
+							'fill': 'black'
+						}
+					});
+					graph[2].update();
+
+					// Get the <input> fields
+					var xmin = document.getElementById('range-x-min');
+					var xmax = document.getElementById('range-x-max');
+					var ymin = document.getElementById('range-y-min');
+					var ymax = document.getElementById('range-y-max');
+
+					function updateRange(){
+						graph[2].setDataRanges({'x':[xmin.value,xmax.value],'y':[ymin.value,ymax.value]});
+						graph[2].update();
+					}
+
+					// Attach change events to the inputs
+					xmin.addEventListener('change',updateRange);
+					xmax.addEventListener('change',updateRange);
+					ymin.addEventListener('change',updateRange);
+					ymax.addEventListener('change',updateRange);
+
+					// Set the range from the <input> values
+					updateRange();
+				});
+				</script>
+			</div>
+		</section>
+
+
+
+
+		<section class="example" id="labels">
+
+			<h2>Labels hard-coded</h2>
+			<p>This example uses custom, hard-coded, labels.</p>
+			<div class="example-code">
+				<div id="graph-holder-labels"></div>
+				<script>
+				ready(function(){
+					graph[3] = new Graph(document.getElementById("graph-holder-labels"),{
+						'axes':{
+							'x': {
+								'key': 't',
+								'labels': [
+									{'value':0,'label':'0%'},
+									{'value':0.25,'label':'0.25%'},
+									{'value':0.5,'label':'0.5%'},
+									{'value':1,'label':'1%'},
+									{'value':2,'label':'2%'},
+									{'value':4,'label':'4%'}
+								],
+								'title': {
+									'label': 'Percent'
+								}
+							},
+							'y': {
+								'key': 'h',
+								'labels': [
+									{'value':1,'label':'1'},
+									{'value':2,'label':'2'}
+								],
+								'title': {
+									'label': 'Value'
+								}
+							}
+						}
+					});
+					graph[3].setSeries(0,[{'t':0,'h':0.5},{'t':1,'h':2},{'t':2,'h':1},{'t':3,'h':1.5},{'t':4,'h':1.25}],{
+						'id':'line-data',
+						'label':'test',
+						'class':'data',
+						'line': {
+							'stroke':'rgba(0,150,200,1)'
+						}
+					});
+					graph[3].update();
+					graph[3].axes.x.setDataRange(0,4);
+					graph[3].axes.y.setDataRange(0,2);
+					graph[3].update();
+				});
+				</script>
+			</div>
+		</section>
+
+
+
+		<section class="example" id="labels-fn">
+
+			<h2>Axis labels defined by a function</h2>
+			<p>This example uses a function to generate labels given a range. This gives you more control over which tick marks are created and the formatting of the labels - particularly useful if you want to add units or display dates/times.</p>
+			<div class="example-code">
+				<div id="graph-holder-labelfn"></div>
+				<script>
+				ready(function(){
+					graph[4] = new Graph(document.getElementById("graph-holder-labelfn"),{
+						'axes':{
+							'x': {
+								'key': 't',
+								'labels': function(min,max,spacing){
+									var ticks = [];
+									var gap = 6*3600*1000;	// Labels every six hours
+									var iso;
+									min = Math.min(gap*Math.ceil(min/gap));
+									for(v = min ; v <= max; v += gap){
+										// Get the ISO8601 string
+										iso = (new Date(v)).toISOString();
+										// Set the label as the HH:MM string
+										ticks.push({'value':v,'label':iso.substr(11,5)});
+									}
+									return ticks;
+								},
+								'title': {
+									'label': 'Time'
+								}
+							}
+						}
+					});
+					function makeHourlyData(step=1){
+						data = [];
+						h = 40;
+						hour = 3600000;
+						day = 86400000;
+						steps = Math.round(24/step);
+						step *= hour;	// scale to an hour
+						var now = day*Math.round((new Date()).getTime()/day);
+						for(var s = 0; s < steps; s++){
+							x = now + (s*step);
+							d = new Date(x);
+							data.push({
+								't': x,
+								'y': Math.round(Math.random()*h)+(d.getHours() > 8 && d.getHours() < 17 ? 60 : 0)
+							});
+						}
+						return data;
+					}
+					graph[4].setSeries(0,makeHourlyData(0.25),{
+						'id':'line-data',
+						'label':'test',
+						'class':'data',
+						'line': {
+							'stroke':'rgba(0,150,200,1)'
+						}
+					});
+					graph[4].update();
+					graph[4].axes.x.setDataRange(graph[4].series[0]);
+					graph[4].axes.y.setDataRange(0,120).setTickSpacing(20);
+					graph[4].update();
+				});
+				</script>
+			</div>
+		</section>
+
+
+		<section class="example" id="moveable-line">
+
+			<h2>Add moveable line</h2>
+			<p>This example adds a moveable vertical line and a static horizontal line.</p>
+			<div class="example-code">
+				<div id="graph-holder-line"></div>
+				<script type="text/javascript" src="resources/graph.draggable.js"></script>
+				<script>
+				ready(function(){
+					var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+					graph[5] = new Graph(document.getElementById("graph-holder-line"),{
+						'axes':{
+							'x': {
+								'key': 'x',
+								'labels':[
+									{'value':1,'label':months[0]},
+									{'value':2,'label':months[1]},
+									{'value':3,'label':months[2]},
+									{'value':4,'label':months[3]},
+									{'value':5,'label':months[4]},
+									{'value':6,'label':months[5]},
+									{'value':7,'label':months[6]},
+									{'value':8,'label':months[7]},
+									{'value':9,'label':months[8]},
+									{'value':10,'label':months[9]},
+									{'value':11,'label':months[10]},
+									{'value':12,'label':months[11]}
+								],
+								'title': {
+									'label': 'Month'
+								}
+							},
+							'y': {
+								'key': 'y',
+								'title': {
+									'label': 'Value'
+								}
+							}
+						}
+					});
+
+					graph[5].axes.x.setDataRange(1,12);
+					graph[5].axes.y.setDataRange(0,25).setTickSpacing(5);
+
+					var baseline = graph[5].setSeries(1,[{x:-Infinity,'y':5},{x:Infinity,y:5}],{
+						'label': 'baseline',
+						'line': {
+							'stroke': '#00B6FF',
+							'stroke-width': 6,
+							'stroke-dasharray': '1 12',
+							'stroke-linecap': 'round'
+						},
+						'z-index': 5
+					});
+					var line = graph[5].setSeries(2,[{x:2,y:-Infinity},{x:2,y:Infinity}],{
+						'label': 't_0',
+						'line': {
+							'stroke': '#0DBC37',
+							'stroke-width': 6,
+							'cursor': 'col-resize'
+						},
+						'z-index': 10
+					});
+					// Set a vertical line at the current x-position 
+					function moveLine(e,series,pos){
+						var d = [{x:pos.x,y:-Infinity},{x:pos.x,y:Infinity}];
+						// Update the data for the series
+						series.updateData(d);
+
+						// Update the graph
+						this.drawData();
+
+						return;
+					}
+					graph[5].makeDraggable(line,{'drag':moveLine});
+
+					// Update the graph
+					graph[5].update();
+				});
+				</script>
+			</div>
+		</section>
+
+
+
+
+		<section class="example" id="moveable-line-quantised">
+
+			<h2>Add moveable line - quantised</h2>
+			<p>This example adds a moveable vertical lines that snaps to the nearest integer on the x-axis.</p>
+			<div class="example-code">
+				<div id="graph-holder-line-quantised"></div>
+				<script type="text/javascript" src="resources/graph.draggable.js"></script>
+				<script>
+				ready(function(){
+					graph[6] = new Graph(document.getElementById("graph-holder-line-quantised"),{
+						'axes':{
+							'x': {
+								'key': 'x',
+								'labels':[
+									{'value':1,'label':'1'},
+									{'value':2,'label':'2'},
+									{'value':3,'label':'3'},
+									{'value':4,'label':'4'},
+									{'value':5,'label':'5'},
+									{'value':6,'label':'6'},
+									{'value':7,'label':'7'},
+									{'value':8,'label':'8'},
+									{'value':9,'label':'9'},
+									{'value':10,'label':'10'},
+									{'value':11,'label':'11'},
+									{'value':12,'label':'12'}
+								],
+								'title': {
+									'label': 'Value'
+								}
+							},
+							'y': {
+								'key': 'y',
+								'title': {
+									'label': 'Value'
+								}
+							}
+						}
+					});
+
+					graph[6].axes.x.setDataRange(1,12);
+					graph[6].axes.y.setDataRange(0,25).setTickSpacing(5);
+
+					var line = graph[6].setSeries(2,[{x:2,y:-Infinity},{x:2,y:Infinity}],{
+						'label': 't_0',
+						'line': {
+							'stroke': '#0DBC37',
+							'stroke-width': 6,
+							'cursor': 'col-resize'
+						},
+						'z-index': 10
+					});					
+					graph[6].makeDraggable(line,{
+						'drag':function moveLine(e,series,pos){
+							var x = Math.round(pos.x);
+							var d = [{x:x,y:-Infinity},{x:x,y:Infinity}];
+							// Update the data for the series
+							series.updateData(d);
+
+							// Update the graph
+							this.drawData();
+
+							return;
+						}
+					});
+
+					// Update the graph
+					graph[6].update();
+				});
+				</script>
+			</div>
+		</section>
+
+
+
+
+
+		<section class="example" id="moveable-lines-shaded">
+
+			<h2>Add moveable lines with shading</h2>
+			<p>This example adds a data series with two moveable vertical lines that set some shading in between.</p>
+			<div class="example-code">
+				<div id="graph-holder-lines"></div>
+				<script type="text/javascript" src="resources/graph.draggable.js"></script>
+				<script>
+				ready(function(){
+					var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+					graph[7] = new Graph(document.getElementById("graph-holder-lines"),{
+						'axes':{
+							'x': {
+								'key': 'x',
+								'labels':[
+									{'value':1,'label':months[0]},
+									{'value':2,'label':months[1]},
+									{'value':3,'label':months[2]},
+									{'value':4,'label':months[3]},
+									{'value':5,'label':months[4]},
+									{'value':6,'label':months[5]},
+									{'value':7,'label':months[6]},
+									{'value':8,'label':months[7]},
+									{'value':9,'label':months[8]},
+									{'value':10,'label':months[9]},
+									{'value':11,'label':months[10]},
+									{'value':12,'label':months[11]}
+								],
+								'title': {
+									'label': 'Month'
+								}
+							},
+							'y': {
+								'key': 'y',
+								'title': {
+									'label': 'Value'
+								}
+							}
+						},
+						'patterns':{
+							'hatch': {'type':'hatch','size':20,'angle':45,'style':'stroke:red;stroke-width:20'}
+						}
+					});
+
+					// Set graph range
+					graph[7].axes.x.setDataRange(1,12);	// Numbers in data space
+					graph[7].axes.y.setDataRange(0,25).setTickSpacing(5);
+
+					// Add some data
+					var maxtemp = [{x:1,y:6.4},{x:2,y:7},{x:3,y:9.1},{x:4,y:11.9},{x:5,y:14.8},{x:6,y:17.5},{x:7,y:19.6},{x:8,y:19},{x:9,y:16.9},{x:10,y:13.3},{x:11,y:9.1},{x:12,y:6.7}];
+					var data = graph[7].setSeries(0,maxtemp,{
+						'id':'line-data',
+						'label':'test',
+						'class':'data',
+						'line': {
+							'stroke':'#FF6700',
+							'stroke-width': 4,
+							'fill': '#FF6700',
+							'fill-opacity': 0.2
+						},
+						'z-index':2
+					});
+
+
+					// Functions to get XY, Y, and data within a range
+					function getXY(dat,x){
+						var pos = {'x':x,'y':null};
+						for(var i = 1; i < dat.length; i++){
+							if(x >= dat[i-1].x && x <= dat[i].x) pos.y = getY(dat[i-1],dat[i],x);
+						}
+						return pos;
+					}
+					// Interpolate a y-value
+					function getY(a,b,x){
+						var f = 1 - ((x - a.x)/(b.x - a.x));
+						return b.y - f*(b.y - a.y);
+					}
+					function cropArea(dat,x1,x2){
+						var o = [];
+						// Add a first point at x1 using an interpolated y-value
+						o.push({'x':x1,'y':getY(dat[0], dat[dat.length-1], x1)});
+						o.push(getXY(dat,x1));
+						for(var i = 0; i < dat.length; i++){
+							if(dat[i].x >= x1 && dat[i].x <= x2) o.push(dat[i]);
+						}
+						// Last point is at x2 using an interpolated y-value
+						o.push(getXY(dat,x2));
+						o.push({'x':x2,'y':getY(dat[0], dat[dat.length-1], x2)});
+						return o;
+					}
+					// Create a shaded area below the data series that uses the "hatch" pattern we defined above
+					var shaded = graph[7].setSeries(1,cropArea(maxtemp,2,11),{
+						'id':'line-data-shaded',
+						'label':'test',
+						'class':'data',
+						'line': {
+							'stroke':'#FF6700',
+							'stroke-width': 'none',
+						},
+						'pattern': 'hatch',
+						'z-index':1
+					});
+
+					// Create a start and end line
+					var start = graph[7].setSeries(2,[{x:2,y:-Infinity},{x:2,y:Infinity}],{
+						'label': 't_0',
+						'line': {
+							'stroke': '#0DBC37',
+							'stroke-width': 6,
+							'cursor': 'col-resize'
+						},
+						'z-index': 10
+					});
+					var end = graph[7].setSeries(3,[{x:11,y:-Infinity},{x:11,y:Infinity}],{
+						'label': 't_end',
+						'line': {
+							'stroke': '#722EA5',
+							'stroke-width': 6,
+							'cursor': 'col-resize'
+						},
+						'z-index': 11
+					});
+					// Set a vertical line at the current x-position 
+					function moveLine(e,series,pos){
+						var d = [{x:pos.x,y:-Infinity},{x:pos.x,y:Infinity}];
+
+						// Update the data for the series
+						series.updateData(d);
+
+						// Update the graph
+						this.drawData();
+
+						return;
+					}
+					// Update the shaded series
+					function moveEnd(e,series){
+						var d = cropArea(maxtemp, start.data[0].lineData[0].x, end.data[0].lineData[0].x);
+						this.updateSeries(shaded, d);
+						this.update();
+					}
+					// Update the shaded series
+					function moveEnd2(e,series){
+						var d = cropArea(maxtemp, start.data[0].lineData[0].x, end.data[0].lineData[0].x);
+						this.updateSeries(shaded, d);
+						this.update();
+					}
+					// Make the start/end lines draggable
+					graph[7].makeDraggable(start,{'drag':moveLine,'dragend':moveEnd});
+					graph[7].makeDraggable(end,{'drag':moveLine,'dragend':moveEnd2});
+
+					// Update the graph
+					graph[7].update();
+				});
+				</script>
+			</div>
+		</section>
+
+
+
+	</div>
+</body>
+</html>

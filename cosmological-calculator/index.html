@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Cosmological Calculator</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="robots" content="noindex, nofollow">
+	<link rel="stylesheet" href="../resources/style.css">
+	<link rel="stylesheet" href="style.css">
+</head>
+<body class="cc centred">
+	<header class="b6-bg doublepadded">
+		<h1>Cosmological Calculator</h1>
+		<p>Placeholder text.</p>
+		<div id="calculator">
+			<div>
+				<div class="row">
+					<label for="z">Redshift</label>
+					<div><input type="text" id="z" value="" /></div>
+				</div>
+				<div class="row">
+					<label for="distance1">Distance (Mpc)</label>
+					<div>
+						<input type="text" id="distancemin" value="" /> - <input type="text" id="distancemax" value="" />
+					</div>
+				</div>
+			</div>
+			<h2>Result</h2>
+			<div class="graph">
+				
+			</div>
+			<div class="padded output cc">
+				<span class="prop">Age of the Universe (billion years)</span> <span class="value" id="age">?</span>
+			</div>
+		</div>
+	</header>
+	<script type="text/javascript" src="../resources/lang.js"></script>
+	<script type="text/javascript" src="cosmocalc.js"></script>
+	<script>
+	var language,cosmocalc;
+	ready(function(){
+		cosmocalc = new CosmoCalc(document.getElementById('calculator'),{'width':800,'height':400,'padding':{'left':0,'top':8,'bottom':8,'right':200,'label':5}});
+	});
+	</script>
+</body>
+</html>

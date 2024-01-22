@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Advanced parameters | Gravitational Wave Network Observatory</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href='../../resources/icon.svg' rel='icon' type='image/svg'>
+	<link rel="stylesheet" href="../../../resources/style.css">
+	<link rel="stylesheet" href="../../resources/style.css">
+	<script type="text/javascript" src="../../waveform-fitter/resources/graph.js"></script>
+</head>
+<body class="gw-bg">
+	<div id="main" class="page">
+		<header class="b1-bg">
+			<div class="padded">
+				<div class="holder">
+					<svg width="2em" height="2em" version="1.1" viewBox="0 0 33.867 33.867" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"><g transform="translate(0 -263.13)"><path transform="matrix(.26458 0 0 .26458 0 263.13)" d="m0 0v128h128v-128h-128zm29.121 6.0605h10.176a40 40 0 0 1-33.488 33.105v-10.133a30 30 0 0 0 23.313-22.973zm20.248 0h10.049a60 60 0 0 1-53.609 53.307v-10.123a50 50 0 0 0 43.561-43.184zm20.141 0h10.029a80 80 0 0 1-73.73 73.307v-10.002a70 70 0 0 0 63.701-63.305zm20 0h10.094a100 100 0 0 1-93.795 93.307v-9.9121a90 90 0 0 0 83.701-83.395zm20 0h10.094a120 120 0 0 1-113.79 113.31v-9.9121a110 110 0 0 0 103.7-103.39z" fill="white" /></g></svg>
+					<a href="../../login/index.html" class="login-link button gw-highlight">Sign Out</a>
+					<h1>Gravitational Wave Network Observatory</h1>
+				</div>
+			</div>
+			<div class="gw padded">
+				<div class="holder">
+					<h2>Observer Portal</h2>
+				</div>
+			</div>
+		</header>
+		<div class="tallpadded">
+			<div class="holder b6-bg doublepadded">
+				<ol class="breadcrumb gw-breadcrumb">
+					<li class="step visited"><a href="../1/index.html">Initial event selection</a></li>
+					<li class="step visited"><a href="../2/index.html">Localisation</a></li>
+					<li class="step visited"><a href="../3/index.html">Basic parameters</a></li>
+					<li class="step"><strong aria-current="page">Advanced parameters</strong></li>
+				</ol>
+				<section id="step" class="doublepadded">
+					<h2>Advanced parameters</h2>
+					<p>If you have more information about your event, you may be able to refine your estimates of the mass, distance etc.</p>
+					<div class="iframe-holder">
+						<iframe id="waveform" loading="lazy"></iframe>
+					</div>
+					<div class="padded output gw">
+						<p><strong class="prop">Mass ratio</strong> <input type="number" class="selection" id="massratio-lo" min="0.1" max="1" step="0.1" /> &rarr; <input type="number" class="selection" id="massratio-hi" min="0.1" max="1" step="0.1" /></p>
+					</div>
+				</section>
+				<section id="event-notification" class="doublepadded">
+					<h2>Event notification</h2>
+					<p>Below is all the information you have determined so far. You may wish to circulate this to the other teams. You can do so at any time - you do not need to know all the information.</p>
+					<textarea class="padded b6-bg">GRAVITATIONAL WAVE TEAM
+EVENT NOTIFICATION
+
+Name: {{ name }}
+Time/date: {{ date }}
+Possible locations: {{ locations }}
+Mass estimate (M☉): {{ mass }} ± 5%
+Distance estimate (Mpc): {{ distance }}
+Mass ratio: {{ massratio }}
+Inclination (°): {{ inclination }}
+
+Additional notes:
+==========
+</textarea>
+					<div class="nav-right">
+						<div class="nav-inner">
+							<div class="nav-flex">
+								<button id="show-steps" class="button gw-highlight">Back</button>
+								<button class="button gw-highlight" id="event-copy">Copy to clipboard</button>
+								<a href="../../../cosmological-calculator/index.html" class="cc-highlight button" id="cosmocalc">Cosmological Calculator</a>
+							</div>
+						</div>
+					</div>
+				</section>
+				<nav class="holder">
+					<div class="nav-right">
+						<div class="nav-inner">
+							<div class="nav-flex">
+								<a href="../3/index.html" id="prev" class="button gw-highlight">&laquo; Previous</a>
+								<button id="show-notification" class="button gw-highlight">Event notification</button>
+							</div>
+						</div>
+					</div>
+				</nav>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="../../../resources/common.js"></script>
+	<script type="text/javascript" src="../scenario.js"></script>
+	<script type="text/javascript" src="4.js"></script>
+	<script>
+	var scenario;
+	ready(function(){
+		scenario = new Scenario('../scenario.json');
+	});
+	</script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Localisation | Gamma-ray Observatory</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link href='../../resources/gamma.svg' rel='icon' type='image/svg'>
+	<link rel="stylesheet" href="../../../resources/style.css" />
+	<link rel="stylesheet" href="../../resources/style.css" />
+	<style>
+		#content {
+			display: grid;
+			grid-template-columns: auto 1fr;
+			grid-gap: 1em;
+			align-items: top;
+			margin-bottom: 1em;
+		}
+		#detector-counts {
+			margin: auto;
+			border-collapse: collapse;
+			padding: 0;
+			height: 100%;
+		}
+		#detector-counts td, #detector-counts th {
+			text-align: center;
+			border: 1px solid #999;
+			margin: 0;
+			padding: 0.25em 0.5em;
+		}
+		#detector-locations {
+			display: grid;
+			grid-gap: 1em;
+			grid-template-rows: auto 1fr;
+		}
+		#detector-locations .map {
+			height: 100%;
+			max-width: 100%;
+			aspect-ratio: 2 / 1;
+		}
+		.grid-cell:hover {
+			fill: rgba(183, 216, 241,0.8);
+		}
+	</style>
+</head>
+<body class="ga">
+	<div>
+		<div style="outline:none">
+			<div>
+				<nav id="main-nav" class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+					<div class="container">
+						<a href="../../index.html" class="navbar-brand">
+							<img class="nasa-image" alt="NASA Partner" src="../../resources/gamma.svg" />
+							<div>
+								<div class="mma">Multi-messenger Observatory</div>
+								<div class="obs">Gamma-ray Observatory</div>
+							</div>
+						</a>
+						<div class="navbar-collapse collapse" id="basic-navbar-nav">
+							<div class="me-auto navbar-nav">
+								<a aria-current="page" class="nav-item nav-link" href="../../index.html">Home</a>
+								<a class="nav-item nav-link" href="../index.html">Observer Portal</a>
+								<a class="nav-item nav-link" href="../../login/index.html">Sign Out</a>
+							</div>
+						</div>
+					</div>
+				</nav>
+				
+				
+				<main class="main-container">
+					<main>
+						<div class="index-text-container">
+							<ol class="breadcrumb ga-breadcrumb">
+								<li class="step visited"><strong>Initial event selection</strong></li>
+								<li class="step current"><strong aria-current="page">Localisation</strong></li>
+								<li class="step"><strong>Inclination</strong></li>
+							</ol>
+
+							<h1>Localisation</h1>
+
+							<div id="content-wrapper" class="padded">
+								<div class="panel span2">
+									<div class="padded">
+
+										<section id="step">
+											<p>Use the detector counts to identify the possible locations for event <span class="event-id"></span>.</p>
+											<div id="content">
+											
+												<div id="detector-counts">
+													<h3>Detector counts</h3>
+												</div>
+												<div id="detector-locations">
+													<h3>Detector locations</h3>
+												</div>
+
+											</div>
+											<div class="padded output ga">
+												<label class="prop" for="select-location">Selected sky location(s):</label>
+												<input id="select-location" />
+											</div>
+										</section>
+										<section id="event-notification">
+											<h2>Event notification</h2>
+											<p>Below is all the information you have determined so far. You may wish to circulate this to the other teams. You can do so at any time - you do not need to know all the information.</p>
+											<textarea class="padded b6-bg">GAMMA RAY TEAM
+EVENT NOTIFICATION
+
+Name: {{ name }}
+Time/date: {{ date }}
+T90: {{ t90 }} seconds
+Locations: {{ locations }}
+Inclination: {{ inclination }}&deg;
+
+Additional notes:
+==========
+</textarea>
+											<div class="nav-right">
+												<div class="nav-inner">
+													<div class="nav-flex">
+														<button id="show-steps" class="button ga-highlight">Back</button>
+														<button class="button ga-highlight" id="event-copy">Copy to clipboard</button>
+														<a href="../3/index.html" id="next" class="button ga-highlight">Next</a>
+													</div>
+												</div>
+											</div>
+										</section>
+										<nav>
+											<div class="nav-right">
+												<div class="nav-inner">
+													<div class="nav-flex">
+														<a href="../1/index.html" id="prev" class="button ga-highlight">Previous</a>
+														<button id="show-notification" class="button ga-highlight">Event notification</button>
+													</div>
+												</div>
+											</div>
+										</nav>
+									</div>
+								</div>
+							</div>
+						</div>
+					</main>
+				</main>
+			</div>
+		</div>
+	</div>
+	<footer class="footer-container">
+		<p>&copy; Some footer text</p>
+	</footer>
+	<script type="text/javascript" src="../../../resources/common.js"></script>
+	<script type="text/javascript" src="../scenario.js"></script>
+	<script type="text/javascript" src="2.js"></script>
+</body>
+</html>

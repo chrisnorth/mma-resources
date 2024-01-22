@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="utf-8" />
+	<title>Waveform Fitter</title>
+	<link rel="icon" type="image/vnd.microsoft.icon" href="resources/favicon-32x32.png" />
+	<link rel="stylesheet" href="resources/lib/nouislider.min.css">
+	<link rel="stylesheet" href="resources/gwfitter.css">
+	<script type="text/javascript" src="resources/lib/nouislider.min.js"></script>
+	<script type="text/javascript" src="resources/graph.js"></script>
+	<script type="text/javascript" src="resources/wavefit.js"></script>
+</head>
+<body>
+	<div class="page">
+		<div id="title">
+			<h1>Waveform Fitter</h1>
+			<menu>
+				<div id="about-button" class="popup-button" tabindex="0"><span>About</span></div>
+			</menu>
+		</div>
+		<div id="param-holder">
+			<div id="param-mass" class="param-outer">
+				<h2>Total Mass (M<sub>☉</sub>)</h2>
+				<div class="param-slider-outer"></div>
+			</div>
+			<div id="param-dist" class="param-outer">
+				<h2>Distance (Mpc)</h2>
+				<div class="param-slider-outer"></div>
+			</div>
+			<div id="param-inclination" class="param-outer">
+				<h2>Inclination (&deg;)</h2>
+				<div class="param-slider-outer"></div>
+			</div>
+			<div id="param-massratio" class="param-outer">
+				<h2>Mass ratio</h2>
+				<div class="param-slider-outer"></div>
+			</div>
+		</div>
+		<div id="fitter-holder">
+			<div id="graph-holder"></div>
+		</div>
+	</div>
+
+	<div class="popup" id="about">
+		<div id="about-close" class="popup-close" title="Close">&times;</div>
+		<div class="padded">
+			<h3>About</h3>
+			<p>This web-app allows you to match simulation of gravitational wave data to real data originating from the merger of two black holes.</p>
+			<p>Use the sliders to adjust the basic parameters of the simulation to match the data. The parameters are&#58;</p>
+			<ul>
+				<li>The total mass of the two black holes, measured in M<sub>☉</sub> (Solar mass; the mass of the Sun)<sub>☉</sub> (Solar mass; the mass of the Sun)</li>
+				<li>The distance of the source from Earth in Mpc (Megaparsec; 3.26 million light years).</li>
+			</ul>
+			<p>Data is for GW150914 (from the LIGO-Hanford detector). Simulation assumes equal-mass.</p>
+			<p>Written and maintained by Chris North (Cardiff University) for the LIGO-Virgo Collaboration. Simulation credit&#58; Mark Hannam (Cardiff University). <a href="https://github.com/cardiffgravity/waveform-fitter">Source code</a></p>
+			<p><a href="https://github.com/cardiffgravity/waveform-fitter">Source code</a></p>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+	var wf;
+	ready(function(){
+
+		// If we haven't created a WaveFitter we do that
+		wf = new WaveFitter({
+			"sliders": {
+				"mass": document.getElementById("param-mass"),
+				"dist": document.getElementById("param-dist"),
+				"inclination": document.getElementById("param-inclination"),
+				"massratio": document.getElementById("param-massratio"),
+			},
+			"graphholder":document.getElementById("graph-holder"),
+			"data": "data/dataHanford.csv",
+			"simulation": "data/NRsim.csv"
+		});
+
+	});
+	</script>
+</body>
+</html>

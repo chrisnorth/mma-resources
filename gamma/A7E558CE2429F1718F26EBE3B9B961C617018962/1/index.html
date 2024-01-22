@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Initial event selection | Gamma-ray Observatory</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link href='../../resources/gamma.svg' rel='icon' type='image/svg'>
+	<link rel="stylesheet" href="../../../resources/style.css" />
+	<link rel="stylesheet" href="../../resources/style.css" />
+	<style>
+	#waveform-holder { padding: 1em; max-width: 100%; }
+	#waveform-holder, #output { color: black; background: rgba(255,255,255,1); }
+	#waveform svg { width: 100%; }
+	#output > * { padding: 1em; }
+	#waveform .tooltip { padding: 0 0.25em; line-height: 1.2em; }
+	
+	#line-data { stroke: rgb(34, 84, 244); stroke-width: 2px; }
+	#line-baseline { stroke: #ccc; stroke-width: 4px; }
+	.baseline { background: rgba(180,180,180, 1); outline: 2px solid rgba(180,180,180, 1); }
+	#line-shaded { fill: rgba(34, 84, 244, 0.2); stroke: none; }
+	span.F100 { outline: 2px solid rgba(34, 84, 244); }
+	.F100 { background: rgba(34, 84, 244, 0.2); fill: rgba(34, 84, 244, 0.2); }
+	span.F90 { outline: 2px solid rgba(214, 3, 3); background: rgba(214, 3, 3, 0.2); }
+	.t0 { background: rgba(13, 188, 55, 0.2); outline: 2px solid rgba(13, 188, 55, 1); }
+	.t90 { background: rgba(214, 3, 3, 1); color: white; outline: 2px solid rgba(214, 3, 3, 1); }
+	.t100 { background: rgba(34, 84, 244, 1); color: white; outline: 2px solid rgba(34, 84, 244, 1); }
+	.number { padding: 0 0.25em; border-radius: 2px; }
+	#no-event { background: white; color: black; padding: 1em; }
+	</style>
+</head>
+</head>
+<body class="ga">
+	<div>
+		<div style="outline:none">
+			<div>
+				<nav id="main-nav" class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+					<div class="container">
+						<a href="../../index.html" class="navbar-brand">
+							<img class="nasa-image" alt="NASA Partner" src="../../resources/gamma.svg" />
+							<div>
+								<div class="mma">Multi-messenger Observatory</div>
+								<div class="obs">Gamma-ray Observatory</div>
+							</div>
+						</a>
+						<div class="navbar-collapse collapse" id="basic-navbar-nav">
+							<div class="me-auto navbar-nav">
+								<a aria-current="page" class="nav-item nav-link" href="../../index.html">Home</a>
+								<a class="nav-item nav-link" href="../index.html">Observer Portal</a>
+								<a class="nav-item nav-link" href="../../login/index.html">Sign Out</a>
+							</div>
+						</div>
+					</div>
+				</nav>
+
+
+				<main class="main-container">
+					<main>
+						<div class="index-text-container">
+							<ol class="breadcrumb ga-breadcrumb">
+								<li class="step current"><strong aria-current="page">Initial event selection</strong></li>
+								<li class="step"><strong>Localisation</strong></li>
+								<li class="step"><strong>Inclination</strong></li>
+							</ol>
+
+							<h1>Initial event selection</h1>
+
+							<div id="content-wrapper" class="padded">
+								<div class="panel span2">
+									<div class="padded">
+										<section id="step">
+											<div class="padded output ga">
+												<label class="prop" for="select-event">Selected event:</label>
+												<select id="select-event">
+													<option value="">No event selected</option>
+													<!-- EVENT START --><!-- EVENT END -->
+												</select>
+												<span class="prop">Time/date:</span> <span class="value event-date">?</span>
+												<input id="t0" type="hidden" /><input id="t90" type="hidden" /><input id="t100" type="hidden" />
+											</div>
+											<div class="widescreen">
+												<div id="no-event">Select the event that you would like to investigate further.</div>
+												<div id="waveform-holder" class="waveform">
+													<div id="waveform"></div>
+												</div>
+												<div id="output"></div>
+											</div>
+										</section>
+										<section id="event-notification">
+											<h2>Event notification</h2>
+											<p>Below is all the information you have determined so far. You may wish to circulate this to the other teams. You can do so at any time - you do not need to know all the information.</p>
+											<textarea class="padded b6-bg">GAMMA RAY TEAM
+EVENT NOTIFICATION
+
+Name: {{ name }}
+Time/date: {{ date }}
+T90: {{ t90 }} seconds
+Locations: {{ locations }}
+Inclination: {{ inclination }}&deg;
+
+Additional notes:
+==========
+</textarea>
+											<div class="nav-right">
+												<div class="nav-inner">
+													<div class="nav-flex">
+														<button id="show-steps" class="button ga-highlight">Back</button>
+														<button class="button ga-highlight" id="event-copy">Copy to clipboard</button>
+														<a href="../2/index.html" id="next" class="button ga-highlight">Next</a>
+													</div>
+												</div>
+											</div>
+										</section>
+										<nav>
+											<div class="nav-right">
+												<div class="nav-inner">
+													<div class="nav-flex">
+														<button id="show-notification" class="button ga-highlight">Event notification</button>
+													</div>
+												</div>
+											</div>
+										</nav>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</main>
+				</main>
+			</div>
+		</div>
+	</div>
+	<footer class="footer-container">
+		<p>&copy; Some footer text</p>
+	</footer>
+	<script type="text/javascript" src="../../../resources/common.js"></script>
+	<script type="text/javascript" src="../../../gw/waveform-fitter/resources/graph.js"></script>
+	<script type="text/javascript" src="../../../gw/waveform-fitter/resources/graph.draggable.js"></script>
+	<script type="text/javascript" src="../scenario.js"></script>
+	<script type="text/javascript" src="1.js"></script>
+</body>
+</html>
