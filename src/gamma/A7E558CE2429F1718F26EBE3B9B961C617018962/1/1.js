@@ -1,6 +1,8 @@
 function Step(data,opt){
+  var e,el,selopt,_obj,v;
 	if(!opt) opt = {};
-	var el = {
+
+  el = {
 		'event': document.getElementById('select-event'),
 		'waveform': document.getElementById('waveform'),
 		't0': document.getElementById('t0'),
@@ -11,10 +13,10 @@ function Step(data,opt){
 		'next': document.getElementById('next'),
 	};
 
-	var _obj = this;
+	_obj = this;
 
 	// Add events to drop down box
-	for(var e in data.events){
+	for(e in data.events){
 		selopt = document.createElement('option');
 		selopt.setAttribute('value',e);
 		if(e==opt.values.event) selopt.setAttribute('selected','selected');
@@ -56,7 +58,7 @@ function Step(data,opt){
 	el.t90.value = opt.values.t90;
 	el.t100.value = opt.values.t100;
 	
-	t90moveable = (opt.values.t90 ? true : false);
+	var t90moveable = (opt.values.t90 ? true : false);
 	
 	function snapToGrid(x,data,dx){
 		var idx = -1;
@@ -76,31 +78,38 @@ function Step(data,opt){
 	}
 
 	this.reset = function(){
-
+		console.log('reset');
+		if(opt.notification) opt.notification.clear();
 		opt.values.t0 = 0;
 		opt.values.t90 = "";
 		opt.values.t100 = "";
+		opt.values.locations = "";
+		opt.values.inclination = "";
+		opt.values.extra = "";
 		el.t0.value = opt.values.t0;
 		el.t90.value = opt.values.t90;
 		el.t100.value = opt.values.t100;
 	
-		t90moveable = (opt.values.t90 ? true : false);
+		t90moveable = false;
 
 		return this;
 	};
 	this.updateGraph = function(){
 
-		var t0,t90,t100,baseline,data,F100,F90;
+		console.log('updateGraph');
+		var data,F100,F90,i,av,n;
 		opt.values.t0 = this.graph.series.t0.data[0].lineData[0].x;
-		opt.values.t90 = this.graph.series.t90.data[0].lineData[0].x;
-		opt.values.t100 = this.graph.series.t100.data[0].lineData[0].x;
+		// Only if t90 is moveable do we update the values
+		// This is to avoid showing a default t90 value when the t90 line hasn't even been moved
+		opt.values.t90 = (t90moveable ? this.graph.series.t90.data[0].lineData[0].x : "");
+		opt.values.t100 = (t90moveable ? this.graph.series.t100.data[0].lineData[0].x : "");
 		opt.values.F90 = 0;
 		opt.values.F100 = 0;
 
 		data = this.graph.series.data.original;
 		av = 0;
 		n = 0;
-		for(var i = 0; i < data.length; i++){
+		for(i = 0; i < data.length; i++){
 			if(data[i].x < opt.values.t0 || data[i].x > opt.values.t100){
 				av += data[i].y;
 				n++;
@@ -111,7 +120,7 @@ function Step(data,opt){
 		av /= n;
 		F100 = [];
 		F90 = [];
-		for(var i = 0; i < data.length; i++){
+		for(i = 0; i < data.length; i++){
 		
 			if(data[i].x >= opt.values.t0 && data[i].x <= opt.values.t100){
 				F100.push({'x':data[i].x,'y':data[i].y});
@@ -123,7 +132,7 @@ function Step(data,opt){
 			}
 		}
 		// Complete the fill shape
-		for(var i = data.length-1; i >= 0; i--){
+		for(i = data.length-1; i >= 0; i--){
 			if(data[i].x >= opt.values.t0 && data[i].x <= opt.values.t100){
 				F100.push({'x':data[i].x,'y':Math.min(av,data[i].y)});
 			}
@@ -157,26 +166,25 @@ function Step(data,opt){
 		return this;
 	};
 	this.setT90 = function(v){
+		console.log('setT90',v);
 		opt.values.t90 = v;
 		return this;
 	};
 	this.setT100 = function(v){
+		console.log('setT100',v);
 		opt.values.t100 = v;
 		return this;
 	};
 	this.setEvent = function(e){
-		var file,ev,dt;
+		console.log('setEvent',e);
+
+		var ev,dt;
 		dt = '';
 		opt.values.event = e;
 		opt.values.ev = {};
 		opt.values.t0 = parseFloat(el.t0.value)||'';
 		opt.values.t90 = parseFloat(el.t90.value)||'';
 		opt.values.t100 = parseFloat(el.t100.value)||'';
-		opt.values.gridsquares = '';
-		opt.values.mass = '';
-		opt.values.dist = '';
-		opt.values.massratio = '';
-		opt.values.inc = '';
 
 		// Reset output
 		if(e){
@@ -283,7 +291,7 @@ function Step(data,opt){
 					// Update the data for the series
 					series.updateData(d);
 
-					id = "";
+					var id = "";
 					if(series.opt.id=="line-t0") id = "t0";
 					else if(series.opt.id=="line-t90") id = "t90";
 					else if(series.opt.id=="line-t100") id = "t100";
@@ -303,6 +311,7 @@ function Step(data,opt){
 					if(series.opt.id==="line-t100"){
 						_obj.graph.showSeries("t90");
 						_obj.graph.showSeries("F90");
+						t90moveable = true;
 					}
 					_obj.updateGraph();
 					// Enable the next button if we've moved the t90 line

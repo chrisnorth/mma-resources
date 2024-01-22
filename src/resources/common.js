@@ -46,6 +46,12 @@ function EventNotification(opt){
 		q = (typeof opt.queryString==="function") ? opt.queryString.call(this,extra) : '?';
 		return q;
 	};
+	this.clear = function(){
+		this.vals = {};
+		this.attr = {};
+		this.set({});
+		return this;
+	};
 	this.set = function(selection,required){
 		var str,key,v,rep;
 		str = '';
