@@ -22,7 +22,7 @@ function Step(data,opt){
 		el.event.appendChild(selopt);
 	}
 
-	el.event.addEventListener('change',function(e){ _obj.setEvent(e.target.value); });
+	el.event.addEventListener('change',function(e){ _obj.reset(); _obj.setEvent(e.target.value); });
 	el.t0.addEventListener('change',function(e){ _obj.setT0(e.target.value); });
 	el.t90.addEventListener('change',function(e){ _obj.setT90(e.target.value); });
 	el.t100.addEventListener('change',function(e){ _obj.setT100(e.target.value); });
@@ -75,7 +75,19 @@ function Step(data,opt){
 		return data[idx].x;
 	}
 
+	this.reset = function(){
 
+		opt.values.t0 = 0;
+		opt.values.t90 = "";
+		opt.values.t100 = "";
+		el.t0.value = opt.values.t0;
+		el.t90.value = opt.values.t90;
+		el.t100.value = opt.values.t100;
+	
+		t90moveable = (opt.values.t90 ? true : false);
+
+		return this;
+	};
 	this.updateGraph = function(){
 
 		var t0,t90,t100,baseline,data,F100,F90;
